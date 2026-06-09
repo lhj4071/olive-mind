@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>내 마음, 올리브나무</title>
+    <!-- Tailwind CSS 로드 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 구글 폰트 (Noto Sans KR) 로드 -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome 아이콘 로드 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body { 
+            font-family: 'Noto Sans KR', sans-serif; 
+            scroll-behavior: smooth;
+        }
+        /* 부드러운 호버 효과를 위한 트랜지션 */
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+    
+    <script>
+        // 올리브그린 커스텀 색상 팔레트 설정
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        olive: {
+                            50: '#f5f7f2',
+                            100: '#e6ede0',
+                            200: '#d1dec5',
+                            300: '#b2c8a1',
+                            400: '#8eac77',
+                            500: '#6f9254',
+                            600: '#567540',
+                            700: '#435a33',
+                            800: '#38492c',
+                            900: '#303e27',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-olive-50 text-gray-800 antialiased flex flex-col min-h-screen">
+
+    <!-- 네비게이션 바 -->
+    <nav class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20">
+                <div class="flex items-center">
+                    <!-- 로고 -->
+                    <a href="#" class="flex items-center gap-2">
+                        <i class="fa-solid fa-seedling text-olive-500 text-2xl"></i>
+                        <span class="font-bold text-xl text-olive-800 tracking-tight">내 마음, 올리브나무</span>
+                    </a>
+                </div>
+                
+                <!-- 데스크탑 메뉴 -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#columns" class="text-gray-600 hover:text-olive-600 font-medium transition-colors">마음 칼럼</a>
+                    <a href="#techniques" class="text-gray-600 hover:text-olive-600 font-medium transition-colors">안정화 기법</a>
+                    <a href="#tests" class="text-olive-600 hover:text-olive-800 font-bold transition-colors">자가 심리검사</a>
+                    <!-- 추후 Supabase 연동 시 사용할 로그인 버튼 자리 -->
+                    <button class="bg-olive-100 text-olive-800 px-4 py-2 rounded-full font-medium hover:bg-olive-200 transition-colors text-sm flex items-center gap-2">
+                        <i class="fa-solid fa-lock"></i> 익명 로그인
+                    </button>
+                </div>
+
+                <!-- 모바일 햄버거 메뉴 버튼 -->
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-btn" class="text-gray-600 hover:text-olive-600 focus:outline-none">
+                        <i class="fa-solid fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 모바일 메뉴 드롭다운 -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-100">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="#columns" class="block px-3 py-2 text-gray-600 hover:bg-olive-50 hover:text-olive-600 rounded-md">마음 칼럼</a>
+                <a href="#techniques" class="block px-3 py-2 text-gray-600 hover:bg-olive-50 hover:text-olive-600 rounded-md">안정화 기법</a>
+                <a href="#tests" class="block px-3 py-2 text-olive-600 font-bold hover:bg-olive-50 rounded-md">자가 심리검사</a>
+                <a href="#" class="block px-3 py-2 text-gray-600 hover:bg-olive-50 hover:text-olive-600 rounded-md">익명 로그인</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 메인 히어로 섹션 -->
+    <main class="flex-grow">
+        <section class="relative bg-olive-100 overflow-hidden">
+            <!-- 배경 장식 -->
+            <div class="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
+                <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <pattern id="pattern" width="100" height="100" patternUnits="userSpaceOnUse">
+                            <path d="M50 25 C30 25 20 40 20 50 C20 60 30 75 50 75 C70 75 80 60 80 50 C80 40 70 25 50 25 Z" fill="none" stroke="#567540" stroke-width="2"/>
+                        </pattern>
+                    </defs>
+                    <rect width="100%" height="100%" fill="url(#pattern)" />
+                </svg>
+            </div>
+
+            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28 relative z-10 flex flex-col md:flex-row items-center">
+                <div class="md:w-1/2 text-center md:text-left mb-10 md:mb-0">
+                    <h1 class="text-4xl md:text-5xl font-bold text-olive-900 leading-tight mb-6">
+                        당신의 마음에<br>
+                        <span class="text-olive-600">작은 나무 한 그루</span>를 심어보세요
+                    </h1>
+                    <p class="text-lg text-gray-700 mb-8 max-w-lg mx-auto md:mx-0 leading-relaxed">
+                        정신건강에 대한 올바른 지식을 나누고, 스스로 나의 마음 상태를 돌아볼 수 있는 자가 심리검사 도구를 제공합니다.
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
+                        <a href="#tests" class="bg-olive-600 text-white px-6 py-3 rounded-xl font-medium shadow-lg shadow-olive-200 hover:bg-olive-700 transition-colors flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-list-check"></i> 심리검사 시작하기
+                        </a>
+                        <a href="#columns" class="bg-white text-olive-700 px-6 py-3 rounded-xl font-medium shadow-sm hover:bg-gray-50 transition-colors border border-olive-200 flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-book-open"></i> 마음 칼럼 읽기
+                        </a>
+                    </div>
+                </div>
+                <div class="md:w-1/2 flex justify-center">
+                    <div class="w-72 h-72 md:w-96 md:h-96 bg-white rounded-full shadow-xl flex items-center justify-center border-8 border-olive-50 p-8">
+                        <img src="https://placehold.co/400x400/6f9254/ffffff?text=Olive+Tree" alt="Healing Illustration" class="rounded-full w-full h-full object-cover opacity-90">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 핵심 카테고리 안내 섹션 -->
+        <section class="py-16 bg-white">
+            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-4">어떤 도움이 필요하신가요?</h2>
+                    <p class="text-gray-500">본 사이트에서 제공하는 세 가지 핵심 콘텐츠입니다.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <!-- 카드 1 -->
+                    <div class="bg-olive-50 rounded-2xl p-8 card-hover border border-olive-100">
+                        <div class="w-14 h-14 bg-white rounded-xl flex items-center justify-center text-olive-600 text-2xl shadow-sm mb-6">
+                            <i class="fa-solid fa-book-medical"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-800 mb-3">정신건강 정보 및 칼럼</h3>
+                        <p class="text-gray-600 mb-6 leading-relaxed">우울, 불안, 스트레스, 수면 등 다양한 정신건강 주제에 대한 의학적 지식과 일상 속 관리법을 쉽게 풀어냅니다.</p>
+                        <a href="#columns" class="text-olive-600 font-semibold flex items-center gap-1 hover:text-olive-800">
+                            칼럼 목록 보기 <i class="fa-solid fa-arrow-right text-sm"></i>
+                        </a>
+                    </div>
+
+                    <!-- 카드 2 -->
+                    <div class="bg-olive-50 rounded-2xl p-8 card-hover border border-olive-100">
+                        <div class="w-14 h-14 bg-white rounded-xl flex items-center justify-center text-olive-600 text-2xl shadow-sm mb-6">
+                            <i class="fa-solid fa-spa"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-800 mb-3">안정화 기법 가이드</h3>
+                        <p class="text-gray-600 mb-6 leading-relaxed">극심한 불안이나 스트레스가 찾아올 때, 스스로를 진정시킬 수 있는 복식호흡, 나비포옹법 등의 기법을 안내합니다.</p>
+                        <a href="#techniques" class="text-olive-600 font-semibold flex items-center gap-1 hover:text-olive-800">
+                            기법 연습하기 <i class="fa-solid fa-arrow-right text-sm"></i>
+                        </a>
+                    </div>
+
+                    <!-- 카드 3 -->
+                    <div id="tests" class="bg-olive-600 rounded-2xl p-8 card-hover text-white shadow-lg relative overflow-hidden">
+                        <!-- 배경 장식용 아이콘 -->
+                        <i class="fa-solid fa-chart-line absolute -right-4 -bottom-4 text-7xl text-olive-500 opacity-50"></i>
+                        
+                        <div class="relative z-10">
+                            <div class="w-14 h-14 bg-olive-500 rounded-xl flex items-center justify-center text-white text-2xl mb-6 shadow-inner">
+                                <i class="fa-solid fa-clipboard-question"></i>
+                            </div>
+                            <h3 class="text-xl font-bold mb-3">익명 자가 심리검사</h3>
+                            <p class="text-olive-100 mb-6 leading-relaxed">이름, 생년월일 수집 없이 나만의 ID로 우울/불안 척도를 검사하고, 점수 변화 추이를 안전하게 기록해보세요.</p>
+                            <button class="bg-white text-olive-700 w-full py-3 rounded-lg font-bold hover:bg-gray-50 transition-colors shadow-sm">
+                                검사 센터 입장하기
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 블로그(칼럼) 미리보기 섹션 -->
+        <section id="columns" class="py-16 bg-stone-50">
+            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between items-end mb-10">
+                    <div>
+                        <h2 class="text-3xl font-bold text-gray-800 mb-2">최신 마음 칼럼</h2>
+                        <p class="text-gray-500">나를 이해하는 첫걸음</p>
+                    </div>
+                    <a href="#" class="text-olive-600 hover:underline hidden sm:block font-medium">전체 글 보기</a>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <article class="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow cursor-pointer group">
+                        <div class="h-40 bg-olive-100 flex items-center justify-center group-hover:bg-olive-200 transition-colors">
+                            <i class="fa-solid fa-cloud-rain text-4xl text-olive-400"></i>
+                        </div>
+                        <div class="p-5">
+                            <span class="text-xs font-semibold text-olive-600 mb-2 block">우울증 이해하기</span>
+                            <h3 class="font-bold text-gray-800 mb-2 line-clamp-2 group-hover:text-olive-600 transition-colors">우울증, 단순히 마음이 약해서가 아닙니다</h3>
+                            <p class="text-gray-500 text-sm line-clamp-2">생물학적 요인과 심리사회적 요인이 어떻게 얽혀 우울증을 유발하는지 알아봅니다.</p>
+                            <span class="text-xs text-gray-400 mt-4 block">최근 업데이트</span>
+                        </div>
+                    </article>
+
+                    <article class="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow cursor-pointer group">
+                        <div class="h-40 bg-olive-100 flex items-center justify-center group-hover:bg-olive-200 transition-colors">
+                            <i class="fa-solid fa-bed text-4xl text-olive-400"></i>
+                        </div>
+                        <div class="p-5">
+                            <span class="text-xs font-semibold text-olive-600 mb-2 block">수면 관리</span>
+                            <h3 class="font-bold text-gray-800 mb-2 line-clamp-2 group-hover:text-olive-600 transition-colors">불면증 극복을 위한 10가지 수면 위생 수칙</h3>
+                            <p class="text-gray-500 text-sm line-clamp-2">숙면을 방해하는 사소한 습관들을 점검하고 건강한 수면 리듬을 되찾는 방법입니다.</p>
+                            <span class="text-xs text-gray-400 mt-4 block">최근 업데이트</span>
+                        </div>
+                    </article>
+
+                    <article class="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow cursor-pointer group">
+                        <div class="h-40 bg-olive-100 flex items-center justify-center group-hover:bg-olive-200 transition-colors">
+                            <i class="fa-solid fa-heart-pulse text-4xl text-olive-400"></i>
+                        </div>
+                        <div class="p-5">
+                            <span class="text-xs font-semibold text-olive-600 mb-2 block">불안 조절</span>
+                            <h3 class="font-bold text-gray-800 mb-2 line-clamp-2 group-hover:text-olive-600 transition-colors">갑자기 가슴이 두근거리고 숨이 막힐 때</h3>
+                            <p class="text-gray-500 text-sm line-clamp-2">공황 발작의 원리와 응급 상황에서 사용할 수 있는 대처법에 대해 안내합니다.</p>
+                            <span class="text-xs text-gray-400 mt-4 block">최근 업데이트</span>
+                        </div>
+                    </article>
+
+                    <article class="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow cursor-pointer group">
+                        <div class="h-40 bg-olive-100 flex items-center justify-center group-hover:bg-olive-200 transition-colors">
+                            <i class="fa-solid fa-brain text-4xl text-olive-400"></i>
+                        </div>
+                        <div class="p-5">
+                            <span class="text-xs font-semibold text-olive-600 mb-2 block">인지행동치료</span>
+                            <h3 class="font-bold text-gray-800 mb-2 line-clamp-2 group-hover:text-olive-600 transition-colors">나를 깎아내리는 '인지 오류' 피하기</h3>
+                            <p class="text-gray-500 text-sm line-clamp-2">흑백논리, 재앙화 등 우울과 불안을 악화시키는 잘못된 생각의 습관을 교정해봅니다.</p>
+                            <span class="text-xs text-gray-400 mt-4 block">최근 업데이트</span>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 푸터 (하단 정보) -->
+    <footer class="bg-olive-900 text-olive-100 py-12 mt-auto">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 border-b border-olive-800 pb-8 mb-8">
+                <!-- 사이트 정보 및 주의사항 -->
+                <div>
+                    <h4 class="text-white text-xl font-bold mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-seedling"></i> 내 마음, 올리브나무
+                    </h4>
+                    <p class="text-sm text-olive-300 leading-relaxed mb-4 max-w-lg">
+                        <strong>※ 면책 조항 (Disclaimer)</strong><br>
+                        본 사이트에서 제공하는 건강 정보와 자가 심리검사 결과는 참고용일 뿐, 전문의의 의학적 진단 및 치료를 결코 대신할 수 없습니다.<br>
+                        일상생활에 심각한 어려움을 겪고 계시거나, 정확한 진단이 필요하신 경우 반드시 가까운 전문 의료기관을 방문하시기 바랍니다.
+                    </p>
+                </div>
+                
+                <!-- 긴급 연락처 -->
+                <div class="md:pl-10">
+                    <h4 class="text-white font-semibold mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-phone-volume"></i> 도움이 필요하신가요?
+                    </h4>
+                    <p class="text-sm text-olive-300 mb-4">현재 위기 상황이거나, 심한 우울감, 자살 생각 등으로 힘드시다면 아래의 국가 지원 상담 센터로 즉시 연락해 주세요. 24시간 언제든 도움을 받을 수 있습니다.</p>
+                    <ul class="space-y-3 text-sm">
+                        <li class="bg-olive-800 p-3 rounded-lg border border-olive-700">
+                            자살예방 상담전화 <span class="font-bold text-white text-lg ml-2">109</span>
+                        </li>
+                        <li class="bg-olive-800 p-3 rounded-lg border border-olive-700">
+                            정신건강 위기상담전화 <span class="font-bold text-white text-lg ml-2">1577-0199</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="flex flex-col md:flex-row justify-between items-center text-sm text-olive-400">
+                <div class="mb-4 md:mb-0">
+                    &copy; 2026 내 마음, 올리브나무. All rights reserved.
+                </div>
+                <div class="flex gap-4">
+                    <a href="#" class="hover:text-white transition-colors">이용약관</a>
+                    <a href="#" class="hover:text-white transition-colors">개인정보처리방침</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 모바일 메뉴 동작을 위한 간단한 자바스크립트 -->
+    <script>
+        document.getElementById('mobile-menu-btn').addEventListener('click', function() {
+            var menu = document.getElementById('mobile-menu');
+            if (menu.classList.contains('hidden')) {
+                menu.classList.remove('hidden');
+            } else {
+                menu.classList.add('hidden');
+            }
+        });
+    </script>
+</body>
+</html>
