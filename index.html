@@ -5,52 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>내 마음, 올리브나무</title>
 
-    <!-- Tailwind CSS CDN (Play CDN: 커스텀 색상 지원) -->
     <script src="https://cdn.tailwindcss.com"></script>
-
-    <!-- FontAwesome 아이콘 CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-    <!-- Tailwind 커스텀 색상 팔레트 설정 -->
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
                         olive: {
-                            50:  '#f5f7ee',
-                            100: '#e8efd3',
-                            200: '#d1dfa8',
-                            300: '#b3c872',
-                            400: '#96b045',
-                            500: '#6B8E23',
-                            600: '#556b1a',
-                            700: '#415217',
-                            800: '#344218',
-                            900: '#2c3818',
+                            50:  '#f5f7ee', 100: '#e8efd3', 200: '#d1dfa8',
+                            300: '#b3c872', 400: '#96b045', 500: '#6B8E23',
+                            600: '#556b1a', 700: '#415217', 800: '#344218', 900: '#2c3818',
                         },
                         warm: {
-                            50:  '#f5f5f0',
-                            100: '#e8e8e0',
-                            200: '#d0d0c5',
-                            300: '#b0b0a0',
-                            400: '#8a8a78',
-                            500: '#6e6e5e',
-                            600: '#585848',
-                            700: '#474738',
-                            800: '#3d3d30',
-                            900: '#33332a',
+                            50: '#f5f5f0', 100: '#e8e8e0', 200: '#d0d0c5',
+                            300: '#b0b0a0', 400: '#8a8a78', 500: '#6e6e5e',
+                            600: '#585848', 700: '#474738', 800: '#3d3d30', 900: '#33332a',
                         },
-                        gold: {
-                            400: '#e8b94a',
-                            500: '#D4A55A',
-                            600: '#b8882e',
-                        },
-                        sky: {
-                            400: '#6baed6',
-                            500: '#5A8FBC',
-                            600: '#3d7099',
-                        }
+                        gold: { 400: '#e8b94a', 500: '#D4A55A', 600: '#b8882e' },
+                        sky:  { 400: '#6baed6', 500: '#5A8FBC', 600: '#3d7099' }
                     }
                 }
             }
@@ -58,14 +32,12 @@
     </script>
 
     <style>
-        /* ── 기본 초기화 및 공통 스타일 ─────────────────── */
-        * {
-            -webkit-tap-highlight-color: transparent;
-            box-sizing: border-box;
-        }
+        /* ── 기본 초기화 ─────────────────────────────── */
+        * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
 
-        html, body {
+        html {
             height: 100%;
+            background-color: #f5f5f0; /* 뷰포트 전체 배경 */
         }
 
         body {
@@ -73,6 +45,7 @@
                          'Noto Sans KR', 'Malgun Gothic', sans-serif;
             background-color: #f5f5f0;
             color: #3d3d30;
+            /* 모바일 기본: 480px 너비 앱 스타일 */
             max-width: 480px;
             margin: 0 auto;
             min-height: 100vh;
@@ -82,328 +55,482 @@
 
         /* ── 입력 필드 ───────────────────────────────── */
         .input-field {
-            width: 100%;
-            padding: 12px 16px;
-            border: 1.5px solid #d0d0c5;
-            border-radius: 12px;
-            background: #ffffff;
-            font-size: 15px;
-            color: #3d3d30;
-            outline: none;
-            transition: border-color 0.2s, box-shadow 0.2s;
+            width: 100%; padding: 12px 16px;
+            border: 1.5px solid #d0d0c5; border-radius: 12px;
+            background: #ffffff; font-size: 15px; color: #3d3d30;
+            outline: none; transition: border-color 0.2s, box-shadow 0.2s;
         }
         .input-field::placeholder { color: #c0c0b0; }
         .input-field:focus {
             border-color: #6B8E23;
-            box-shadow: 0 0 0 3px rgba(107, 142, 35, 0.15);
+            box-shadow: 0 0 0 3px rgba(107,142,35,0.15);
         }
         .input-field.error {
             border-color: #e05252;
-            box-shadow: 0 0 0 3px rgba(224, 82, 82, 0.15);
+            box-shadow: 0 0 0 3px rgba(224,82,82,0.15);
         }
 
         /* ── 주 버튼 ─────────────────────────────────── */
         .btn-primary {
-            width: 100%;
-            padding: 14px;
-            background: #6B8E23;
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.2s, transform 0.1s;
+            width: 100%; padding: 14px;
+            background: #6B8E23; color: white;
+            border: none; border-radius: 12px;
+            font-size: 16px; font-weight: 600;
+            cursor: pointer; transition: background 0.2s, transform 0.1s;
         }
         .btn-primary:hover  { background: #556b1a; }
         .btn-primary:active { transform: scale(0.98); }
 
         /* ── 인증 탭 버튼 ─────────────────────────────── */
         .auth-tab {
-            flex: 1;
-            padding: 10px;
-            border: none;
-            background: none;
-            font-size: 15px;
-            font-weight: 500;
-            color: #b0b0a0;
-            cursor: pointer;
-            border-bottom: 2px solid transparent;
+            flex: 1; padding: 10px; border: none; background: none;
+            font-size: 15px; font-weight: 500; color: #b0b0a0;
+            cursor: pointer; border-bottom: 2px solid transparent;
             transition: color 0.2s, border-color 0.2s;
         }
-        .auth-tab.active {
-            color: #6B8E23;
-            border-bottom-color: #6B8E23;
-            font-weight: 700;
-        }
+        .auth-tab.active { color: #6B8E23; border-bottom-color: #6B8E23; font-weight: 700; }
 
         /* ── 카드 ─────────────────────────────────────── */
         .card {
-            background: #ffffff;
-            border-radius: 16px;
-            padding: 16px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            background: #ffffff; border-radius: 16px;
+            padding: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);
         }
 
         /* ── 배지 ─────────────────────────────────────── */
         .badge {
-            display: inline-block;
-            padding: 3px 10px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 600;
+            display: inline-block; padding: 3px 10px;
+            border-radius: 20px; font-size: 11px; font-weight: 600;
         }
 
-        /* ── 하단 네비게이션 ─────────────────────────── */
-        #bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100%;
-            max-width: 480px;
-            background: #ffffff;
-            border-top: 1px solid #e8e8e0;
-            display: flex;
-            z-index: 200;
-            padding-bottom: env(safe-area-inset-bottom, 0px);
-        }
-
-        .nav-item {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 8px 0 10px;
-            cursor: pointer;
-            color: #b0b0a0;
-            font-size: 10px;
-            gap: 4px;
-            border: none;
-            background: none;
-            transition: color 0.2s;
-        }
-        .nav-item.active { color: #6B8E23; }
-        .nav-item i       { font-size: 20px; }
-
-        /* ── 콘텐츠 영역 (하단 탭바 여백) ───────────── */
-        #content-area { padding-bottom: 76px; }
-
-        /* ── 탭 전환 페이드인 애니메이션 ─────────────── */
-        .page-section {
-            animation: pageFadeIn 0.25s ease;
-        }
-        @keyframes pageFadeIn {
-            from { opacity: 0; transform: translateY(8px); }
-            to   { opacity: 1; transform: translateY(0);   }
-        }
-
-        /* ── 인증 화면 배경 그라디언트 ───────────────── */
+        /* ── 인증 화면 배경 ──────────────────────────── */
         #auth-screen {
             min-height: 100vh;
             background: linear-gradient(160deg, #f5f7ee 0%, #dfe8c4 100%);
         }
 
+        /* ── 데스크톱 장식 패널 (모바일: 숨김) ───────── */
+        #auth-deco { display: none; }
+
+        /* ── 하단 네비게이션 ─────────────────────────── */
+        #bottom-nav {
+            position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+            width: 100%; max-width: 480px;
+            background: #ffffff; border-top: 1px solid #e8e8e0;
+            display: flex; z-index: 200;
+            padding-bottom: env(safe-area-inset-bottom, 0px);
+        }
+        .nav-item {
+            flex: 1; display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            padding: 8px 0 10px; cursor: pointer;
+            color: #b0b0a0; font-size: 10px; gap: 4px;
+            border: none; background: none; transition: color 0.2s;
+        }
+        .nav-item.active { color: #6B8E23; }
+        .nav-item i { font-size: 20px; }
+
+        /* ── 콘텐츠 영역 ─────────────────────────────── */
+        #content-area { padding-bottom: 76px; }
+
+        /* ── 페이드인 애니메이션 ─────────────────────── */
+        .page-section { animation: pageFadeIn 0.25s ease; }
+        @keyframes pageFadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
         /* ── 토스트 알림 ─────────────────────────────── */
         #toast {
-            position: fixed;
-            bottom: 82px;
-            left: 50%;
+            position: fixed; bottom: 82px; left: 50%;
             transform: translateX(-50%) translateY(14px);
-            background: rgba(45, 45, 35, 0.92);
-            color: #ffffff;
-            padding: 10px 22px;
-            border-radius: 22px;
-            font-size: 13px;
-            font-weight: 500;
-            opacity: 0;
-            transition: opacity 0.3s ease, transform 0.3s ease;
-            z-index: 999;
-            white-space: nowrap;
-            pointer-events: none;
-            max-width: 90%;
-            text-align: center;
+            background: rgba(45,45,35,0.92); color: #ffffff;
+            padding: 10px 22px; border-radius: 22px;
+            font-size: 13px; font-weight: 500;
+            opacity: 0; transition: opacity 0.3s ease, transform 0.3s ease;
+            z-index: 999; white-space: nowrap; pointer-events: none;
+            max-width: 90%; text-align: center;
         }
-        #toast.show {
-            opacity: 1;
-            transform: translateX(-50%) translateY(0);
-        }
+        #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
         /* ── 자료실 필터 버튼 ─────────────────────────── */
-        .filter-btn {
-            border: none;
-            cursor: pointer;
-            transition: background 0.2s, color 0.2s;
-        }
-
-        /* 스크롤바 숨김 */
+        .filter-btn { border: none; cursor: pointer; transition: background 0.2s, color 0.2s; }
         .scrollbar-hide::-webkit-scrollbar { display: none; }
         .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
 
-        /* ── 검사 카드 왼쪽 강조선 ───────────────────── */
+        /* ── 검사 카드 강조선 ────────────────────────── */
         .test-card-phq  { border-left: 4px solid #6B8E23; }
         .test-card-gad  { border-left: 4px solid #D4A55A; }
-        .test-card-diva { border-left: 4px solid #6D5BA3; }
-
-        /* ── DIVA 카드 클릭 영역 ─────────────────────── */
-        .test-card-diva {
-            cursor: pointer;
-            transition: transform 0.15s ease, box-shadow 0.15s ease;
-        }
-        .test-card-diva:active {
-            transform: scale(0.98);
-            box-shadow: 0 1px 4px rgba(0,0,0,0.08);
-        }
+        .test-card-diva { border-left: 4px solid #6D5BA3; cursor: pointer; transition: transform 0.15s ease, box-shadow 0.15s ease; }
+        .test-card-diva:active { transform: scale(0.98); box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
 
         /* ── 헤더 로그아웃 버튼 ─────────────────────── */
         .btn-logout {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            padding: 6px 12px;
-            background: #fef0f0;
-            color: #e05252;
-            border: none;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.2s;
+            display: flex; align-items: center; gap: 5px;
+            padding: 6px 12px; background: #fef0f0; color: #e05252;
+            border: none; border-radius: 20px;
+            font-size: 12px; font-weight: 600;
+            cursor: pointer; transition: background 0.2s; white-space: nowrap;
         }
         .btn-logout:hover  { background: #fddada; }
         .btn-logout:active { transform: scale(0.97); }
 
-        /* ── 페이지 전환 페이드아웃 ─────────────────── */
-        .page-exit {
-            animation: pageFadeOut 0.2s ease forwards;
-        }
+        /* ── 페이드아웃 ───────────────────────────────── */
+        .page-exit { animation: pageFadeOut 0.2s ease forwards; }
         @keyframes pageFadeOut {
             from { opacity: 1; transform: translateY(0); }
             to   { opacity: 0; transform: translateY(-6px); }
+        }
+
+        /* ══════════════════════════════════════════════════
+           반응형: 데스크톱 / 태블릿 (768px 이상)
+           ══════════════════════════════════════════════════ */
+        @media (min-width: 768px) {
+
+            /* 본문 너비 확장 */
+            body { max-width: 1024px; }
+
+            /* ── 하단 네비게이션: 숨김 ───────────────── */
+            #bottom-nav { display: none !important; }
+
+            /* ── 콘텐츠 영역: 하단 여백 조정, 패딩 확장 */
+            #content-area {
+                padding-bottom: 48px !important;
+                padding-left: 40px !important;
+                padding-right: 40px !important;
+            }
+
+            /* ── 헤더 패딩 확장 ─────────────────────── */
+            header {
+                padding-left: 32px !important;
+                padding-right: 32px !important;
+            }
+
+            /* ── 데스크톱 수평 네비게이션: 표시 ─────── */
+            #desktop-nav { display: flex !important; }
+
+            /* ── 모바일 탭 타이틀: 숨김 ─────────────── */
+            #header-title { display: none !important; }
+
+            /* ── 데스크톱 네비 버튼 스타일 ─────────── */
+            .desktop-nav-btn {
+                padding: 8px 14px;
+                border-radius: 10px;
+                font-size: 14px;
+                font-weight: 500;
+                color: #6e6e5e;
+                background: none;
+                border: none;
+                cursor: pointer;
+                transition: background 0.2s, color 0.2s;
+                display: flex;
+                align-items: center;
+                gap: 6px;
+            }
+            .desktop-nav-btn:hover { background: #f0f4e6; color: #6B8E23; }
+            .desktop-nav-btn.active {
+                background: #f0f4e6;
+                color: #6B8E23;
+                font-weight: 700;
+            }
+
+            /* ── 인증 화면: 두 패널 레이아웃 ─────────── */
+            #auth-screen {
+                display: flex !important;
+                flex-direction: row;
+                background: none;
+                min-height: 100vh;
+            }
+
+            /* 왼쪽: 올리브 장식 패널 */
+            #auth-deco {
+                display: flex !important;
+                flex: 1;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                padding: 48px 40px;
+                background: linear-gradient(155deg, #2c3818 0%, #6B8E23 65%, #96b045 100%);
+                color: white;
+                min-height: 100vh;
+                position: relative;
+            }
+
+            /* 오른쪽: 폼 패널 */
+            #auth-main {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                padding: 48px 40px;
+                background: #ffffff;
+                min-height: 100vh;
+                overflow-y: auto;
+            }
+
+            /* 모바일 전용 로고: 숨김 */
+            #auth-mobile-logo { display: none !important; }
+
+            /* 데스크톱 전용 폼 헤더: 표시 */
+            #auth-desktop-header { display: block !important; }
+
+            /* 카드 래퍼: 최대 너비 제한, 중앙 정렬 */
+            #auth-card-wrapper {
+                width: 100%;
+                max-width: 400px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            /* ── 토스트: 위치 조정 ──────────────────── */
+            #toast { bottom: 24px; }
+
+            /* ── [마음 자료실] 카드: 2열 그리드 ─────── */
+            #library-list {
+                display: grid !important;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 16px;
+            }
+            #library-list > * { margin-top: 0 !important; }
+
+            /* ── [심리검사] 카드: 2열 그리드 ───────── */
+            #tests-cards {
+                display: grid !important;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 16px;
+            }
+            #tests-cards > * { margin-top: 0 !important; }
+
+            /* "더 많은 검사 예정" 안내 카드: 전체 너비 */
+            #tests-cards .test-more-card { grid-column: 1 / -1; }
+
+            /* ── 홈 추천 자료: 2열 그리드 ─────────── */
+            #home-recommended {
+                display: grid !important;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+            }
+            #home-recommended > * { margin-top: 0 !important; }
+
+            /* ── 홈 빠른 메뉴: 4열 확장 ────────────── */
+            #home-quick-menu {
+                grid-template-columns: repeat(4, 1fr) !important;
+            }
+
+            /* ── 프로필 페이지: 중앙 제한 너비 ────── */
+            #page-profile {
+                max-width: 640px;
+                margin: 0 auto;
+            }
         }
     </style>
 </head>
 <body>
 
 <!-- ══════════════════════════════════════════
-     인증 화면 (비로그인 상태에서만 표시)
+     인증 화면 (비로그인 상태)
      ══════════════════════════════════════════ -->
 <div id="auth-screen">
 
-    <!-- 로고 영역 -->
-    <div class="flex flex-col items-center pt-16 pb-8 px-6">
-        <div class="w-20 h-20 rounded-full flex items-center justify-center mb-4"
-             style="background: linear-gradient(135deg, #6B8E23, #96b045);">
-            <i class="fas fa-leaf text-white text-3xl"></i>
+    <!-- ──────────────────────────────────────
+         데스크톱 전용: 왼쪽 장식 패널
+         ────────────────────────────────────── -->
+    <div id="auth-deco">
+        <!-- 로고 -->
+        <div style="width:96px;height:96px;border-radius:50%;background:rgba(255,255,255,0.18);
+                    display:flex;align-items:center;justify-content:center;margin-bottom:28px;">
+            <i class="fas fa-leaf" style="font-size:44px;color:#ffffff;"></i>
         </div>
-        <h1 class="text-2xl font-bold text-center" style="color: #2c3818;">내 마음, 올리브나무</h1>
-        <p class="text-sm mt-1 text-center" style="color: #8a8a78;">당신의 마음을 위한 안전한 공간</p>
-    </div>
+        <h1 style="font-size:28px;font-weight:800;text-align:center;margin-bottom:12px;line-height:1.3;">
+            내 마음, 올리브나무
+        </h1>
+        <p style="font-size:15px;opacity:0.85;text-align:center;line-height:1.7;margin-bottom:52px;">
+            당신의 마음을 위한<br>안전하고 따뜻한 공간
+        </p>
 
-    <!-- 로그인 / 회원가입 카드 -->
-    <div class="mx-5">
-        <div class="card">
-            <!-- 탭 전환 버튼 -->
-            <div class="flex border-b mb-5" style="border-color: #f0f0e8;">
-                <button class="auth-tab active" id="tab-login"    onclick="authTabSwitch('login')">로그인</button>
-                <button class="auth-tab"        id="tab-register" onclick="authTabSwitch('register')">회원가입</button>
-            </div>
-
-            <!-- ── 로그인 폼 ── -->
-            <div id="form-login">
-                <div class="space-y-4">
-                    <div>
-                        <label class="block text-sm font-medium mb-1.5" style="color: #6e6e5e;">아이디</label>
-                        <input type="text" id="login-id" class="input-field"
-                               placeholder="아이디를 입력하세요"
-                               autocomplete="username">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium mb-1.5" style="color: #6e6e5e;">비밀번호</label>
-                        <input type="password" id="login-pw" class="input-field"
-                               placeholder="비밀번호를 입력하세요"
-                               autocomplete="current-password">
-                    </div>
-                    <button class="btn-primary" onclick="doLogin()">로그인</button>
-                    <p class="text-center text-xs mt-2" style="color: #b0b0a0;">
-                        아직 회원이 아니신가요?
-                        <button onclick="authTabSwitch('register')"
-                                class="underline font-medium" style="color: #6B8E23;">회원가입</button>
-                    </p>
+        <!-- 서비스 소개 -->
+        <div style="width:100%;max-width:300px;display:flex;flex-direction:column;gap:22px;">
+            <div style="display:flex;align-items:center;gap:16px;">
+                <div style="width:48px;height:48px;border-radius:14px;background:rgba(255,255,255,0.16);
+                            display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                    <i class="fas fa-book-open" style="font-size:18px;"></i>
+                </div>
+                <div>
+                    <p style="font-weight:700;font-size:15px;margin-bottom:3px;">마음 자료실</p>
+                    <p style="font-size:12px;opacity:0.72;">우울·불안·수면·스트레스 교육 자료</p>
                 </div>
             </div>
+            <div style="display:flex;align-items:center;gap:16px;">
+                <div style="width:48px;height:48px;border-radius:14px;background:rgba(255,255,255,0.16);
+                            display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                    <i class="fas fa-clipboard-list" style="font-size:18px;"></i>
+                </div>
+                <div>
+                    <p style="font-weight:700;font-size:15px;margin-bottom:3px;">심리검사</p>
+                    <p style="font-size:12px;opacity:0.72;">PHQ-9, GAD-7, DIVA 면담 검사</p>
+                </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:16px;">
+                <div style="width:48px;height:48px;border-radius:14px;background:rgba(255,255,255,0.16);
+                            display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                    <i class="fas fa-shield-halved" style="font-size:18px;"></i>
+                </div>
+                <div>
+                    <p style="font-weight:700;font-size:15px;margin-bottom:3px;">가입 승인 시스템</p>
+                    <p style="font-size:12px;opacity:0.72;">승인 코드 기반의 안전한 가입</p>
+                </div>
+            </div>
+        </div>
 
-            <!-- ── 회원가입 폼 ── -->
-            <div id="form-register" class="hidden">
-                <div class="space-y-4">
-                    <div>
-                        <label class="block text-sm font-medium mb-1.5" style="color: #6e6e5e;">아이디</label>
-                        <input type="text" id="reg-id" class="input-field"
-                               placeholder="3자 이상 아이디를 입력하세요"
-                               autocomplete="username">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium mb-1.5" style="color: #6e6e5e;">비밀번호</label>
-                        <input type="password" id="reg-pw" class="input-field"
-                               placeholder="비밀번호 6자 이상"
-                               autocomplete="new-password">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium mb-1.5" style="color: #6e6e5e;">비밀번호 확인</label>
-                        <input type="password" id="reg-pw2" class="input-field"
-                               placeholder="비밀번호를 다시 입력하세요"
-                               autocomplete="new-password">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium mb-1.5" style="color: #6e6e5e;">
-                            가입 승인 코드
-                        </label>
-                        <input type="text" id="reg-code" class="input-field"
-                               placeholder="담당자로부터 받은 코드 입력"
-                               autocomplete="off">
-                        <p class="text-xs mt-1" style="color: #b0b0a0;">
-                            * 승인 코드는 담당자에게 문의해 주세요.
+        <!-- 저작권 (패널 하단 고정) -->
+        <p style="position:absolute;bottom:24px;font-size:11px;opacity:0.45;">
+            © 2026 내 마음, 올리브나무
+        </p>
+    </div>
+
+    <!-- ──────────────────────────────────────
+         폼 영역 (모바일: 전체 화면 / 데스크톱: 오른쪽 패널)
+         ────────────────────────────────────── -->
+    <div id="auth-main">
+
+        <!-- 모바일 전용: 로고 영역 -->
+        <div id="auth-mobile-logo" class="flex flex-col items-center pt-16 pb-8 px-6">
+            <div class="w-20 h-20 rounded-full flex items-center justify-center mb-4"
+                 style="background: linear-gradient(135deg, #6B8E23, #96b045);">
+                <i class="fas fa-leaf text-white text-3xl"></i>
+            </div>
+            <h1 class="text-2xl font-bold text-center" style="color: #2c3818;">내 마음, 올리브나무</h1>
+            <p class="text-sm mt-1 text-center" style="color: #8a8a78;">당신의 마음을 위한 안전한 공간</p>
+        </div>
+
+        <!-- 데스크톱 전용: 폼 상단 인사 -->
+        <div id="auth-desktop-header" style="display:none;text-align:center;margin-bottom:32px;width:100%;max-width:400px;">
+            <div class="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4"
+                 style="background: linear-gradient(135deg, #6B8E23, #96b045);">
+                <i class="fas fa-leaf text-white text-xl"></i>
+            </div>
+            <h2 class="text-2xl font-bold" style="color: #2c3818;">환영합니다</h2>
+            <p class="text-sm mt-2" style="color: #8a8a78;">로그인하거나 새 계정을 만드세요</p>
+        </div>
+
+        <!-- 로그인 / 회원가입 카드 -->
+        <div id="auth-card-wrapper" class="mx-5 w-full">
+            <div class="card">
+                <!-- 탭 전환 버튼 -->
+                <div class="flex border-b mb-5" style="border-color: #f0f0e8;">
+                    <button class="auth-tab active" id="tab-login"    onclick="authTabSwitch('login')">로그인</button>
+                    <button class="auth-tab"        id="tab-register" onclick="authTabSwitch('register')">회원가입</button>
+                </div>
+
+                <!-- ── 로그인 폼 ── -->
+                <div id="form-login">
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium mb-1.5" style="color: #6e6e5e;">아이디</label>
+                            <input type="text" id="login-id" class="input-field"
+                                   placeholder="아이디를 입력하세요" autocomplete="username">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-1.5" style="color: #6e6e5e;">비밀번호</label>
+                            <input type="password" id="login-pw" class="input-field"
+                                   placeholder="비밀번호를 입력하세요" autocomplete="current-password">
+                        </div>
+                        <button class="btn-primary" onclick="doLogin()">로그인</button>
+                        <p class="text-center text-xs mt-2" style="color: #b0b0a0;">
+                            아직 회원이 아니신가요?
+                            <button onclick="authTabSwitch('register')"
+                                    class="underline font-medium" style="color: #6B8E23;">회원가입</button>
                         </p>
                     </div>
-                    <button class="btn-primary" onclick="doRegister()">가입 신청</button>
-                    <p class="text-center text-xs mt-2" style="color: #b0b0a0;">
-                        이미 회원이신가요?
-                        <button onclick="authTabSwitch('login')"
-                                class="underline font-medium" style="color: #6B8E23;">로그인</button>
-                    </p>
+                </div>
+
+                <!-- ── 회원가입 폼 ── -->
+                <div id="form-register" class="hidden">
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium mb-1.5" style="color: #6e6e5e;">아이디</label>
+                            <input type="text" id="reg-id" class="input-field"
+                                   placeholder="3자 이상 아이디를 입력하세요" autocomplete="username">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-1.5" style="color: #6e6e5e;">비밀번호</label>
+                            <input type="password" id="reg-pw" class="input-field"
+                                   placeholder="비밀번호 6자 이상" autocomplete="new-password">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-1.5" style="color: #6e6e5e;">비밀번호 확인</label>
+                            <input type="password" id="reg-pw2" class="input-field"
+                                   placeholder="비밀번호를 다시 입력하세요" autocomplete="new-password">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-1.5" style="color: #6e6e5e;">
+                                가입 승인 코드
+                            </label>
+                            <input type="text" id="reg-code" class="input-field"
+                                   placeholder="담당자로부터 받은 코드 입력" autocomplete="off">
+                            <p class="text-xs mt-1" style="color: #b0b0a0;">
+                                * 승인 코드는 담당자에게 문의해 주세요.
+                            </p>
+                        </div>
+                        <button class="btn-primary" onclick="doRegister()">가입 신청</button>
+                        <p class="text-center text-xs mt-2" style="color: #b0b0a0;">
+                            이미 회원이신가요?
+                            <button onclick="authTabSwitch('login')"
+                                    class="underline font-medium" style="color: #6B8E23;">로그인</button>
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
+
+        <!-- 모바일 푸터 -->
+        <p class="text-center text-xs mt-8 pb-8" style="color: #c0c0b0;">
+            © 2026 내 마음, 올리브나무
+        </p>
     </div>
 
-    <!-- 인증 화면 푸터 -->
-    <p class="text-center text-xs mt-8 pb-8" style="color: #c0c0b0;">
-        © 2026 내 마음, 올리브나무
-    </p>
-</div>
+</div><!-- /auth-screen -->
 
 
 <!-- ══════════════════════════════════════════
-     메인 앱 화면 (로그인 후 표시)
+     메인 앱 화면 (로그인 후)
      ══════════════════════════════════════════ -->
 <div id="main-content" class="hidden">
 
-    <!-- ── 상단 헤더 ── -->
+    <!-- ── 상단 헤더 ─────────────────────────── -->
     <header class="sticky top-0 z-50 px-4 py-3 flex items-center justify-between"
             style="background: #ffffff; border-bottom: 1px solid #e8e8e0;">
-        <!-- 좌측: 로고 -->
-        <div class="flex items-center gap-2">
+
+        <!-- 좌측: 로고 + 사이트명 -->
+        <div class="flex items-center gap-2 flex-shrink-0">
             <div class="w-8 h-8 rounded-full flex items-center justify-center"
                  style="background: linear-gradient(135deg, #6B8E23, #96b045);">
                 <i class="fas fa-leaf text-white text-sm"></i>
             </div>
             <span class="font-bold text-base" style="color: #2c3818;">올리브나무</span>
         </div>
-        <!-- 중앙: 현재 탭 타이틀 -->
-        <span id="header-title" class="font-medium text-sm" style="color: #6e6e5e;"></span>
+
+        <!-- 중앙: 데스크톱 수평 네비게이션 (기본 숨김, 768px↑ 표시) -->
+        <nav id="desktop-nav" class="flex-1 justify-center gap-1" style="display:none;">
+            <button id="dnav-home"    class="desktop-nav-btn active" onclick="switchPage('home')">
+                <i class="fas fa-house text-xs"></i> 홈
+            </button>
+            <button id="dnav-library" class="desktop-nav-btn" onclick="switchPage('library')">
+                <i class="fas fa-book-open text-xs"></i> 자료실
+            </button>
+            <button id="dnav-tests"   class="desktop-nav-btn" onclick="switchPage('tests')">
+                <i class="fas fa-clipboard-list text-xs"></i> 심리검사
+            </button>
+            <button id="dnav-profile" class="desktop-nav-btn" onclick="switchPage('profile')">
+                <i class="fas fa-user text-xs"></i> 내 정보
+            </button>
+        </nav>
+
+        <!-- 중앙: 모바일 탭 타이틀 (768px↑ 숨김) -->
+        <span id="header-title" class="flex-1 text-center font-medium text-sm" style="color: #6e6e5e;"></span>
+
         <!-- 우측: 로그아웃 버튼 -->
-        <button class="btn-logout" onclick="doLogout()">
+        <button class="btn-logout flex-shrink-0" onclick="doLogout()">
             <i class="fas fa-right-from-bracket text-xs"></i>
             로그아웃
         </button>
@@ -413,7 +540,7 @@
     <main id="content-area" class="px-4 py-5">
 
         <!-- ━━━━━━━━━━━━━━━━━━━━━━━━
-             홈(대시보드) 탭
+             홈 탭
              ━━━━━━━━━━━━━━━━━━━━━━━━ -->
         <section id="page-home" class="page-section">
 
@@ -441,9 +568,18 @@
                 </div>
             </div>
 
-            <!-- 빠른 메뉴 2×1 그리드 -->
+            <!-- 빠른 메뉴 (모바일 2열 / 데스크톱 4열) -->
             <h3 class="font-bold text-xs mb-2.5 tracking-wide uppercase" style="color: #b0b0a0;">빠른 메뉴</h3>
-            <div class="grid grid-cols-2 gap-3 mb-5">
+            <div id="home-quick-menu" class="grid grid-cols-2 gap-3 mb-5">
+                <button onclick="switchPage('home')"
+                        class="card flex flex-col items-center py-5 gap-2 active:scale-95 transition-transform">
+                    <div class="w-12 h-12 rounded-full flex items-center justify-center"
+                         style="background: #f0f4e6;">
+                        <i class="fas fa-house text-xl" style="color: #6B8E23;"></i>
+                    </div>
+                    <span class="text-sm font-bold" style="color: #3d3d30;">홈</span>
+                    <span class="text-xs" style="color: #b0b0a0;">대시보드</span>
+                </button>
                 <button onclick="switchPage('library')"
                         class="card flex flex-col items-center py-5 gap-2 active:scale-95 transition-transform">
                     <div class="w-12 h-12 rounded-full flex items-center justify-center"
@@ -462,11 +598,20 @@
                     <span class="text-sm font-bold" style="color: #3d3d30;">심리검사</span>
                     <span class="text-xs" style="color: #b0b0a0;">검사 3종</span>
                 </button>
+                <button onclick="switchPage('profile')"
+                        class="card flex flex-col items-center py-5 gap-2 active:scale-95 transition-transform">
+                    <div class="w-12 h-12 rounded-full flex items-center justify-center"
+                         style="background: #eef4fa;">
+                        <i class="fas fa-user text-xl" style="color: #5A8FBC;"></i>
+                    </div>
+                    <span class="text-sm font-bold" style="color: #3d3d30;">내 정보</span>
+                    <span class="text-xs" style="color: #b0b0a0;">프로필</span>
+                </button>
             </div>
 
-            <!-- 추천 자료 미리보기 -->
+            <!-- 추천 자료 (모바일 1열 / 데스크톱 2열) -->
             <h3 class="font-bold text-xs mb-2.5 tracking-wide uppercase" style="color: #b0b0a0;">추천 자료</h3>
-            <div class="space-y-3">
+            <div id="home-recommended" class="space-y-3">
                 <div class="card flex items-center gap-3">
                     <div class="w-11 h-11 rounded-xl flex-shrink-0 flex items-center justify-center"
                          style="background: #f0f4e6;">
@@ -493,6 +638,32 @@
                     </div>
                     <i class="fas fa-chevron-right text-xs flex-shrink-0" style="color: #d0d0c5;"></i>
                 </div>
+                <div class="card flex items-center gap-3">
+                    <div class="w-11 h-11 rounded-xl flex-shrink-0 flex items-center justify-center"
+                         style="background: #fdf4e6;">
+                        <i class="fas fa-wind" style="color: #D4A55A;"></i>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <span class="badge text-xs" style="background: #fdf4e6; color: #D4A55A;">불안</span>
+                        <p class="text-sm font-semibold truncate mt-0.5" style="color: #3d3d30;">
+                            불안한 마음을 다스리는 호흡법
+                        </p>
+                    </div>
+                    <i class="fas fa-chevron-right text-xs flex-shrink-0" style="color: #d0d0c5;"></i>
+                </div>
+                <div class="card flex items-center gap-3">
+                    <div class="w-11 h-11 rounded-xl flex-shrink-0 flex items-center justify-center"
+                         style="background: #f0eefa;">
+                        <i class="fas fa-brain" style="color: #6D5BA3;"></i>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <span class="badge text-xs" style="background: #f0eefa; color: #6D5BA3;">스트레스</span>
+                        <p class="text-sm font-semibold truncate mt-0.5" style="color: #3d3d30;">
+                            만성 스트레스와 몸의 신호
+                        </p>
+                    </div>
+                    <i class="fas fa-chevron-right text-xs flex-shrink-0" style="color: #d0d0c5;"></i>
+                </div>
             </div>
         </section>
 
@@ -505,7 +676,7 @@
             <h2 class="text-xl font-bold mb-0.5" style="color: #2c3818;">마음 자료실</h2>
             <p class="text-sm mb-4" style="color: #8a8a78;">마음 건강을 위한 교육 자료 모음</p>
 
-            <!-- 카테고리 필터 (가로 스크롤) -->
+            <!-- 카테고리 필터 -->
             <div class="flex gap-2 mb-4 overflow-x-auto scrollbar-hide pb-1">
                 <button id="filter-all"        class="filter-btn flex-shrink-0 px-4 py-1.5 rounded-full text-sm font-semibold"
                         style="background: #6B8E23; color: #ffffff;"
@@ -524,7 +695,7 @@
                         onclick="filterLibrary('stress', this)">스트레스</button>
             </div>
 
-            <!-- 자료 카드 목록 -->
+            <!-- 자료 카드 (모바일 1열 / 데스크톱 2열) -->
             <div class="space-y-4" id="library-list">
 
                 <!-- 자료 1: 우울증 -->
@@ -672,7 +843,8 @@
                 </p>
             </div>
 
-            <div class="space-y-4">
+            <!-- 검사 카드 (모바일 1열 / 데스크톱 2열) -->
+            <div class="space-y-4" id="tests-cards">
 
                 <!-- PHQ-9 카드 -->
                 <div class="card test-card-phq">
@@ -743,10 +915,8 @@
                 <!-- DIVA 성인 ADHD 진단 면담 카드 -->
                 <div class="card test-card-diva"
                      onclick="window.location.href = './diva_v9.html'"
-                     role="button"
-                     tabindex="0"
+                     role="button" tabindex="0"
                      aria-label="성인 ADHD 진단 면담 DIVA 시작하기">
-                    <!-- 상단: 아이콘 + 제목 + 배지 -->
                     <div class="flex items-start justify-between mb-3">
                         <div class="flex items-center gap-3">
                             <div class="w-12 h-12 rounded-xl flex items-center justify-center"
@@ -762,14 +932,10 @@
                         </div>
                         <span class="badge" style="background: #f0eefa; color: #6D5BA3;">심층 면담</span>
                     </div>
-
-                    <!-- 설명 -->
                     <p class="text-xs leading-relaxed mb-4" style="color: #8a8a78;">
                         집중력 저하, 충동성 등을 평가하는 심층 면담 도구입니다.
                         아동기 및 성인기의 ADHD 증상을 체계적으로 평가하는 국제 표준 구조화 면담입니다.
                     </p>
-
-                    <!-- 하단: 소요 시간 + CTA -->
                     <div class="flex items-center gap-2">
                         <span class="flex-1 flex items-center gap-1.5 text-xs" style="color: #b0b0a0;">
                             <i class="fas fa-clock"></i> 약 15~20분
@@ -783,8 +949,8 @@
                     </div>
                 </div>
 
-                <!-- 추가 예정 안내 -->
-                <div class="card text-center py-6" style="border: 1.5px dashed #d0d0c5;">
+                <!-- 추가 예정 안내 (데스크톱: 2열 전체 너비) -->
+                <div class="card text-center py-6 test-more-card" style="border: 1.5px dashed #d0d0c5;">
                     <i class="fas fa-hourglass-half text-2xl mb-2" style="color: #d0d0c5;"></i>
                     <p class="text-sm font-semibold" style="color: #b0b0a0;">더 많은 검사가 준비 중입니다</p>
                     <p class="text-xs mt-1" style="color: #d0d0c5;">PSS-10 (스트레스 척도) 등 업데이트 예정</p>
@@ -809,7 +975,7 @@
                 <p class="text-sm mt-0.5" style="color: #8a8a78;">올리브나무 회원</p>
             </div>
 
-            <!-- 활동 요약 숫자 -->
+            <!-- 활동 요약 -->
             <div class="grid grid-cols-3 gap-3 mb-5">
                 <div class="card text-center py-3">
                     <p class="text-xl font-bold" style="color: #6B8E23;">0</p>
@@ -878,35 +1044,31 @@
 
     </main>
 
-    <!-- ── 하단 네비게이션 바 ── -->
+    <!-- ── 하단 네비게이션 바 (모바일 전용) ── -->
     <nav id="bottom-nav">
         <button class="nav-item active" id="nav-home"    onclick="switchPage('home')">
-            <i class="fas fa-house"></i>
-            <span>홈</span>
+            <i class="fas fa-house"></i><span>홈</span>
         </button>
         <button class="nav-item"        id="nav-library" onclick="switchPage('library')">
-            <i class="fas fa-book-open"></i>
-            <span>자료실</span>
+            <i class="fas fa-book-open"></i><span>자료실</span>
         </button>
         <button class="nav-item"        id="nav-tests"   onclick="switchPage('tests')">
-            <i class="fas fa-clipboard-list"></i>
-            <span>심리검사</span>
+            <i class="fas fa-clipboard-list"></i><span>심리검사</span>
         </button>
         <button class="nav-item"        id="nav-profile" onclick="switchPage('profile')">
-            <i class="fas fa-user"></i>
-            <span>내 정보</span>
+            <i class="fas fa-user"></i><span>내 정보</span>
         </button>
     </nav>
 
 </div><!-- /main-content -->
 
 
-<!-- 토스트 메시지 엘리먼트 -->
+<!-- 토스트 메시지 -->
 <div id="toast"></div>
 
 
 <!-- ══════════════════════════════════════════
-     JavaScript: 인증 + 화면 전환 핵심 로직
+     JavaScript: 인증 + 화면 전환 + 반응형 네비
      ══════════════════════════════════════════ -->
 <script>
     /* ──────────────────────────────────────
@@ -915,7 +1077,7 @@
     let 현재탭 = 'home';
 
     /* ──────────────────────────────────────
-     * 페이지 로드 시: 이미 로그인된 경우 처리
+     * 페이지 로드: 자동 로그인 복원
      * ────────────────────────────────────── */
     window.addEventListener('DOMContentLoaded', () => {
         const 저장된사용자 = localStorage.getItem('olive_current_user');
@@ -958,32 +1120,27 @@
 
         if (!아이디 || 아이디.length < 3) {
             showToast('아이디는 3자 이상이어야 합니다.');
-            inputError('reg-id');
-            return;
+            inputError('reg-id'); return;
         }
         if (!비밀번호 || 비밀번호.length < 6) {
             showToast('비밀번호는 6자 이상이어야 합니다.');
-            inputError('reg-pw');
-            return;
+            inputError('reg-pw'); return;
         }
         if (비밀번호 !== 비밀번호확인) {
             showToast('비밀번호가 일치하지 않습니다.');
-            inputError('reg-pw2');
-            return;
+            inputError('reg-pw2'); return;
         }
 
-        /* 가입 승인 코드 확인 */
+        /* 가입 승인 코드 검증 */
         if (승인코드 !== 'olive2026') {
             showToast('올바르지 않은 승인 코드입니다.');
-            inputError('reg-code');
-            return;
+            inputError('reg-code'); return;
         }
 
         const 사용자목록 = JSON.parse(localStorage.getItem('olive_users') || '{}');
         if (사용자목록[아이디]) {
             showToast('이미 사용 중인 아이디입니다.');
-            inputError('reg-id');
-            return;
+            inputError('reg-id'); return;
         }
 
         사용자목록[아이디] = {
@@ -1007,8 +1164,7 @@
         const 비밀번호 = document.getElementById('login-pw').value;
 
         if (!아이디 || !비밀번호) {
-            showToast('아이디와 비밀번호를 입력해 주세요.');
-            return;
+            showToast('아이디와 비밀번호를 입력해 주세요.'); return;
         }
 
         const 사용자목록 = JSON.parse(localStorage.getItem('olive_users') || '{}');
@@ -1017,8 +1173,7 @@
         if (!사용자정보 || 사용자정보.pw !== btoa(비밀번호)) {
             showToast('아이디 또는 비밀번호가 올바르지 않습니다.');
             inputError('login-id');
-            inputError('login-pw');
-            return;
+            inputError('login-pw'); return;
         }
 
         localStorage.setItem('olive_current_user', 아이디);
@@ -1042,22 +1197,28 @@
 
         ['home', 'library', 'tests', 'profile'].forEach(탭 => {
             document.getElementById('page-' + 탭).classList.add('hidden');
-            document.getElementById('nav-' + 탭).classList.remove('active');
+            document.getElementById('nav-'  + 탭).classList.remove('active');
         });
         document.getElementById('page-home').classList.remove('hidden');
         document.getElementById('nav-home').classList.add('active');
+
+        /* 데스크톱 네비 초기화 */
+        setDesktopNavActive('home');
 
         authTabSwitch('login');
     }
 
     /* ──────────────────────────────────────
-     * 앱 화면 열기 (로그인 성공 후 호출)
+     * 앱 화면 열기 (로그인 성공 후)
      * ────────────────────────────────────── */
     function 앱화면열기(아이디) {
         document.getElementById('auth-screen').classList.add('hidden');
         document.getElementById('main-content').classList.remove('hidden');
         document.getElementById('home-username').textContent    = 아이디;
         document.getElementById('profile-username').textContent = 아이디;
+
+        /* 데스크톱 네비: 홈 활성화 초기화 */
+        setDesktopNavActive('home');
     }
 
     /* ──────────────────────────────────────
@@ -1072,11 +1233,23 @@
         document.getElementById('page-' + 탭).classList.remove('hidden');
         document.getElementById('nav-'  + 탭).classList.add('active');
 
+        /* 데스크톱 수평 네비 활성화 동기화 */
+        setDesktopNavActive(탭);
+
         const 타이틀맵 = { home: '', library: '마음 자료실', tests: '심리검사', profile: '내 정보' };
         document.getElementById('header-title').textContent = 타이틀맵[탭];
 
         window.scrollTo({ top: 0, behavior: 'smooth' });
         현재탭 = 탭;
+    }
+
+    /* ──────────────────────────────────────
+     * 데스크톱 네비 활성 버튼 동기화
+     * ────────────────────────────────────── */
+    function setDesktopNavActive(탭) {
+        document.querySelectorAll('.desktop-nav-btn').forEach(btn => btn.classList.remove('active'));
+        const 버튼 = document.getElementById('dnav-' + 탭);
+        if (버튼) 버튼.classList.add('active');
     }
 
     /* ──────────────────────────────────────
@@ -1091,28 +1264,25 @@
         버튼.style.color      = '#ffffff';
 
         document.querySelectorAll('.library-item').forEach(item => {
-            const 표시여부 = (카테고리 === 'all' || item.dataset.category === 카테고리);
-            item.style.display = 표시여부 ? '' : 'none';
+            const 표시 = (카테고리 === 'all' || item.dataset.category === 카테고리);
+            item.style.display = 표시 ? '' : 'none';
         });
     }
 
     /* ──────────────────────────────────────
-     * 토스트 알림 표시
+     * 토스트 알림
      * ────────────────────────────────────── */
     let _토스트타이머 = null;
     function showToast(메시지) {
-        const 엘리먼트 = document.getElementById('toast');
-        엘리먼트.textContent = 메시지;
-        엘리먼트.classList.add('show');
-
+        const 엘 = document.getElementById('toast');
+        엘.textContent = 메시지;
+        엘.classList.add('show');
         if (_토스트타이머) clearTimeout(_토스트타이머);
-        _토스트타이머 = setTimeout(() => {
-            엘리먼트.classList.remove('show');
-        }, 2500);
+        _토스트타이머 = setTimeout(() => 엘.classList.remove('show'), 2500);
     }
 
     /* ──────────────────────────────────────
-     * 입력 필드 에러 스타일 적용 후 자동 해제
+     * 입력 필드 에러 스타일 (자동 해제)
      * ────────────────────────────────────── */
     function inputError(아이디) {
         const el = document.getElementById(아이디);
@@ -1121,18 +1291,13 @@
     }
 
     /* ──────────────────────────────────────
-     * 엔터 키로 로그인 / 회원가입 실행
+     * 엔터 키: 로그인 / 회원가입 실행
      * ────────────────────────────────────── */
     document.addEventListener('keydown', (e) => {
         if (e.key !== 'Enter') return;
         if (document.getElementById('auth-screen').classList.contains('hidden')) return;
-
         const 로그인폼표시 = !document.getElementById('form-login').classList.contains('hidden');
-        if (로그인폼표시) {
-            doLogin();
-        } else {
-            doRegister();
-        }
+        if (로그인폼표시) doLogin(); else doRegister();
     });
 </script>
 
