@@ -244,8 +244,28 @@
         .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
 
         /* ── 검사 카드 왼쪽 강조선 ───────────────────── */
-        .test-card-phq { border-left: 4px solid #6B8E23; }
-        .test-card-gad { border-left: 4px solid #D4A55A; }
+        .test-card-phq  { border-left: 4px solid #6B8E23; }
+        .test-card-gad  { border-left: 4px solid #D4A55A; }
+        .test-card-diva { border-left: 4px solid #6D5BA3; }
+
+        /* ── DIVA 카드: 카드 전체를 클릭 영역으로 ───── */
+        .test-card-diva {
+            cursor: pointer;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+        .test-card-diva:active {
+            transform: scale(0.98);
+            box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+        }
+
+        /* ── 페이지 전환 페이드아웃 ─────────────────── */
+        .page-exit {
+            animation: pageFadeOut 0.2s ease forwards;
+        }
+        @keyframes pageFadeOut {
+            from { opacity: 1; transform: translateY(0); }
+            to   { opacity: 0; transform: translateY(-6px); }
+        }
     </style>
 </head>
 <body>
@@ -425,7 +445,7 @@
                         <i class="fas fa-clipboard-list text-xl" style="color: #D4A55A;"></i>
                     </div>
                     <span class="text-sm font-bold" style="color: #3d3d30;">심리검사</span>
-                    <span class="text-xs" style="color: #b0b0a0;">검사 2종</span>
+                    <span class="text-xs" style="color: #b0b0a0;">검사 3종</span>
                 </button>
             </div>
 
@@ -668,6 +688,54 @@
                                 style="background: #D4A55A;">
                             검사 시작 <i class="fas fa-arrow-right ml-1 text-xs"></i>
                         </button>
+                    </div>
+                </div>
+
+                <!-- ─────────────────────────────────────────────────────
+                     DIVA 성인 ADHD 검사 카드
+                     카드 전체가 클릭 영역 → navigateToDiva() 호출
+                     TODO: diva_v9.html 내부에도 index.html과 같은 헤더
+                           (뒤로가기 버튼 포함)를 추가하면 앱 통일감이 높아짐.
+                           예: <header> <button onclick="history.back()">← 뒤로</button>
+                                 <span>DIVA 성인 ADHD 검사</span> </header>
+                     ───────────────────────────────────────────────────── -->
+                <div class="card test-card-diva" onclick="navigateToDiva()" role="button" tabindex="0"
+                     aria-label="성인 ADHD 진단 검사 DIVA 시작하기">
+                    <!-- 상단: 아이콘 + 제목 + 배지 -->
+                    <div class="flex items-start justify-between mb-3">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 rounded-xl flex items-center justify-center"
+                                 style="background: #f0eefa;">
+                                <i class="fas fa-puzzle-piece text-xl" style="color: #6D5BA3;"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-base leading-tight" style="color: #2c3818;">
+                                    성인 ADHD 진단 검사
+                                </h4>
+                                <p class="text-xs mt-0.5" style="color: #8a8a78;">DIVA 2.0 / 5.0</p>
+                            </div>
+                        </div>
+                        <!-- 배지: 검사 유형 강조 -->
+                        <span class="badge" style="background: #f0eefa; color: #6D5BA3;">심층 면담</span>
+                    </div>
+
+                    <!-- 설명 -->
+                    <p class="text-xs leading-relaxed mb-4" style="color: #8a8a78;">
+                        집중력 저하, 충동성 등을 평가하는 심층 면담 도구입니다.
+                        아동기 및 성인기의 ADHD 증상을 체계적으로 평가하는 국제 표준 구조화 면담입니다.
+                    </p>
+
+                    <!-- 하단: 소요 시간 + CTA -->
+                    <div class="flex items-center gap-2">
+                        <span class="flex-1 flex items-center gap-1.5 text-xs" style="color: #b0b0a0;">
+                            <i class="fas fa-clock"></i> 약 15~20분
+                            <span class="mx-1">·</span>
+                            <i class="fas fa-user-check"></i> ADHD 선별
+                        </span>
+                        <span class="flex items-center gap-1 px-5 py-2.5 rounded-xl text-sm font-bold text-white pointer-events-none"
+                              style="background: #6D5BA3;">
+                            검사 시작 <i class="fas fa-arrow-right ml-1 text-xs"></i>
+                        </span>
                     </div>
                 </div>
 
@@ -1026,6 +1094,18 @@
         const el = document.getElementById(아이디);
         el.classList.add('error');
         setTimeout(() => el.classList.remove('error'), 2000);
+    }
+
+    /* ──────────────────────────────────────
+     * DIVA 성인 ADHD 검사 페이지로 이동
+     * ────────────────────────────────────── */
+    function navigateToDiva() {
+        // 앱 화면 페이드아웃 후 diva_v9.html로 이동
+        const 앱 = document.getElementById('app-screen');
+        앱.classList.add('page-exit');
+        setTimeout(() => {
+            window.location.href = 'diva_v9.html';
+        }, 200);
     }
 
     /* ──────────────────────────────────────
