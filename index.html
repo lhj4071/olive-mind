@@ -2,312 +2,1048 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>내 마음, 올리브나무</title>
-    <!-- Tailwind CSS 로드 -->
+
+    <!-- Tailwind CSS CDN (Play CDN: 커스텀 색상 지원) -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- 구글 폰트 (Noto Sans KR) 로드 -->
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <!-- Font Awesome 아이콘 로드 -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <style>
-        body { 
-            font-family: 'Noto Sans KR', sans-serif; 
-            scroll-behavior: smooth;
-        }
-        /* 부드러운 호버 효과를 위한 트랜지션 */
-        .card-hover {
-            transition: all 0.3s ease;
-        }
-        .card-hover:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
-        }
-    </style>
-    
+
+    <!-- FontAwesome 아이콘 CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <!-- Tailwind 커스텀 색상 팔레트 설정 -->
     <script>
-        // 올리브그린 커스텀 색상 팔레트 설정
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
                         olive: {
-                            50: '#f5f7f2',
-                            100: '#e6ede0',
-                            200: '#d1dec5',
-                            300: '#b2c8a1',
-                            400: '#8eac77',
-                            500: '#6f9254',
-                            600: '#567540',
-                            700: '#435a33',
-                            800: '#38492c',
-                            900: '#303e27',
+                            50:  '#f5f7ee',
+                            100: '#e8efd3',
+                            200: '#d1dfa8',
+                            300: '#b3c872',
+                            400: '#96b045',
+                            500: '#6B8E23', /* 메인 올리브그린 */
+                            600: '#556b1a',
+                            700: '#415217',
+                            800: '#344218',
+                            900: '#2c3818',
+                        },
+                        warm: {
+                            50:  '#f5f5f0',
+                            100: '#e8e8e0',
+                            200: '#d0d0c5',
+                            300: '#b0b0a0',
+                            400: '#8a8a78',
+                            500: '#6e6e5e',
+                            600: '#585848',
+                            700: '#474738',
+                            800: '#3d3d30',
+                            900: '#33332a',
+                        },
+                        gold: {
+                            400: '#e8b94a',
+                            500: '#D4A55A',
+                            600: '#b8882e',
+                        },
+                        sky: {
+                            400: '#6baed6',
+                            500: '#5A8FBC',
+                            600: '#3d7099',
                         }
                     }
                 }
             }
         }
     </script>
+
+    <style>
+        /* ── 기본 초기화 및 공통 스타일 ─────────────────── */
+        * {
+            -webkit-tap-highlight-color: transparent;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Apple SD Gothic Neo',
+                         'Noto Sans KR', 'Malgun Gothic', sans-serif;
+            background-color: #f5f5f0;
+            color: #3d3d30;
+            /* 모바일 앱처럼 최대 너비 제한 + 가운데 정렬 */
+            max-width: 480px;
+            margin: 0 auto;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* ── 입력 필드 ───────────────────────────────── */
+        .input-field {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1.5px solid #d0d0c5;
+            border-radius: 12px;
+            background: #ffffff;
+            font-size: 15px;
+            color: #3d3d30;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .input-field::placeholder { color: #c0c0b0; }
+        .input-field:focus {
+            border-color: #6B8E23;
+            box-shadow: 0 0 0 3px rgba(107, 142, 35, 0.15);
+        }
+        .input-field.error {
+            border-color: #e05252;
+            box-shadow: 0 0 0 3px rgba(224, 82, 82, 0.15);
+        }
+
+        /* ── 주 버튼 ─────────────────────────────────── */
+        .btn-primary {
+            width: 100%;
+            padding: 14px;
+            background: #6B8E23;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+        }
+        .btn-primary:hover  { background: #556b1a; }
+        .btn-primary:active { transform: scale(0.98); }
+
+        /* ── 인증 탭 버튼 ─────────────────────────────── */
+        .auth-tab {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            background: none;
+            font-size: 15px;
+            font-weight: 500;
+            color: #b0b0a0;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: color 0.2s, border-color 0.2s;
+        }
+        .auth-tab.active {
+            color: #6B8E23;
+            border-bottom-color: #6B8E23;
+            font-weight: 700;
+        }
+
+        /* ── 카드 ─────────────────────────────────────── */
+        .card {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 16px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        /* ── 배지 ─────────────────────────────────────── */
+        .badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        /* ── 하단 네비게이션 ─────────────────────────── */
+        #bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 480px;
+            background: #ffffff;
+            border-top: 1px solid #e8e8e0;
+            display: flex;
+            z-index: 200;
+            /* iOS 홈 인디케이터 여백 대응 */
+            padding-bottom: env(safe-area-inset-bottom, 0px);
+        }
+
+        .nav-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 0 10px;
+            cursor: pointer;
+            color: #b0b0a0;
+            font-size: 10px;
+            gap: 4px;
+            border: none;
+            background: none;
+            transition: color 0.2s;
+        }
+        .nav-item.active { color: #6B8E23; }
+        .nav-item i       { font-size: 20px; }
+
+        /* ── 콘텐츠 영역 (하단 탭바 여백) ───────────── */
+        #content-area { padding-bottom: 76px; }
+
+        /* ── 탭 전환 페이드인 애니메이션 ─────────────── */
+        .page-section {
+            animation: pageFadeIn 0.25s ease;
+        }
+        @keyframes pageFadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to   { opacity: 1; transform: translateY(0);   }
+        }
+
+        /* ── 인증 화면 배경 그라디언트 ───────────────── */
+        #auth-screen {
+            min-height: 100vh;
+            background: linear-gradient(160deg, #f5f7ee 0%, #dfe8c4 100%);
+        }
+
+        /* ── 토스트 알림 ─────────────────────────────── */
+        #toast {
+            position: fixed;
+            bottom: 82px;
+            left: 50%;
+            transform: translateX(-50%) translateY(14px);
+            background: rgba(45, 45, 35, 0.92);
+            color: #ffffff;
+            padding: 10px 22px;
+            border-radius: 22px;
+            font-size: 13px;
+            font-weight: 500;
+            opacity: 0;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            z-index: 999;
+            white-space: nowrap;
+            pointer-events: none;
+            max-width: 90%;
+            text-align: center;
+        }
+        #toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* ── 자료실 필터 버튼 ─────────────────────────── */
+        .filter-btn {
+            border: none;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        /* 스크롤바 숨김 (카테고리 필터 가로 스크롤) */
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* ── 검사 카드 왼쪽 강조선 ───────────────────── */
+        .test-card-phq { border-left: 4px solid #6B8E23; }
+        .test-card-gad { border-left: 4px solid #D4A55A; }
+    </style>
 </head>
-<body class="bg-olive-50 text-gray-800 antialiased flex flex-col min-h-screen">
+<body>
 
-    <!-- 네비게이션 바 -->
-    <nav class="bg-white shadow-sm sticky top-0 z-50">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-20">
-                <div class="flex items-center">
-                    <!-- 로고 -->
-                    <a href="#" class="flex items-center gap-2">
-                        <i class="fa-solid fa-seedling text-olive-500 text-2xl"></i>
-                        <span class="font-bold text-xl text-olive-800 tracking-tight">내 마음, 올리브나무</span>
-                    </a>
-                </div>
-                
-                <!-- 데스크탑 메뉴 -->
-                <div class="hidden md:flex items-center space-x-8">
-                    <a href="#columns" class="text-gray-600 hover:text-olive-600 font-medium transition-colors">마음 칼럼</a>
-                    <a href="#techniques" class="text-gray-600 hover:text-olive-600 font-medium transition-colors">안정화 기법</a>
-                    <a href="#tests" class="text-olive-600 hover:text-olive-800 font-bold transition-colors">자가 심리검사</a>
-                    <!-- 추후 Supabase 연동 시 사용할 로그인 버튼 자리 -->
-                    <button class="bg-olive-100 text-olive-800 px-4 py-2 rounded-full font-medium hover:bg-olive-200 transition-colors text-sm flex items-center gap-2">
-                        <i class="fa-solid fa-lock"></i> 익명 로그인
-                    </button>
-                </div>
+<!-- ══════════════════════════════════════════
+     인증 화면 (비로그인 상태에서만 표시)
+     ══════════════════════════════════════════ -->
+<div id="auth-screen">
 
-                <!-- 모바일 햄버거 메뉴 버튼 -->
-                <div class="md:hidden flex items-center">
-                    <button id="mobile-menu-btn" class="text-gray-600 hover:text-olive-600 focus:outline-none">
-                        <i class="fa-solid fa-bars text-2xl"></i>
-                    </button>
-                </div>
-            </div>
+    <!-- 로고 영역 -->
+    <div class="flex flex-col items-center pt-16 pb-8 px-6">
+        <div class="w-20 h-20 rounded-full flex items-center justify-center mb-4"
+             style="background: linear-gradient(135deg, #6B8E23, #96b045);">
+            <i class="fas fa-leaf text-white text-3xl"></i>
         </div>
+        <h1 class="text-2xl font-bold text-center" style="color: #2c3818;">내 마음, 올리브나무</h1>
+        <p class="text-sm mt-1 text-center" style="color: #8a8a78;">당신의 마음을 위한 안전한 공간</p>
+    </div>
 
-        <!-- 모바일 메뉴 드롭다운 -->
-        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-100">
-            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-                <a href="#columns" class="block px-3 py-2 text-gray-600 hover:bg-olive-50 hover:text-olive-600 rounded-md">마음 칼럼</a>
-                <a href="#techniques" class="block px-3 py-2 text-gray-600 hover:bg-olive-50 hover:text-olive-600 rounded-md">안정화 기법</a>
-                <a href="#tests" class="block px-3 py-2 text-olive-600 font-bold hover:bg-olive-50 rounded-md">자가 심리검사</a>
-                <a href="#" class="block px-3 py-2 text-gray-600 hover:bg-olive-50 hover:text-olive-600 rounded-md">익명 로그인</a>
-            </div>
-        </div>
-    </nav>
-
-    <!-- 메인 히어로 섹션 -->
-    <main class="flex-grow">
-        <section class="relative bg-olive-100 overflow-hidden">
-            <!-- 배경 장식 -->
-            <div class="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
-                <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-                    <defs>
-                        <pattern id="pattern" width="100" height="100" patternUnits="userSpaceOnUse">
-                            <path d="M50 25 C30 25 20 40 20 50 C20 60 30 75 50 75 C70 75 80 60 80 50 C80 40 70 25 50 25 Z" fill="none" stroke="#567540" stroke-width="2"/>
-                        </pattern>
-                    </defs>
-                    <rect width="100%" height="100%" fill="url(#pattern)" />
-                </svg>
+    <!-- 로그인 / 회원가입 카드 -->
+    <div class="mx-5">
+        <div class="card">
+            <!-- 탭 전환 버튼 -->
+            <div class="flex border-b mb-5" style="border-color: #f0f0e8;">
+                <button class="auth-tab active" id="tab-login"    onclick="authTabSwitch('login')">로그인</button>
+                <button class="auth-tab"        id="tab-register" onclick="authTabSwitch('register')">회원가입</button>
             </div>
 
-            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28 relative z-10 flex flex-col md:flex-row items-center">
-                <div class="md:w-1/2 text-center md:text-left mb-10 md:mb-0">
-                    <h1 class="text-4xl md:text-5xl font-bold text-olive-900 leading-tight mb-6">
-                        당신의 마음에<br>
-                        <span class="text-olive-600">작은 나무 한 그루</span>를 심어보세요
-                    </h1>
-                    <p class="text-lg text-gray-700 mb-8 max-w-lg mx-auto md:mx-0 leading-relaxed">
-                        정신건강에 대한 올바른 지식을 나누고, 스스로 나의 마음 상태를 돌아볼 수 있는 자가 심리검사 도구를 제공합니다.
-                    </p>
-                    <div class="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
-                        <a href="#tests" class="bg-olive-600 text-white px-6 py-3 rounded-xl font-medium shadow-lg shadow-olive-200 hover:bg-olive-700 transition-colors flex items-center justify-center gap-2">
-                            <i class="fa-solid fa-list-check"></i> 심리검사 시작하기
-                        </a>
-                        <a href="#columns" class="bg-white text-olive-700 px-6 py-3 rounded-xl font-medium shadow-sm hover:bg-gray-50 transition-colors border border-olive-200 flex items-center justify-center gap-2">
-                            <i class="fa-solid fa-book-open"></i> 마음 칼럼 읽기
-                        </a>
-                    </div>
-                </div>
-                <div class="md:w-1/2 flex justify-center">
-                    <div class="w-72 h-72 md:w-96 md:h-96 bg-white rounded-full shadow-xl flex items-center justify-center border-8 border-olive-50 p-8">
-                        <img src="https://placehold.co/400x400/6f9254/ffffff?text=Olive+Tree" alt="Healing Illustration" class="rounded-full w-full h-full object-cover opacity-90">
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 핵심 카테고리 안내 섹션 -->
-        <section class="py-16 bg-white">
-            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center mb-12">
-                    <h2 class="text-3xl font-bold text-gray-800 mb-4">어떤 도움이 필요하신가요?</h2>
-                    <p class="text-gray-500">본 사이트에서 제공하는 세 가지 핵심 콘텐츠입니다.</p>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    <!-- 카드 1 -->
-                    <div class="bg-olive-50 rounded-2xl p-8 card-hover border border-olive-100">
-                        <div class="w-14 h-14 bg-white rounded-xl flex items-center justify-center text-olive-600 text-2xl shadow-sm mb-6">
-                            <i class="fa-solid fa-book-medical"></i>
-                        </div>
-                        <h3 class="text-xl font-bold text-gray-800 mb-3">정신건강 정보 및 칼럼</h3>
-                        <p class="text-gray-600 mb-6 leading-relaxed">우울, 불안, 스트레스, 수면 등 다양한 정신건강 주제에 대한 의학적 지식과 일상 속 관리법을 쉽게 풀어냅니다.</p>
-                        <a href="#columns" class="text-olive-600 font-semibold flex items-center gap-1 hover:text-olive-800">
-                            칼럼 목록 보기 <i class="fa-solid fa-arrow-right text-sm"></i>
-                        </a>
-                    </div>
-
-                    <!-- 카드 2 -->
-                    <div class="bg-olive-50 rounded-2xl p-8 card-hover border border-olive-100">
-                        <div class="w-14 h-14 bg-white rounded-xl flex items-center justify-center text-olive-600 text-2xl shadow-sm mb-6">
-                            <i class="fa-solid fa-spa"></i>
-                        </div>
-                        <h3 class="text-xl font-bold text-gray-800 mb-3">안정화 기법 가이드</h3>
-                        <p class="text-gray-600 mb-6 leading-relaxed">극심한 불안이나 스트레스가 찾아올 때, 스스로를 진정시킬 수 있는 복식호흡, 나비포옹법 등의 기법을 안내합니다.</p>
-                        <a href="#techniques" class="text-olive-600 font-semibold flex items-center gap-1 hover:text-olive-800">
-                            기법 연습하기 <i class="fa-solid fa-arrow-right text-sm"></i>
-                        </a>
-                    </div>
-
-                    <!-- 카드 3 -->
-                    <div id="tests" class="bg-olive-600 rounded-2xl p-8 card-hover text-white shadow-lg relative overflow-hidden">
-                        <!-- 배경 장식용 아이콘 -->
-                        <i class="fa-solid fa-chart-line absolute -right-4 -bottom-4 text-7xl text-olive-500 opacity-50"></i>
-                        
-                        <div class="relative z-10">
-                            <div class="w-14 h-14 bg-olive-500 rounded-xl flex items-center justify-center text-white text-2xl mb-6 shadow-inner">
-                                <i class="fa-solid fa-clipboard-question"></i>
-                            </div>
-                            <h3 class="text-xl font-bold mb-3">익명 자가 심리검사</h3>
-                            <p class="text-olive-100 mb-6 leading-relaxed">이름, 생년월일 수집 없이 나만의 ID로 우울/불안 척도를 검사하고, 점수 변화 추이를 안전하게 기록해보세요.</p>
-                            <button class="bg-white text-olive-700 w-full py-3 rounded-lg font-bold hover:bg-gray-50 transition-colors shadow-sm">
-                                검사 센터 입장하기
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 블로그(칼럼) 미리보기 섹션 -->
-        <section id="columns" class="py-16 bg-stone-50">
-            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex justify-between items-end mb-10">
+            <!-- ── 로그인 폼 ── -->
+            <div id="form-login">
+                <div class="space-y-4">
                     <div>
-                        <h2 class="text-3xl font-bold text-gray-800 mb-2">최신 마음 칼럼</h2>
-                        <p class="text-gray-500">나를 이해하는 첫걸음</p>
+                        <label class="block text-sm font-medium mb-1.5" style="color: #6e6e5e;">아이디</label>
+                        <input type="text" id="login-id" class="input-field"
+                               placeholder="아이디를 입력하세요"
+                               autocomplete="username">
                     </div>
-                    <a href="#" class="text-olive-600 hover:underline hidden sm:block font-medium">전체 글 보기</a>
+                    <div>
+                        <label class="block text-sm font-medium mb-1.5" style="color: #6e6e5e;">비밀번호</label>
+                        <input type="password" id="login-pw" class="input-field"
+                               placeholder="비밀번호를 입력하세요"
+                               autocomplete="current-password">
+                    </div>
+                    <button class="btn-primary" onclick="doLogin()">로그인</button>
+                    <p class="text-center text-xs mt-2" style="color: #b0b0a0;">
+                        아직 회원이 아니신가요?
+                        <button onclick="authTabSwitch('register')"
+                                class="underline font-medium" style="color: #6B8E23;">회원가입</button>
+                    </p>
                 </div>
+            </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <article class="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow cursor-pointer group">
-                        <div class="h-40 bg-olive-100 flex items-center justify-center group-hover:bg-olive-200 transition-colors">
-                            <i class="fa-solid fa-cloud-rain text-4xl text-olive-400"></i>
-                        </div>
-                        <div class="p-5">
-                            <span class="text-xs font-semibold text-olive-600 mb-2 block">우울증 이해하기</span>
-                            <h3 class="font-bold text-gray-800 mb-2 line-clamp-2 group-hover:text-olive-600 transition-colors">우울증, 단순히 마음이 약해서가 아닙니다</h3>
-                            <p class="text-gray-500 text-sm line-clamp-2">생물학적 요인과 심리사회적 요인이 어떻게 얽혀 우울증을 유발하는지 알아봅니다.</p>
-                            <span class="text-xs text-gray-400 mt-4 block">최근 업데이트</span>
-                        </div>
-                    </article>
+            <!-- ── 회원가입 폼 ── -->
+            <div id="form-register" class="hidden">
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-1.5" style="color: #6e6e5e;">아이디</label>
+                        <input type="text" id="reg-id" class="input-field"
+                               placeholder="3자 이상 아이디를 입력하세요"
+                               autocomplete="username">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1.5" style="color: #6e6e5e;">비밀번호</label>
+                        <input type="password" id="reg-pw" class="input-field"
+                               placeholder="비밀번호 6자 이상"
+                               autocomplete="new-password">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1.5" style="color: #6e6e5e;">비밀번호 확인</label>
+                        <input type="password" id="reg-pw2" class="input-field"
+                               placeholder="비밀번호를 다시 입력하세요"
+                               autocomplete="new-password">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1.5" style="color: #6e6e5e;">
+                            가입 승인 코드
+                        </label>
+                        <input type="text" id="reg-code" class="input-field"
+                               placeholder="담당자로부터 받은 코드 입력"
+                               autocomplete="off">
+                        <p class="text-xs mt-1" style="color: #b0b0a0;">
+                            * 승인 코드는 담당자에게 문의해 주세요.
+                        </p>
+                    </div>
+                    <button class="btn-primary" onclick="doRegister()">가입 신청</button>
+                    <p class="text-center text-xs mt-2" style="color: #b0b0a0;">
+                        이미 회원이신가요?
+                        <button onclick="authTabSwitch('login')"
+                                class="underline font-medium" style="color: #6B8E23;">로그인</button>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
 
-                    <article class="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow cursor-pointer group">
-                        <div class="h-40 bg-olive-100 flex items-center justify-center group-hover:bg-olive-200 transition-colors">
-                            <i class="fa-solid fa-bed text-4xl text-olive-400"></i>
-                        </div>
-                        <div class="p-5">
-                            <span class="text-xs font-semibold text-olive-600 mb-2 block">수면 관리</span>
-                            <h3 class="font-bold text-gray-800 mb-2 line-clamp-2 group-hover:text-olive-600 transition-colors">불면증 극복을 위한 10가지 수면 위생 수칙</h3>
-                            <p class="text-gray-500 text-sm line-clamp-2">숙면을 방해하는 사소한 습관들을 점검하고 건강한 수면 리듬을 되찾는 방법입니다.</p>
-                            <span class="text-xs text-gray-400 mt-4 block">최근 업데이트</span>
-                        </div>
-                    </article>
+    <!-- 인증 화면 푸터 -->
+    <p class="text-center text-xs mt-8 pb-8" style="color: #c0c0b0;">
+        © 2026 내 마음, 올리브나무
+    </p>
+</div>
 
-                    <article class="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow cursor-pointer group">
-                        <div class="h-40 bg-olive-100 flex items-center justify-center group-hover:bg-olive-200 transition-colors">
-                            <i class="fa-solid fa-heart-pulse text-4xl text-olive-400"></i>
-                        </div>
-                        <div class="p-5">
-                            <span class="text-xs font-semibold text-olive-600 mb-2 block">불안 조절</span>
-                            <h3 class="font-bold text-gray-800 mb-2 line-clamp-2 group-hover:text-olive-600 transition-colors">갑자기 가슴이 두근거리고 숨이 막힐 때</h3>
-                            <p class="text-gray-500 text-sm line-clamp-2">공황 발작의 원리와 응급 상황에서 사용할 수 있는 대처법에 대해 안내합니다.</p>
-                            <span class="text-xs text-gray-400 mt-4 block">최근 업데이트</span>
-                        </div>
-                    </article>
 
-                    <article class="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow cursor-pointer group">
-                        <div class="h-40 bg-olive-100 flex items-center justify-center group-hover:bg-olive-200 transition-colors">
-                            <i class="fa-solid fa-brain text-4xl text-olive-400"></i>
-                        </div>
-                        <div class="p-5">
-                            <span class="text-xs font-semibold text-olive-600 mb-2 block">인지행동치료</span>
-                            <h3 class="font-bold text-gray-800 mb-2 line-clamp-2 group-hover:text-olive-600 transition-colors">나를 깎아내리는 '인지 오류' 피하기</h3>
-                            <p class="text-gray-500 text-sm line-clamp-2">흑백논리, 재앙화 등 우울과 불안을 악화시키는 잘못된 생각의 습관을 교정해봅니다.</p>
-                            <span class="text-xs text-gray-400 mt-4 block">최근 업데이트</span>
-                        </div>
-                    </article>
+<!-- ══════════════════════════════════════════
+     메인 앱 화면 (로그인 후 표시)
+     ══════════════════════════════════════════ -->
+<div id="app-screen" class="hidden">
+
+    <!-- ── 상단 헤더 ── -->
+    <header class="sticky top-0 z-50 px-4 py-3 flex items-center justify-between"
+            style="background: #ffffff; border-bottom: 1px solid #e8e8e0;">
+        <!-- 좌측: 로고 -->
+        <div class="flex items-center gap-2">
+            <div class="w-8 h-8 rounded-full flex items-center justify-center"
+                 style="background: linear-gradient(135deg, #6B8E23, #96b045);">
+                <i class="fas fa-leaf text-white text-sm"></i>
+            </div>
+            <span class="font-bold text-base" style="color: #2c3818;">올리브나무</span>
+        </div>
+        <!-- 중앙: 현재 탭 타이틀 -->
+        <span id="header-title" class="font-medium text-sm" style="color: #6e6e5e;"></span>
+        <!-- 우측: 내 정보 이동 버튼 -->
+        <button onclick="switchPage('profile')"
+                class="w-8 h-8 rounded-full flex items-center justify-center"
+                style="background: #f5f5f0;">
+            <i class="fas fa-user text-sm" style="color: #6B8E23;"></i>
+        </button>
+    </header>
+
+    <!-- ── 콘텐츠 영역 ── -->
+    <main id="content-area" class="px-4 py-5">
+
+        <!-- ━━━━━━━━━━━━━━━━━━━━━━━━
+             홈(대시보드) 탭
+             ━━━━━━━━━━━━━━━━━━━━━━━━ -->
+        <section id="page-home" class="page-section">
+
+            <!-- 환영 배너 -->
+            <div class="rounded-2xl p-5 mb-4 text-white"
+                 style="background: linear-gradient(135deg, #6B8E23, #96b045);">
+                <p class="text-sm mb-0.5" style="opacity: 0.9;">
+                    안녕하세요, <span id="home-username" class="font-bold"></span>님 👋
+                </p>
+                <h2 class="text-xl font-bold mb-1">오늘 마음은 어떠세요?</h2>
+                <p class="text-sm" style="opacity: 0.8;">당신의 마음 건강을 함께 돌봅니다.</p>
+            </div>
+
+            <!-- 오늘의 한마디 -->
+            <div class="card mb-4 flex items-start gap-3">
+                <div class="w-9 h-9 rounded-full flex-shrink-0 flex items-center justify-center mt-0.5"
+                     style="background: #f0f4e6;">
+                    <i class="fas fa-quote-left text-sm" style="color: #6B8E23;"></i>
+                </div>
+                <div>
+                    <p class="text-xs font-bold mb-1" style="color: #6B8E23;">오늘의 한마디</p>
+                    <p class="text-sm leading-relaxed" style="color: #474738;">
+                        "치유는 직선이 아닙니다. 천천히, 당신만의 속도로 걸어가도 괜찮습니다."
+                    </p>
+                </div>
+            </div>
+
+            <!-- 빠른 메뉴 2×1 그리드 -->
+            <h3 class="font-bold text-xs mb-2.5 tracking-wide uppercase" style="color: #b0b0a0;">빠른 메뉴</h3>
+            <div class="grid grid-cols-2 gap-3 mb-5">
+                <button onclick="switchPage('library')"
+                        class="card flex flex-col items-center py-5 gap-2 active:scale-95 transition-transform">
+                    <div class="w-12 h-12 rounded-full flex items-center justify-center"
+                         style="background: #f0f4e6;">
+                        <i class="fas fa-book-open text-xl" style="color: #6B8E23;"></i>
+                    </div>
+                    <span class="text-sm font-bold" style="color: #3d3d30;">마음 자료실</span>
+                    <span class="text-xs" style="color: #b0b0a0;">자료 3개</span>
+                </button>
+                <button onclick="switchPage('tests')"
+                        class="card flex flex-col items-center py-5 gap-2 active:scale-95 transition-transform">
+                    <div class="w-12 h-12 rounded-full flex items-center justify-center"
+                         style="background: #fdf4e6;">
+                        <i class="fas fa-clipboard-list text-xl" style="color: #D4A55A;"></i>
+                    </div>
+                    <span class="text-sm font-bold" style="color: #3d3d30;">심리검사</span>
+                    <span class="text-xs" style="color: #b0b0a0;">검사 2종</span>
+                </button>
+            </div>
+
+            <!-- 추천 자료 미리보기 -->
+            <h3 class="font-bold text-xs mb-2.5 tracking-wide uppercase" style="color: #b0b0a0;">추천 자료</h3>
+            <div class="space-y-3">
+                <div class="card flex items-center gap-3">
+                    <div class="w-11 h-11 rounded-xl flex-shrink-0 flex items-center justify-center"
+                         style="background: #f0f4e6;">
+                        <i class="fas fa-sun" style="color: #6B8E23;"></i>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <span class="badge text-xs" style="background: #f0f4e6; color: #6B8E23;">우울증</span>
+                        <p class="text-sm font-semibold truncate mt-0.5" style="color: #3d3d30;">
+                            우울증 극복을 위한 첫걸음
+                        </p>
+                    </div>
+                    <i class="fas fa-chevron-right text-xs flex-shrink-0" style="color: #d0d0c5;"></i>
+                </div>
+                <div class="card flex items-center gap-3">
+                    <div class="w-11 h-11 rounded-xl flex-shrink-0 flex items-center justify-center"
+                         style="background: #eef4fa;">
+                        <i class="fas fa-moon" style="color: #5A8FBC;"></i>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <span class="badge text-xs" style="background: #eef4fa; color: #5A8FBC;">수면</span>
+                        <p class="text-sm font-semibold truncate mt-0.5" style="color: #3d3d30;">
+                            수면 위생 가이드
+                        </p>
+                    </div>
+                    <i class="fas fa-chevron-right text-xs flex-shrink-0" style="color: #d0d0c5;"></i>
                 </div>
             </div>
         </section>
+
+
+        <!-- ━━━━━━━━━━━━━━━━━━━━━━━━
+             마음 자료실 탭
+             ━━━━━━━━━━━━━━━━━━━━━━━━ -->
+        <section id="page-library" class="page-section hidden">
+
+            <h2 class="text-xl font-bold mb-0.5" style="color: #2c3818;">마음 자료실</h2>
+            <p class="text-sm mb-4" style="color: #8a8a78;">마음 건강을 위한 교육 자료 모음</p>
+
+            <!-- 카테고리 필터 (가로 스크롤) -->
+            <div class="flex gap-2 mb-4 overflow-x-auto scrollbar-hide pb-1">
+                <button id="filter-all"        class="filter-btn flex-shrink-0 px-4 py-1.5 rounded-full text-sm font-semibold"
+                        style="background: #6B8E23; color: #ffffff;"
+                        onclick="filterLibrary('all', this)">전체</button>
+                <button id="filter-depression" class="filter-btn flex-shrink-0 px-4 py-1.5 rounded-full text-sm font-semibold"
+                        style="background: #f0f4e6; color: #6B8E23;"
+                        onclick="filterLibrary('depression', this)">우울증</button>
+                <button id="filter-anxiety"    class="filter-btn flex-shrink-0 px-4 py-1.5 rounded-full text-sm font-semibold"
+                        style="background: #f0f4e6; color: #6B8E23;"
+                        onclick="filterLibrary('anxiety', this)">불안</button>
+                <button id="filter-sleep"      class="filter-btn flex-shrink-0 px-4 py-1.5 rounded-full text-sm font-semibold"
+                        style="background: #f0f4e6; color: #6B8E23;"
+                        onclick="filterLibrary('sleep', this)">수면</button>
+            </div>
+
+            <!-- 자료 카드 목록 -->
+            <div class="space-y-4" id="library-list">
+
+                <!-- 자료 1: 우울증 -->
+                <div class="card library-item" data-category="depression">
+                    <div class="flex items-start gap-3">
+                        <div class="w-14 h-14 rounded-xl flex-shrink-0 flex items-center justify-center"
+                             style="background: linear-gradient(135deg, #f0f4e6, #d1dfa8);">
+                            <i class="fas fa-sun text-2xl" style="color: #6B8E23;"></i>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="badge" style="background: #f0f4e6; color: #6B8E23;">우울증</span>
+                                <span class="text-xs" style="color: #b0b0a0;">5분 읽기</span>
+                            </div>
+                            <h4 class="font-bold text-sm leading-snug mb-1" style="color: #3d3d30;">
+                                우울증 극복을 위한 첫걸음
+                            </h4>
+                            <p class="text-xs leading-relaxed" style="color: #8a8a78;">
+                                우울감을 느낄 때 취할 수 있는 일상적인 행동 변화와 전문가 도움 요청 방법을 알아봅니다.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="mt-3 pt-3 flex items-center justify-between"
+                         style="border-top: 1px solid #f0f0e8;">
+                        <span class="flex items-center gap-1 text-xs" style="color: #b0b0a0;">
+                            <i class="fas fa-eye"></i> 128명이 읽었어요
+                        </span>
+                        <button onclick="showToast('준비 중인 기능입니다')"
+                                class="text-xs font-bold px-4 py-1.5 rounded-full"
+                                style="background: #f0f4e6; color: #6B8E23;">자세히 보기</button>
+                    </div>
+                </div>
+
+                <!-- 자료 2: 수면 -->
+                <div class="card library-item" data-category="sleep">
+                    <div class="flex items-start gap-3">
+                        <div class="w-14 h-14 rounded-xl flex-shrink-0 flex items-center justify-center"
+                             style="background: linear-gradient(135deg, #eef4fa, #b8d9f5);">
+                            <i class="fas fa-moon text-2xl" style="color: #5A8FBC;"></i>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="badge" style="background: #eef4fa; color: #5A8FBC;">수면</span>
+                                <span class="text-xs" style="color: #b0b0a0;">7분 읽기</span>
+                            </div>
+                            <h4 class="font-bold text-sm leading-snug mb-1" style="color: #3d3d30;">
+                                수면 위생 가이드
+                            </h4>
+                            <p class="text-xs leading-relaxed" style="color: #8a8a78;">
+                                숙면을 위한 환경 조성과 취침 전 루틴 만들기. 좋은 수면이 마음 건강에 미치는 영향을 알아봅니다.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="mt-3 pt-3 flex items-center justify-between"
+                         style="border-top: 1px solid #f0f0e8;">
+                        <span class="flex items-center gap-1 text-xs" style="color: #b0b0a0;">
+                            <i class="fas fa-eye"></i> 95명이 읽었어요
+                        </span>
+                        <button onclick="showToast('준비 중인 기능입니다')"
+                                class="text-xs font-bold px-4 py-1.5 rounded-full"
+                                style="background: #eef4fa; color: #5A8FBC;">자세히 보기</button>
+                    </div>
+                </div>
+
+                <!-- 자료 3: 불안 -->
+                <div class="card library-item" data-category="anxiety">
+                    <div class="flex items-start gap-3">
+                        <div class="w-14 h-14 rounded-xl flex-shrink-0 flex items-center justify-center"
+                             style="background: linear-gradient(135deg, #fdf4e6, #f5dba0);">
+                            <i class="fas fa-wind text-2xl" style="color: #D4A55A;"></i>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="badge" style="background: #fdf4e6; color: #D4A55A;">불안</span>
+                                <span class="text-xs" style="color: #b0b0a0;">6분 읽기</span>
+                            </div>
+                            <h4 class="font-bold text-sm leading-snug mb-1" style="color: #3d3d30;">
+                                불안한 마음을 다스리는 호흡법
+                            </h4>
+                            <p class="text-xs leading-relaxed" style="color: #8a8a78;">
+                                불안이 엄습할 때 즉시 사용할 수 있는 복식호흡과 4-7-8 호흡법을 상세히 안내합니다.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="mt-3 pt-3 flex items-center justify-between"
+                         style="border-top: 1px solid #f0f0e8;">
+                        <span class="flex items-center gap-1 text-xs" style="color: #b0b0a0;">
+                            <i class="fas fa-eye"></i> 74명이 읽었어요
+                        </span>
+                        <button onclick="showToast('준비 중인 기능입니다')"
+                                class="text-xs font-bold px-4 py-1.5 rounded-full"
+                                style="background: #fdf4e6; color: #D4A55A;">자세히 보기</button>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+
+        <!-- ━━━━━━━━━━━━━━━━━━━━━━━━
+             심리검사 탭
+             ━━━━━━━━━━━━━━━━━━━━━━━━ -->
+        <section id="page-tests" class="page-section hidden">
+
+            <h2 class="text-xl font-bold mb-0.5" style="color: #2c3818;">심리검사</h2>
+            <p class="text-sm mb-4" style="color: #8a8a78;">표준화된 심리 척도로 현재 상태를 파악해 보세요.</p>
+
+            <!-- 유의사항 배너 -->
+            <div class="rounded-xl p-4 mb-5 flex items-start gap-3" style="background: #fdf4e6;">
+                <i class="fas fa-circle-info mt-0.5 flex-shrink-0" style="color: #D4A55A;"></i>
+                <p class="text-xs leading-relaxed" style="color: #7a5520;">
+                    이 검사는 전문적인 진단을 대체할 수 없습니다. 결과는 참고용이며,
+                    정확한 평가는 반드시 전문가와 상담하시기 바랍니다.
+                </p>
+            </div>
+
+            <div class="space-y-4">
+
+                <!-- PHQ-9 카드 -->
+                <div class="card test-card-phq">
+                    <div class="flex items-start justify-between mb-3">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 rounded-xl flex items-center justify-center"
+                                 style="background: #f0f4e6;">
+                                <i class="fas fa-brain text-xl" style="color: #6B8E23;"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-base" style="color: #2c3818;">PHQ-9</h4>
+                                <p class="text-xs" style="color: #8a8a78;">우울 척도 검사</p>
+                            </div>
+                        </div>
+                        <span class="badge" style="background: #f0f4e6; color: #6B8E23;">9문항</span>
+                    </div>
+                    <p class="text-xs leading-relaxed mb-4" style="color: #8a8a78;">
+                        Patient Health Questionnaire-9. 지난 2주 동안의 우울 증상을 측정하는
+                        국제 표준 도구입니다. 약 3~5분 소요됩니다.
+                    </p>
+                    <div class="flex items-center gap-2">
+                        <span class="flex-1 flex items-center gap-1.5 text-xs" style="color: #b0b0a0;">
+                            <i class="fas fa-clock"></i> 약 5분
+                            <span class="mx-1">·</span>
+                            <i class="fas fa-user-check"></i> 42명 완료
+                        </span>
+                        <button onclick="showToast('PHQ-9 검사는 다음 업데이트에서 제공됩니다')"
+                                class="px-5 py-2.5 rounded-xl text-sm font-bold text-white"
+                                style="background: #6B8E23;">
+                            검사 시작 <i class="fas fa-arrow-right ml-1 text-xs"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- GAD-7 카드 -->
+                <div class="card test-card-gad">
+                    <div class="flex items-start justify-between mb-3">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 rounded-xl flex items-center justify-center"
+                                 style="background: #fdf4e6;">
+                                <i class="fas fa-heart-pulse text-xl" style="color: #D4A55A;"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-base" style="color: #2c3818;">GAD-7</h4>
+                                <p class="text-xs" style="color: #8a8a78;">불안 척도 검사</p>
+                            </div>
+                        </div>
+                        <span class="badge" style="background: #fdf4e6; color: #D4A55A;">7문항</span>
+                    </div>
+                    <p class="text-xs leading-relaxed mb-4" style="color: #8a8a78;">
+                        Generalized Anxiety Disorder-7. 범불안장애 선별을 위한 표준화된
+                        자기보고식 척도입니다. 약 3분 소요됩니다.
+                    </p>
+                    <div class="flex items-center gap-2">
+                        <span class="flex-1 flex items-center gap-1.5 text-xs" style="color: #b0b0a0;">
+                            <i class="fas fa-clock"></i> 약 3분
+                            <span class="mx-1">·</span>
+                            <i class="fas fa-user-check"></i> 35명 완료
+                        </span>
+                        <button onclick="showToast('GAD-7 검사는 다음 업데이트에서 제공됩니다')"
+                                class="px-5 py-2.5 rounded-xl text-sm font-bold text-white"
+                                style="background: #D4A55A;">
+                            검사 시작 <i class="fas fa-arrow-right ml-1 text-xs"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 추가 예정 안내 -->
+                <div class="card text-center py-6" style="border: 1.5px dashed #d0d0c5;">
+                    <i class="fas fa-hourglass-half text-2xl mb-2" style="color: #d0d0c5;"></i>
+                    <p class="text-sm font-semibold" style="color: #b0b0a0;">더 많은 검사가 준비 중입니다</p>
+                    <p class="text-xs mt-1" style="color: #d0d0c5;">PSS-10 (스트레스 척도) 등 업데이트 예정</p>
+                </div>
+
+            </div>
+        </section>
+
+
+        <!-- ━━━━━━━━━━━━━━━━━━━━━━━━
+             내 정보 탭
+             ━━━━━━━━━━━━━━━━━━━━━━━━ -->
+        <section id="page-profile" class="page-section hidden">
+
+            <!-- 프로필 헤더 -->
+            <div class="flex flex-col items-center py-4 mb-5">
+                <div class="w-20 h-20 rounded-full flex items-center justify-center mb-3"
+                     style="background: linear-gradient(135deg, #6B8E23, #96b045);">
+                    <i class="fas fa-user text-3xl text-white"></i>
+                </div>
+                <h3 class="text-lg font-bold" id="profile-username" style="color: #2c3818;">사용자</h3>
+                <p class="text-sm mt-0.5" style="color: #8a8a78;">올리브나무 회원</p>
+            </div>
+
+            <!-- 활동 요약 숫자 -->
+            <div class="grid grid-cols-3 gap-3 mb-5">
+                <div class="card text-center py-3">
+                    <p class="text-xl font-bold" style="color: #6B8E23;">0</p>
+                    <p class="text-xs mt-0.5" style="color: #b0b0a0;">읽은 자료</p>
+                </div>
+                <div class="card text-center py-3">
+                    <p class="text-xl font-bold" style="color: #D4A55A;">0</p>
+                    <p class="text-xs mt-0.5" style="color: #b0b0a0;">완료 검사</p>
+                </div>
+                <div class="card text-center py-3">
+                    <p class="text-xl font-bold" style="color: #5A8FBC;">0</p>
+                    <p class="text-xs mt-0.5" style="color: #b0b0a0;">접속 일수</p>
+                </div>
+            </div>
+
+            <!-- 설정 메뉴 -->
+            <div class="card mb-3" style="padding: 0; overflow: hidden;">
+                <button class="w-full flex items-center gap-3 px-4 py-3.5 text-left active:bg-gray-50"
+                        onclick="showToast('준비 중인 기능입니다')"
+                        style="border-bottom: 1px solid #f5f5f0;">
+                    <div class="w-8 h-8 rounded-lg flex items-center justify-center"
+                         style="background: #f0f4e6;">
+                        <i class="fas fa-bell text-sm" style="color: #6B8E23;"></i>
+                    </div>
+                    <span class="flex-1 text-sm font-medium" style="color: #3d3d30;">알림 설정</span>
+                    <i class="fas fa-chevron-right text-xs" style="color: #d0d0c5;"></i>
+                </button>
+                <button class="w-full flex items-center gap-3 px-4 py-3.5 text-left active:bg-gray-50"
+                        onclick="showToast('준비 중인 기능입니다')"
+                        style="border-bottom: 1px solid #f5f5f0;">
+                    <div class="w-8 h-8 rounded-lg flex items-center justify-center"
+                         style="background: #f0f4e6;">
+                        <i class="fas fa-lock text-sm" style="color: #6B8E23;"></i>
+                    </div>
+                    <span class="flex-1 text-sm font-medium" style="color: #3d3d30;">비밀번호 변경</span>
+                    <i class="fas fa-chevron-right text-xs" style="color: #d0d0c5;"></i>
+                </button>
+                <button class="w-full flex items-center gap-3 px-4 py-3.5 text-left active:bg-gray-50"
+                        onclick="showToast('준비 중인 기능입니다')">
+                    <div class="w-8 h-8 rounded-lg flex items-center justify-center"
+                         style="background: #f0f4e6;">
+                        <i class="fas fa-circle-question text-sm" style="color: #6B8E23;"></i>
+                    </div>
+                    <span class="flex-1 text-sm font-medium" style="color: #3d3d30;">이용 안내</span>
+                    <i class="fas fa-chevron-right text-xs" style="color: #d0d0c5;"></i>
+                </button>
+            </div>
+
+            <!-- 로그아웃 버튼 -->
+            <div class="card" style="padding: 0; overflow: hidden;">
+                <button class="w-full flex items-center gap-3 px-4 py-3.5 text-left active:bg-red-50"
+                        onclick="doLogout()">
+                    <div class="w-8 h-8 rounded-lg flex items-center justify-center"
+                         style="background: #fef0f0;">
+                        <i class="fas fa-right-from-bracket text-sm" style="color: #e05252;"></i>
+                    </div>
+                    <span class="flex-1 text-sm font-semibold" style="color: #e05252;">로그아웃</span>
+                    <i class="fas fa-chevron-right text-xs" style="color: #d0d0c5;"></i>
+                </button>
+            </div>
+
+            <p class="text-center text-xs mt-6 pb-2" style="color: #d0d0c5;">
+                내 마음, 올리브나무 v1.0.0
+            </p>
+        </section>
+
     </main>
 
-    <!-- 푸터 (하단 정보) -->
-    <footer class="bg-olive-900 text-olive-100 py-12 mt-auto">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 border-b border-olive-800 pb-8 mb-8">
-                <!-- 사이트 정보 및 주의사항 -->
-                <div>
-                    <h4 class="text-white text-xl font-bold mb-4 flex items-center gap-2">
-                        <i class="fa-solid fa-seedling"></i> 내 마음, 올리브나무
-                    </h4>
-                    <p class="text-sm text-olive-300 leading-relaxed mb-4 max-w-lg">
-                        <strong>※ 면책 조항 (Disclaimer)</strong><br>
-                        본 사이트에서 제공하는 건강 정보와 자가 심리검사 결과는 참고용일 뿐, 전문의의 의학적 진단 및 치료를 결코 대신할 수 없습니다.<br>
-                        일상생활에 심각한 어려움을 겪고 계시거나, 정확한 진단이 필요하신 경우 반드시 가까운 전문 의료기관을 방문하시기 바랍니다.
-                    </p>
-                </div>
-                
-                <!-- 긴급 연락처 -->
-                <div class="md:pl-10">
-                    <h4 class="text-white font-semibold mb-4 flex items-center gap-2">
-                        <i class="fa-solid fa-phone-volume"></i> 도움이 필요하신가요?
-                    </h4>
-                    <p class="text-sm text-olive-300 mb-4">현재 위기 상황이거나, 심한 우울감, 자살 생각 등으로 힘드시다면 아래의 국가 지원 상담 센터로 즉시 연락해 주세요. 24시간 언제든 도움을 받을 수 있습니다.</p>
-                    <ul class="space-y-3 text-sm">
-                        <li class="bg-olive-800 p-3 rounded-lg border border-olive-700">
-                            자살예방 상담전화 <span class="font-bold text-white text-lg ml-2">109</span>
-                        </li>
-                        <li class="bg-olive-800 p-3 rounded-lg border border-olive-700">
-                            정신건강 위기상담전화 <span class="font-bold text-white text-lg ml-2">1577-0199</span>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            
-            <div class="flex flex-col md:flex-row justify-between items-center text-sm text-olive-400">
-                <div class="mb-4 md:mb-0">
-                    &copy; 2026 내 마음, 올리브나무. All rights reserved.
-                </div>
-                <div class="flex gap-4">
-                    <a href="#" class="hover:text-white transition-colors">이용약관</a>
-                    <a href="#" class="hover:text-white transition-colors">개인정보처리방침</a>
-                </div>
-            </div>
-        </div>
-    </footer>
+    <!-- ── 하단 네비게이션 바 ── -->
+    <nav id="bottom-nav">
+        <button class="nav-item active" id="nav-home"    onclick="switchPage('home')">
+            <i class="fas fa-house"></i>
+            <span>홈</span>
+        </button>
+        <button class="nav-item"        id="nav-library" onclick="switchPage('library')">
+            <i class="fas fa-book-open"></i>
+            <span>자료실</span>
+        </button>
+        <button class="nav-item"        id="nav-tests"   onclick="switchPage('tests')">
+            <i class="fas fa-clipboard-list"></i>
+            <span>심리검사</span>
+        </button>
+        <button class="nav-item"        id="nav-profile" onclick="switchPage('profile')">
+            <i class="fas fa-user"></i>
+            <span>내 정보</span>
+        </button>
+    </nav>
 
-    <!-- 모바일 메뉴 동작을 위한 간단한 자바스크립트 -->
-    <script>
-        document.getElementById('mobile-menu-btn').addEventListener('click', function() {
-            var menu = document.getElementById('mobile-menu');
-            if (menu.classList.contains('hidden')) {
-                menu.classList.remove('hidden');
-            } else {
-                menu.classList.add('hidden');
-            }
+</div><!-- /app-screen -->
+
+
+<!-- 토스트 메시지 엘리먼트 -->
+<div id="toast"></div>
+
+
+<!-- ══════════════════════════════════════════
+     JavaScript: 인증 + 화면 전환 핵심 로직
+     ══════════════════════════════════════════ -->
+<script>
+    /* ──────────────────────────────────────
+     * 전역 상태
+     * ────────────────────────────────────── */
+    let 현재탭 = 'home'; // 현재 표시 중인 탭 ID
+
+    /* ──────────────────────────────────────
+     * 페이지 로드 시: 이미 로그인된 경우 처리
+     * ────────────────────────────────────── */
+    window.addEventListener('DOMContentLoaded', () => {
+        const 저장된사용자 = localStorage.getItem('olive_current_user');
+        if (저장된사용자) {
+            앱화면열기(저장된사용자);
+        }
+    });
+
+    /* ──────────────────────────────────────
+     * 인증 탭 전환 (로그인 ↔ 회원가입)
+     * ────────────────────────────────────── */
+    function authTabSwitch(탭) {
+        const 로그인폼   = document.getElementById('form-login');
+        const 회원가입폼 = document.getElementById('form-register');
+        const 탭로그인   = document.getElementById('tab-login');
+        const 탭회원가입 = document.getElementById('tab-register');
+
+        if (탭 === 'login') {
+            로그인폼.classList.remove('hidden');
+            회원가입폼.classList.add('hidden');
+            탭로그인.classList.add('active');
+            탭회원가입.classList.remove('active');
+        } else {
+            로그인폼.classList.add('hidden');
+            회원가입폼.classList.remove('hidden');
+            탭로그인.classList.remove('active');
+            탭회원가입.classList.add('active');
+        }
+        // 에러 스타일 초기화
+        document.querySelectorAll('.input-field').forEach(el => el.classList.remove('error'));
+    }
+
+    /* ──────────────────────────────────────
+     * 회원가입 처리
+     * ────────────────────────────────────── */
+    function doRegister() {
+        const 아이디     = document.getElementById('reg-id').value.trim();
+        const 비밀번호   = document.getElementById('reg-pw').value;
+        const 비밀번호확인 = document.getElementById('reg-pw2').value;
+        const 승인코드   = document.getElementById('reg-code').value.trim();
+
+        // ── 유효성 검사 ──
+        if (!아이디 || 아이디.length < 3) {
+            showToast('아이디는 3자 이상이어야 합니다.');
+            inputError('reg-id');
+            return;
+        }
+        if (!비밀번호 || 비밀번호.length < 6) {
+            showToast('비밀번호는 6자 이상이어야 합니다.');
+            inputError('reg-pw');
+            return;
+        }
+        if (비밀번호 !== 비밀번호확인) {
+            showToast('비밀번호가 일치하지 않습니다.');
+            inputError('reg-pw2');
+            return;
+        }
+
+        // ── 승인 코드 확인 (프론트엔드 가승인 방식) ──
+        if (승인코드 !== 'olive2026') {
+            showToast('올바르지 않은 승인 코드입니다.');
+            inputError('reg-code');
+            return;
+        }
+
+        // ── 중복 아이디 확인 ──
+        const 사용자목록 = JSON.parse(localStorage.getItem('olive_users') || '{}');
+        if (사용자목록[아이디]) {
+            showToast('이미 사용 중인 아이디입니다.');
+            inputError('reg-id');
+            return;
+        }
+
+        // ── LocalStorage에 저장 ──
+        // 주의: btoa는 간이 인코딩으로 실제 보안이 아닙니다.
+        // 실제 서비스에서는 반드시 서버 측 해싱(bcrypt 등)을 사용하세요.
+        사용자목록[아이디] = {
+            pw: btoa(비밀번호),
+            가입일: new Date().toLocaleDateString('ko-KR')
+        };
+        localStorage.setItem('olive_users', JSON.stringify(사용자목록));
+
+        showToast('회원가입 완료! 로그인해 주세요.');
+        // 입력 필드 초기화
+        ['reg-id', 'reg-pw', 'reg-pw2', 'reg-code'].forEach(id => {
+            document.getElementById(id).value = '';
         });
-    </script>
+        // 1초 후 로그인 탭으로 전환
+        setTimeout(() => authTabSwitch('login'), 1000);
+    }
+
+    /* ──────────────────────────────────────
+     * 로그인 처리
+     * ────────────────────────────────────── */
+    function doLogin() {
+        const 아이디   = document.getElementById('login-id').value.trim();
+        const 비밀번호 = document.getElementById('login-pw').value;
+
+        if (!아이디 || !비밀번호) {
+            showToast('아이디와 비밀번호를 입력해 주세요.');
+            return;
+        }
+
+        const 사용자목록 = JSON.parse(localStorage.getItem('olive_users') || '{}');
+        const 사용자정보 = 사용자목록[아이디];
+
+        if (!사용자정보 || 사용자정보.pw !== btoa(비밀번호)) {
+            showToast('아이디 또는 비밀번호가 올바르지 않습니다.');
+            inputError('login-id');
+            inputError('login-pw');
+            return;
+        }
+
+        // 로그인 성공: 현재 사용자 세션 저장
+        localStorage.setItem('olive_current_user', 아이디);
+        앱화면열기(아이디);
+    }
+
+    /* ──────────────────────────────────────
+     * 로그아웃 처리
+     * ────────────────────────────────────── */
+    function doLogout() {
+        if (!confirm('로그아웃 하시겠습니까?')) return;
+
+        localStorage.removeItem('olive_current_user');
+
+        // 앱 숨기고 인증 화면 표시
+        document.getElementById('app-screen').classList.add('hidden');
+        document.getElementById('auth-screen').classList.remove('hidden');
+
+        // 상태 초기화
+        document.getElementById('login-id').value = '';
+        document.getElementById('login-pw').value = '';
+        현재탭 = 'home';
+        // 모든 페이지를 홈으로 리셋
+        ['home', 'library', 'tests', 'profile'].forEach(탭 => {
+            document.getElementById('page-' + 탭).classList.add('hidden');
+            document.getElementById('nav-' + 탭).classList.remove('active');
+        });
+        document.getElementById('page-home').classList.remove('hidden');
+        document.getElementById('nav-home').classList.add('active');
+
+        authTabSwitch('login');
+    }
+
+    /* ──────────────────────────────────────
+     * 앱 화면 열기 (로그인 성공 후 호출)
+     * ────────────────────────────────────── */
+    function 앱화면열기(아이디) {
+        document.getElementById('auth-screen').classList.add('hidden');
+        document.getElementById('app-screen').classList.remove('hidden');
+        // 사용자 이름 표시
+        document.getElementById('home-username').textContent    = 아이디;
+        document.getElementById('profile-username').textContent = 아이디;
+    }
+
+    /* ──────────────────────────────────────
+     * 탭 전환 (메인 네비게이션)
+     * ────────────────────────────────────── */
+    function switchPage(탭) {
+        if (탭 === 현재탭) return; // 같은 탭이면 무시
+
+        // 이전 탭 숨기기
+        document.getElementById('page-' + 현재탭).classList.add('hidden');
+        document.getElementById('nav-'  + 현재탭).classList.remove('active');
+
+        // 새 탭 표시
+        document.getElementById('page-' + 탭).classList.remove('hidden');
+        document.getElementById('nav-'  + 탭).classList.add('active');
+
+        // 헤더 타이틀 업데이트
+        const 타이틀맵 = { home: '', library: '마음 자료실', tests: '심리검사', profile: '내 정보' };
+        document.getElementById('header-title').textContent = 타이틀맵[탭];
+
+        // 스크롤 최상단으로 이동
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        현재탭 = 탭;
+    }
+
+    /* ──────────────────────────────────────
+     * 자료실 카테고리 필터
+     * ────────────────────────────────────── */
+    function filterLibrary(카테고리, 버튼) {
+        // 모든 필터 버튼을 기본 스타일로 초기화
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.style.background = '#f0f4e6';
+            btn.style.color      = '#6B8E23';
+        });
+        // 선택된 버튼 강조
+        버튼.style.background = '#6B8E23';
+        버튼.style.color      = '#ffffff';
+
+        // 자료 카드 표시/숨김
+        document.querySelectorAll('.library-item').forEach(item => {
+            const 표시여부 = (카테고리 === 'all' || item.dataset.category === 카테고리);
+            item.style.display = 표시여부 ? '' : 'none';
+        });
+    }
+
+    /* ──────────────────────────────────────
+     * 토스트 알림 표시
+     * ────────────────────────────────────── */
+    let _토스트타이머 = null;
+    function showToast(메시지) {
+        const 엘리먼트 = document.getElementById('toast');
+        엘리먼트.textContent = 메시지;
+        엘리먼트.classList.add('show');
+
+        if (_토스트타이머) clearTimeout(_토스트타이머);
+        _토스트타이머 = setTimeout(() => {
+            엘리먼트.classList.remove('show');
+        }, 2500);
+    }
+
+    /* ──────────────────────────────────────
+     * 입력 필드 에러 스타일 적용 후 자동 해제
+     * ────────────────────────────────────── */
+    function inputError(아이디) {
+        const el = document.getElementById(아이디);
+        el.classList.add('error');
+        setTimeout(() => el.classList.remove('error'), 2000);
+    }
+
+    /* ──────────────────────────────────────
+     * 엔터 키로 로그인 / 회원가입 실행
+     * ────────────────────────────────────── */
+    document.addEventListener('keydown', (e) => {
+        if (e.key !== 'Enter') return;
+        // 인증 화면이 표시 중일 때만 동작
+        if (document.getElementById('auth-screen').classList.contains('hidden')) return;
+
+        const 로그인폼표시 = !document.getElementById('form-login').classList.contains('hidden');
+        if (로그인폼표시) {
+            doLogin();
+        } else {
+            doRegister();
+        }
+    });
+</script>
+
 </body>
 </html>
