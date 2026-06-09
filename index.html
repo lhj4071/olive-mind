@@ -23,7 +23,7 @@
                             200: '#d1dfa8',
                             300: '#b3c872',
                             400: '#96b045',
-                            500: '#6B8E23', /* 메인 올리브그린 */
+                            500: '#6B8E23',
                             600: '#556b1a',
                             700: '#415217',
                             800: '#344218',
@@ -73,7 +73,6 @@
                          'Noto Sans KR', 'Malgun Gothic', sans-serif;
             background-color: #f5f5f0;
             color: #3d3d30;
-            /* 모바일 앱처럼 최대 너비 제한 + 가운데 정렬 */
             max-width: 480px;
             margin: 0 auto;
             min-height: 100vh;
@@ -167,7 +166,6 @@
             border-top: 1px solid #e8e8e0;
             display: flex;
             z-index: 200;
-            /* iOS 홈 인디케이터 여백 대응 */
             padding-bottom: env(safe-area-inset-bottom, 0px);
         }
 
@@ -239,7 +237,7 @@
             transition: background 0.2s, color 0.2s;
         }
 
-        /* 스크롤바 숨김 (카테고리 필터 가로 스크롤) */
+        /* 스크롤바 숨김 */
         .scrollbar-hide::-webkit-scrollbar { display: none; }
         .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
 
@@ -248,7 +246,7 @@
         .test-card-gad  { border-left: 4px solid #D4A55A; }
         .test-card-diva { border-left: 4px solid #6D5BA3; }
 
-        /* ── DIVA 카드: 카드 전체를 클릭 영역으로 ───── */
+        /* ── DIVA 카드 클릭 영역 ─────────────────────── */
         .test-card-diva {
             cursor: pointer;
             transition: transform 0.15s ease, box-shadow 0.15s ease;
@@ -257,6 +255,24 @@
             transform: scale(0.98);
             box-shadow: 0 1px 4px rgba(0,0,0,0.08);
         }
+
+        /* ── 헤더 로그아웃 버튼 ─────────────────────── */
+        .btn-logout {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 6px 12px;
+            background: #fef0f0;
+            color: #e05252;
+            border: none;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn-logout:hover  { background: #fddada; }
+        .btn-logout:active { transform: scale(0.97); }
 
         /* ── 페이지 전환 페이드아웃 ─────────────────── */
         .page-exit {
@@ -371,7 +387,7 @@
 <!-- ══════════════════════════════════════════
      메인 앱 화면 (로그인 후 표시)
      ══════════════════════════════════════════ -->
-<div id="app-screen" class="hidden">
+<div id="main-content" class="hidden">
 
     <!-- ── 상단 헤더 ── -->
     <header class="sticky top-0 z-50 px-4 py-3 flex items-center justify-between"
@@ -386,11 +402,10 @@
         </div>
         <!-- 중앙: 현재 탭 타이틀 -->
         <span id="header-title" class="font-medium text-sm" style="color: #6e6e5e;"></span>
-        <!-- 우측: 내 정보 이동 버튼 -->
-        <button onclick="switchPage('profile')"
-                class="w-8 h-8 rounded-full flex items-center justify-center"
-                style="background: #f5f5f0;">
-            <i class="fas fa-user text-sm" style="color: #6B8E23;"></i>
+        <!-- 우측: 로그아웃 버튼 -->
+        <button class="btn-logout" onclick="doLogout()">
+            <i class="fas fa-right-from-bracket text-xs"></i>
+            로그아웃
         </button>
     </header>
 
@@ -436,7 +451,7 @@
                         <i class="fas fa-book-open text-xl" style="color: #6B8E23;"></i>
                     </div>
                     <span class="text-sm font-bold" style="color: #3d3d30;">마음 자료실</span>
-                    <span class="text-xs" style="color: #b0b0a0;">자료 3개</span>
+                    <span class="text-xs" style="color: #b0b0a0;">자료 4개</span>
                 </button>
                 <button onclick="switchPage('tests')"
                         class="card flex flex-col items-center py-5 gap-2 active:scale-95 transition-transform">
@@ -504,6 +519,9 @@
                 <button id="filter-sleep"      class="filter-btn flex-shrink-0 px-4 py-1.5 rounded-full text-sm font-semibold"
                         style="background: #f0f4e6; color: #6B8E23;"
                         onclick="filterLibrary('sleep', this)">수면</button>
+                <button id="filter-stress"     class="filter-btn flex-shrink-0 px-4 py-1.5 rounded-full text-sm font-semibold"
+                        style="background: #f0f4e6; color: #6B8E23;"
+                        onclick="filterLibrary('stress', this)">스트레스</button>
             </div>
 
             <!-- 자료 카드 목록 -->
@@ -602,6 +620,37 @@
                     </div>
                 </div>
 
+                <!-- 자료 4: 스트레스 -->
+                <div class="card library-item" data-category="stress">
+                    <div class="flex items-start gap-3">
+                        <div class="w-14 h-14 rounded-xl flex-shrink-0 flex items-center justify-center"
+                             style="background: linear-gradient(135deg, #f5eefa, #dac5f5);">
+                            <i class="fas fa-brain text-2xl" style="color: #6D5BA3;"></i>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="badge" style="background: #f0eefa; color: #6D5BA3;">스트레스</span>
+                                <span class="text-xs" style="color: #b0b0a0;">8분 읽기</span>
+                            </div>
+                            <h4 class="font-bold text-sm leading-snug mb-1" style="color: #3d3d30;">
+                                만성 스트레스와 몸의 신호
+                            </h4>
+                            <p class="text-xs leading-relaxed" style="color: #8a8a78;">
+                                스트레스가 신체에 미치는 영향을 이해하고, 일상에서 실천할 수 있는 스트레스 관리 전략을 소개합니다.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="mt-3 pt-3 flex items-center justify-between"
+                         style="border-top: 1px solid #f0f0e8;">
+                        <span class="flex items-center gap-1 text-xs" style="color: #b0b0a0;">
+                            <i class="fas fa-eye"></i> 61명이 읽었어요
+                        </span>
+                        <button onclick="showToast('준비 중인 기능입니다')"
+                                class="text-xs font-bold px-4 py-1.5 rounded-full"
+                                style="background: #f0eefa; color: #6D5BA3;">자세히 보기</button>
+                    </div>
+                </div>
+
             </div>
         </section>
 
@@ -635,7 +684,7 @@
                             </div>
                             <div>
                                 <h4 class="font-bold text-base" style="color: #2c3818;">PHQ-9</h4>
-                                <p class="text-xs" style="color: #8a8a78;">우울 척도 검사</p>
+                                <p class="text-xs" style="color: #8a8a78;">우울증 검사</p>
                             </div>
                         </div>
                         <span class="badge" style="background: #f0f4e6; color: #6B8E23;">9문항</span>
@@ -691,16 +740,12 @@
                     </div>
                 </div>
 
-                <!-- ─────────────────────────────────────────────────────
-                     DIVA 성인 ADHD 검사 카드
-                     카드 전체가 클릭 영역 → navigateToDiva() 호출
-                     TODO: diva_v9.html 내부에도 index.html과 같은 헤더
-                           (뒤로가기 버튼 포함)를 추가하면 앱 통일감이 높아짐.
-                           예: <header> <button onclick="history.back()">← 뒤로</button>
-                                 <span>DIVA 성인 ADHD 검사</span> </header>
-                     ───────────────────────────────────────────────────── -->
-                <div class="card test-card-diva" onclick="navigateToDiva()" role="button" tabindex="0"
-                     aria-label="성인 ADHD 진단 검사 DIVA 시작하기">
+                <!-- DIVA 성인 ADHD 진단 면담 카드 -->
+                <div class="card test-card-diva"
+                     onclick="window.location.href = './diva_v9.html'"
+                     role="button"
+                     tabindex="0"
+                     aria-label="성인 ADHD 진단 면담 DIVA 시작하기">
                     <!-- 상단: 아이콘 + 제목 + 배지 -->
                     <div class="flex items-start justify-between mb-3">
                         <div class="flex items-center gap-3">
@@ -710,12 +755,11 @@
                             </div>
                             <div>
                                 <h4 class="font-bold text-base leading-tight" style="color: #2c3818;">
-                                    성인 ADHD 진단 검사
+                                    성인 ADHD 진단 면담
                                 </h4>
                                 <p class="text-xs mt-0.5" style="color: #8a8a78;">DIVA 2.0 / 5.0</p>
                             </div>
                         </div>
-                        <!-- 배지: 검사 유형 강조 -->
                         <span class="badge" style="background: #f0eefa; color: #6D5BA3;">심층 면담</span>
                     </div>
 
@@ -854,7 +898,7 @@
         </button>
     </nav>
 
-</div><!-- /app-screen -->
+</div><!-- /main-content -->
 
 
 <!-- 토스트 메시지 엘리먼트 -->
@@ -868,7 +912,7 @@
     /* ──────────────────────────────────────
      * 전역 상태
      * ────────────────────────────────────── */
-    let 현재탭 = 'home'; // 현재 표시 중인 탭 ID
+    let 현재탭 = 'home';
 
     /* ──────────────────────────────────────
      * 페이지 로드 시: 이미 로그인된 경우 처리
@@ -900,7 +944,6 @@
             탭로그인.classList.remove('active');
             탭회원가입.classList.add('active');
         }
-        // 에러 스타일 초기화
         document.querySelectorAll('.input-field').forEach(el => el.classList.remove('error'));
     }
 
@@ -908,12 +951,11 @@
      * 회원가입 처리
      * ────────────────────────────────────── */
     function doRegister() {
-        const 아이디     = document.getElementById('reg-id').value.trim();
-        const 비밀번호   = document.getElementById('reg-pw').value;
+        const 아이디       = document.getElementById('reg-id').value.trim();
+        const 비밀번호     = document.getElementById('reg-pw').value;
         const 비밀번호확인 = document.getElementById('reg-pw2').value;
-        const 승인코드   = document.getElementById('reg-code').value.trim();
+        const 승인코드     = document.getElementById('reg-code').value.trim();
 
-        // ── 유효성 검사 ──
         if (!아이디 || 아이디.length < 3) {
             showToast('아이디는 3자 이상이어야 합니다.');
             inputError('reg-id');
@@ -930,14 +972,13 @@
             return;
         }
 
-        // ── 승인 코드 확인 (프론트엔드 가승인 방식) ──
+        /* 가입 승인 코드 확인 */
         if (승인코드 !== 'olive2026') {
             showToast('올바르지 않은 승인 코드입니다.');
             inputError('reg-code');
             return;
         }
 
-        // ── 중복 아이디 확인 ──
         const 사용자목록 = JSON.parse(localStorage.getItem('olive_users') || '{}');
         if (사용자목록[아이디]) {
             showToast('이미 사용 중인 아이디입니다.');
@@ -945,9 +986,6 @@
             return;
         }
 
-        // ── LocalStorage에 저장 ──
-        // 주의: btoa는 간이 인코딩으로 실제 보안이 아닙니다.
-        // 실제 서비스에서는 반드시 서버 측 해싱(bcrypt 등)을 사용하세요.
         사용자목록[아이디] = {
             pw: btoa(비밀번호),
             가입일: new Date().toLocaleDateString('ko-KR')
@@ -955,11 +993,9 @@
         localStorage.setItem('olive_users', JSON.stringify(사용자목록));
 
         showToast('회원가입 완료! 로그인해 주세요.');
-        // 입력 필드 초기화
         ['reg-id', 'reg-pw', 'reg-pw2', 'reg-code'].forEach(id => {
             document.getElementById(id).value = '';
         });
-        // 1초 후 로그인 탭으로 전환
         setTimeout(() => authTabSwitch('login'), 1000);
     }
 
@@ -985,7 +1021,6 @@
             return;
         }
 
-        // 로그인 성공: 현재 사용자 세션 저장
         localStorage.setItem('olive_current_user', 아이디);
         앱화면열기(아이디);
     }
@@ -998,15 +1033,13 @@
 
         localStorage.removeItem('olive_current_user');
 
-        // 앱 숨기고 인증 화면 표시
-        document.getElementById('app-screen').classList.add('hidden');
+        document.getElementById('main-content').classList.add('hidden');
         document.getElementById('auth-screen').classList.remove('hidden');
 
-        // 상태 초기화
         document.getElementById('login-id').value = '';
         document.getElementById('login-pw').value = '';
         현재탭 = 'home';
-        // 모든 페이지를 홈으로 리셋
+
         ['home', 'library', 'tests', 'profile'].forEach(탭 => {
             document.getElementById('page-' + 탭).classList.add('hidden');
             document.getElementById('nav-' + 탭).classList.remove('active');
@@ -1022,8 +1055,7 @@
      * ────────────────────────────────────── */
     function 앱화면열기(아이디) {
         document.getElementById('auth-screen').classList.add('hidden');
-        document.getElementById('app-screen').classList.remove('hidden');
-        // 사용자 이름 표시
+        document.getElementById('main-content').classList.remove('hidden');
         document.getElementById('home-username').textContent    = 아이디;
         document.getElementById('profile-username').textContent = 아이디;
     }
@@ -1032,23 +1064,18 @@
      * 탭 전환 (메인 네비게이션)
      * ────────────────────────────────────── */
     function switchPage(탭) {
-        if (탭 === 현재탭) return; // 같은 탭이면 무시
+        if (탭 === 현재탭) return;
 
-        // 이전 탭 숨기기
         document.getElementById('page-' + 현재탭).classList.add('hidden');
         document.getElementById('nav-'  + 현재탭).classList.remove('active');
 
-        // 새 탭 표시
         document.getElementById('page-' + 탭).classList.remove('hidden');
         document.getElementById('nav-'  + 탭).classList.add('active');
 
-        // 헤더 타이틀 업데이트
         const 타이틀맵 = { home: '', library: '마음 자료실', tests: '심리검사', profile: '내 정보' };
         document.getElementById('header-title').textContent = 타이틀맵[탭];
 
-        // 스크롤 최상단으로 이동
         window.scrollTo({ top: 0, behavior: 'smooth' });
-
         현재탭 = 탭;
     }
 
@@ -1056,16 +1083,13 @@
      * 자료실 카테고리 필터
      * ────────────────────────────────────── */
     function filterLibrary(카테고리, 버튼) {
-        // 모든 필터 버튼을 기본 스타일로 초기화
         document.querySelectorAll('.filter-btn').forEach(btn => {
             btn.style.background = '#f0f4e6';
             btn.style.color      = '#6B8E23';
         });
-        // 선택된 버튼 강조
         버튼.style.background = '#6B8E23';
         버튼.style.color      = '#ffffff';
 
-        // 자료 카드 표시/숨김
         document.querySelectorAll('.library-item').forEach(item => {
             const 표시여부 = (카테고리 === 'all' || item.dataset.category === 카테고리);
             item.style.display = 표시여부 ? '' : 'none';
@@ -1097,23 +1121,10 @@
     }
 
     /* ──────────────────────────────────────
-     * DIVA 성인 ADHD 검사 페이지로 이동
-     * ────────────────────────────────────── */
-    function navigateToDiva() {
-        // 앱 화면 페이드아웃 후 diva_v9.html로 이동
-        const 앱 = document.getElementById('app-screen');
-        앱.classList.add('page-exit');
-        setTimeout(() => {
-            window.location.href = 'diva_v9.html';
-        }, 200);
-    }
-
-    /* ──────────────────────────────────────
      * 엔터 키로 로그인 / 회원가입 실행
      * ────────────────────────────────────── */
     document.addEventListener('keydown', (e) => {
         if (e.key !== 'Enter') return;
-        // 인증 화면이 표시 중일 때만 동작
         if (document.getElementById('auth-screen').classList.contains('hidden')) return;
 
         const 로그인폼표시 = !document.getElementById('form-login').classList.contains('hidden');
