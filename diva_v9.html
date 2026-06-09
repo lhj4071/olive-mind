@@ -1,0 +1,513 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#1A1917;--ink2:#5F5E5A;--ink3:#9B9A95;
+  --bg:#FAFAF8;--bg2:#F3F2EE;--bg3:#ECEAE3;
+  --line:#E2E0D9;--line2:#D3D1C7;
+  --blue:#1A5FA8;--blue-l:#EAF2FC;--blue-m:#B8D4F4;--blue-d:#0C3E72;
+  --green:#2E6B16;--green-l:#EBF5E4;--green-m:#A8D98A;--green-d:#1A3E0B;
+  --purple:#6B62CC;--purple-l:#EFEDFC;--purple-m:#C0BAEE;--purple-d:#3C356E;
+  --teal:#0C6E57;--teal-l:#E2F5EF;--teal-m:#86CFBA;--teal-d:#063D30;
+  --amber:#B87014;--amber-l:#FBF0E1;--amber-m:#F0C07A;--amber-d:#6B3E07;
+  --red:#A33020;--red-l:#FBEAE7;--red-m:#F0A097;--red-d:#5C1A10;
+  --r-sm:6px;--r-md:10px;--r-lg:14px;--r-xl:18px;
+  --sh-sm:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);
+  --sh-md:0 4px 12px rgba(0,0,0,.08),0 2px 4px rgba(0,0,0,.04);
+}
+body{background:var(--bg);font-family:var(--font-sans),-apple-system,system-ui,sans-serif;color:var(--ink)}
+.app{max-width:680px;margin:0 auto;padding:.75rem .75rem 4rem}
+.topbar{background:#fff;border:.5px solid var(--line);border-radius:var(--r-xl);padding:1.125rem 1.375rem;margin-bottom:.75rem;box-shadow:var(--sh-sm)}
+.topbar-inner{display:flex;align-items:flex-start;gap:.875rem}
+.brand-dot{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--blue) 0%,var(--purple) 100%);display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 2px 6px rgba(26,95,168,.25)}
+.topbar h1{font-size:15px;font-weight:600;color:var(--ink);margin-bottom:2px;letter-spacing:-.01em}
+.topbar p{font-size:11.5px;color:var(--ink3);line-height:1.55}
+.pb-wrap{margin-top:.75rem;display:flex;align-items:center;gap:.625rem}
+.pb{flex:1;height:4px;background:var(--bg3);border-radius:2px;overflow:hidden}
+.pbf{height:100%;border-radius:2px;transition:width .4s ease,background .4s ease}
+.pb-pct{font-size:10px;font-weight:500;color:var(--ink3);min-width:26px;text-align:right}
+.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-bottom:.75rem}
+.tab{padding:6px 4px;font-size:10.5px;font-weight:500;border-radius:var(--r-md);border:1.5px solid var(--line);cursor:pointer;text-align:center;transition:all .15s;background:#fff;color:var(--ink2);line-height:1.3}
+.tab:hover{background:var(--bg2);border-color:var(--line2)}
+.tab-num{display:block;font-size:9px;color:var(--ink3);margin-bottom:2px;font-weight:400}
+.t0.active{background:var(--blue-l);color:var(--blue-d);border-color:var(--blue)}
+.t1.active{background:var(--green-l);color:var(--green-d);border-color:var(--green)}
+.t2.active{background:#FFF5F0;color:#7A3300;border-color:#FFBFA0}
+.t3.active{background:var(--purple-l);color:var(--purple-d);border-color:var(--purple)}
+.t4.active{background:var(--purple-l);color:var(--purple-d);border-color:var(--purple)}
+.t5.active{background:var(--teal-l);color:var(--teal-d);border-color:var(--teal)}
+.t6.active{background:var(--teal-l);color:var(--teal-d);border-color:var(--teal)}
+.t7.active{background:var(--amber-l);color:var(--amber-d);border-color:var(--amber)}
+.t8.active{background:var(--amber-l);color:var(--amber-d);border-color:var(--amber)}
+.t9.active{background:#F0F8FF;color:#0C3E72;border-color:#90BEF0}
+.t10.active{background:var(--blue-l);color:var(--blue-d);border-color:var(--blue)}
+.card{background:#fff;border:.5px solid var(--line);border-radius:var(--r-lg);margin-bottom:.75rem;overflow:hidden;box-shadow:var(--sh-sm)}
+.card-head{padding:1rem 1.375rem;border-bottom:.5px solid var(--line)}
+.card-head h2{font-size:14px;font-weight:600;color:var(--ink);letter-spacing:-.01em}
+.card-head p{font-size:12px;color:var(--ink2);margin-top:4px;line-height:1.55}
+.card-pill{display:inline-flex;align-items:center;gap:4px;padding:2px 9px;border-radius:20px;font-size:10px;font-weight:600;letter-spacing:.02em;text-transform:uppercase;margin-bottom:5px}
+.notice{padding:.625rem 1rem;border-left:3px solid var(--blue);background:var(--blue-l);margin:.875rem 1.375rem;border-radius:0 var(--r-sm) var(--r-sm) 0;font-size:12px;color:var(--blue-d);line-height:1.6}
+.notice.gn{border-color:var(--green);background:var(--green-l);color:var(--green-d)}
+.qw{border-bottom:.5px solid var(--line)}
+.qw:last-child{border-bottom:none}
+.qi{padding:1rem 1.375rem}
+.qnum{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;font-size:10px;font-weight:700;margin-right:7px;flex-shrink:0;vertical-align:middle}
+.qlbl{font-size:13px;font-weight:500;color:var(--ink);line-height:1.6;margin-bottom:10px}
+.sr{display:flex;gap:5px;margin-bottom:11px}
+.sc{flex:1;padding:9px 4px 7px;border:1.5px solid var(--line);border-radius:var(--r-sm);background:#fff;cursor:pointer;font-size:9.5px;text-align:center;transition:all .15s;color:var(--ink2);line-height:1.3;user-select:none}
+.sc:hover{border-color:var(--line2);background:var(--bg)}
+.sc strong{display:block;font-size:16px;font-weight:600;margin-bottom:2px}
+.s0{background:#F5F4F1;border-color:#C9C7BE;color:#5F5E5A}.s0 strong{color:#2C2C2A}
+.s1{background:#EAF2FC;border-color:#90BEF0;color:var(--blue-d)}.s1 strong{color:var(--blue-d)}
+.s2{background:#FBF0E1;border-color:#E8B86A;color:var(--amber-d)}.s2 strong{color:var(--amber-d)}
+.s3{background:#FBEAE7;border-color:#E89088;color:var(--red-d)}.s3 strong{color:var(--red-d)}
+.exl{display:grid;gap:3px;margin-bottom:9px;padding:8px 10px;background:var(--bg2);border-radius:var(--r-sm);border:.5px solid var(--line)}
+.exi{display:flex;align-items:flex-start;gap:8px;font-size:12px;color:var(--ink2);line-height:1.5;cursor:pointer;padding:2px 0}
+.exi input{margin-top:2px;flex-shrink:0;accent-color:var(--blue);width:13px;height:13px}
+.cw{background:var(--bg2);border-radius:var(--r-sm);padding:.625rem .875rem;border:.5px solid var(--line)}
+.cw-hdr{display:flex;align-items:center;gap:5px;margin-bottom:4px}
+.cw-lbl{font-size:10.5px;color:var(--ink3);font-weight:500}
+textarea.cta{width:100%;border:.5px solid var(--line);border-radius:var(--r-sm);padding:7px 9px;font-size:12px;color:var(--ink);background:#fff;resize:vertical;min-height:40px;font-family:inherit;line-height:1.5}
+textarea.cta::placeholder{color:var(--ink3);opacity:.8}
+textarea.cta:focus{outline:none;border-color:var(--blue-m)}
+.supp{margin:.875rem 1.375rem;border:1.5px solid var(--purple-m);border-radius:var(--r-md);overflow:hidden}
+.supp-h{background:var(--purple-l);padding:.5rem .875rem;font-size:11px;font-weight:600;color:var(--purple-d)}
+.supp-b{padding:.625rem .875rem}
+.supp-q{font-size:12px;color:var(--ink);margin-bottom:6px;line-height:1.55}
+.supp-opts{display:flex;gap:14px}
+.supp-opts label{display:flex;align-items:center;gap:5px;font-size:13px;color:var(--ink);cursor:pointer}
+.supp-opts input{accent-color:var(--purple)}
+/* ASRS */
+.asrs-wrap{background:#fff;border:.5px solid var(--line);border-radius:var(--r-lg);margin-bottom:.75rem;overflow:hidden;box-shadow:var(--sh-sm)}
+.asrs-head{background:linear-gradient(135deg,#FFF5F0 0%,#FFF0F8 100%);padding:1.125rem 1.375rem;border-bottom:.5px solid #FFD5C0}
+.asrs-badge{display:inline-flex;align-items:center;gap:4px;background:#E8540A;color:#fff;padding:3px 10px;border-radius:20px;font-size:10px;font-weight:700;letter-spacing:.04em;margin-bottom:6px}
+.asrs-head h2{font-size:14px;font-weight:600;color:#5C1F00;letter-spacing:-.01em}
+.asrs-head p{font-size:11.5px;color:#9B4B20;line-height:1.55;margin-top:3px}
+.asrs-qw{border-bottom:.5px solid #FFE8D8}
+.asrs-qw:last-child{border-bottom:none}
+.asrs-qi{padding:1.125rem 1.375rem}
+.asrs-ql{font-size:13px;font-weight:500;color:var(--ink);line-height:1.6;margin-bottom:10px}
+.asrs-qn{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:#E8540A;color:#fff;font-size:10px;font-weight:700;margin-right:7px;flex-shrink:0;vertical-align:middle}
+.asrs-sr{display:flex;gap:5px}
+.asrs-sc{flex:1;padding:9px 3px 7px;border:1.5px solid var(--line);border-radius:var(--r-sm);background:#fff;cursor:pointer;font-size:9.5px;text-align:center;transition:all .15s;color:var(--ink2);line-height:1.3;user-select:none}
+.asrs-sc:hover{background:var(--bg)}
+.asrs-sc strong{display:block;font-size:15px;font-weight:600;margin-bottom:2px}
+.av0{background:#F5F4F1;border-color:#B4B2A9;color:#5F5E5A}.av0 strong{color:#2C2C2A}
+.av1{background:#F0FBE8;border-color:#8CC96A;color:#1A3E0B}.av1 strong{color:#1A3E0B}
+.av2{background:#FFF0E8;border-color:#FFAA80;color:#7A3300}.av2 strong{color:#7A3300}
+.av3{background:#FFE8D8;border-color:#FF7043;color:#5C1F00}.av3 strong{color:#5C1F00}
+.av4{background:#FFDFD0;border-color:#E84B1A;color:#4A0E00}.av4 strong{color:#4A0E00}
+.asrs-result-area{padding:.875rem 1.375rem;background:#FFFAF7;border-top:.5px solid #FFE0D0}
+/* FORM */
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:1rem 1.375rem}
+.fi{display:flex;flex-direction:column;gap:4px}
+.fi label{font-size:11.5px;color:var(--ink2);font-weight:500}
+.fi input{border:.5px solid var(--line);border-radius:var(--r-sm);padding:7px 10px;font-size:13px;color:var(--ink);background:#fff;font-family:inherit}
+.fi input:focus{outline:none;border-color:var(--blue-m)}
+.ff{grid-column:1/-1}
+.rg,.cg{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:5px}
+.ri,.ci{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--ink);cursor:pointer}
+.ri input,.ci input{accent-color:var(--blue);width:14px;height:14px}
+/* ID CARD */
+.id-card{background:linear-gradient(135deg,#1A3A6E 0%,#2A5BB8 50%,#5552C8 100%);border-radius:var(--r-xl);padding:1.125rem 1.375rem;margin-bottom:.75rem;box-shadow:var(--sh-md);position:relative;overflow:hidden}
+.id-card::before{content:'';position:absolute;top:-30px;right:-20px;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,.06)}
+.id-top{display:flex;align-items:center;gap:.75rem;margin-bottom:.75rem}
+.id-icon{width:38px;height:38px;border-radius:10px;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.id-card h3{font-size:14px;font-weight:600;color:#fff}
+.id-card p{font-size:11.5px;color:rgba(255,255,255,.75);line-height:1.55}
+.id-input-row{display:flex;gap:8px;align-items:center;margin-top:.625rem;position:relative;z-index:1}
+.id-input{flex:1;border:1.5px solid rgba(255,255,255,.35);border-radius:var(--r-sm);padding:9px 13px;font-size:15px;font-weight:600;color:#fff;background:rgba(255,255,255,.12);font-family:inherit;letter-spacing:.05em}
+.id-input::placeholder{font-weight:400;font-size:13px;letter-spacing:0;color:rgba(255,255,255,.5)}
+.id-input:focus{outline:none;border-color:rgba(255,255,255,.7);background:rgba(255,255,255,.18)}
+.id-tip{font-size:10.5px;color:rgba(255,255,255,.65);margin-top:.5rem;position:relative;z-index:1;display:flex;align-items:center;gap:4px}
+/* COMPLAINTS */
+.comp-grid{display:grid;gap:9px;padding:1rem 1.375rem}
+.comp-row{display:flex;align-items:flex-start;gap:9px}
+.comp-num{width:26px;height:26px;border-radius:50%;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:6px}
+.cn1{background:var(--blue-l);color:var(--blue-d)}.cn2{background:var(--green-l);color:var(--green-d)}.cn3{background:var(--bg3);color:var(--ink2)}
+.comp-inp{flex:1;border:.5px solid var(--line);border-radius:var(--r-sm);padding:8px 11px;font-size:13px;color:var(--ink);background:#fff;font-family:inherit}
+.comp-inp:focus{outline:none;border-color:var(--blue-m)}
+.comp-hint{font-size:11px;color:var(--ink3);padding:0 1.375rem .875rem;line-height:1.5}
+/* IMPAIRMENT */
+.dom-block{padding:1rem 1.375rem;border-bottom:.5px solid var(--line)}
+.dom-block:last-of-type{border-bottom:none}
+.dom-title-row{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.dom-icon{width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.dom-title{font-size:13px;font-weight:600;color:var(--ink)}
+.dom-items{display:grid;gap:4px;margin-bottom:8px}
+.dom-item{display:flex;align-items:flex-start;gap:8px;font-size:12px;color:var(--ink2);line-height:1.5;cursor:pointer;padding:2px 0}
+.dom-item input{margin-top:2px;flex-shrink:0;accent-color:var(--blue);width:13px;height:13px}
+/* 해당없음 — 항목 목록 아래, 사례 입력란 위 */
+.none-row{display:flex;align-items:center;gap:8px;padding:7px 10px;background:#fff;border-radius:var(--r-sm);border:1.5px dashed var(--line2);margin-bottom:9px;cursor:pointer;transition:all .15s}
+.none-row:hover{background:var(--bg2);border-color:var(--ink3)}
+.none-row.checked{background:#F5F4F1;border-color:var(--ink2);border-style:solid}
+.none-row input{flex-shrink:0;accent-color:var(--ink2);width:13px;height:13px}
+.none-row span{font-size:12px;color:var(--ink2);font-weight:500}
+/* DIFF */
+.diff-block{padding:1rem 1.375rem;border-bottom:.5px solid var(--line)}
+.diff-block:last-of-type{border-bottom:none}
+.diff-title{font-size:13px;font-weight:600;color:var(--ink);margin-bottom:4px}
+.diff-desc{font-size:11.5px;color:var(--ink2);line-height:1.55;margin-bottom:8px;padding:.5rem .75rem;background:var(--bg2);border-radius:var(--r-sm);border:.5px solid var(--line)}
+.diff-items{display:grid;gap:3px;margin-bottom:8px}
+.diff-item{display:flex;align-items:flex-start;gap:8px;font-size:12px;color:var(--ink2);line-height:1.45;cursor:pointer;padding:1px 0}
+.diff-item input{margin-top:2px;flex-shrink:0;accent-color:var(--blue);width:13px;height:13px}
+.diff-none{display:flex;align-items:center;gap:8px;padding:7px 10px;background:#fff;border-radius:var(--r-sm);border:1.5px dashed var(--line2);margin-bottom:7px;cursor:pointer;transition:all .15s}
+.diff-none:hover{background:var(--bg2);border-color:var(--ink3)}
+.diff-none.checked{background:#F5F4F1;border-color:var(--ink2);border-style:solid}
+.diff-none input{flex-shrink:0;accent-color:var(--ink2);width:13px;height:13px}
+.diff-none span{font-size:12px;color:var(--ink2);font-weight:500}
+.diff-when{font-size:11px;color:var(--ink3);margin-bottom:3px}
+.diff-inp{width:100%;border:.5px solid var(--line);border-radius:var(--r-sm);padding:6px 9px;font-size:12px;color:var(--ink);background:#fff;font-family:inherit}
+.diff-inp:focus{outline:none;border-color:var(--blue-m)}
+/* ONSET */
+.onset-block{padding:1rem 1.375rem;border-bottom:.5px solid var(--line)}
+.onset-block:last-of-type{border-bottom:none}
+.onset-q{font-size:13px;font-weight:500;color:var(--ink);margin-bottom:8px;line-height:1.55}
+/* NAV */
+.bot{display:flex;align-items:center;justify-content:space-between;margin-top:.75rem;padding-bottom:1.25rem}
+.btn{padding:9px 20px;border-radius:var(--r-md);font-size:13px;font-weight:600;cursor:pointer;border:1.5px solid var(--line2);background:#fff;color:var(--ink);transition:all .15s}
+.btn:hover{background:var(--bg2)}
+.btnp{background:var(--blue);color:#fff;border-color:var(--blue);box-shadow:0 2px 8px rgba(26,95,168,.25)}
+.btnp:hover{background:var(--blue-d);border-color:var(--blue-d)}
+.plbl{font-size:11px;color:var(--ink3);font-weight:500}
+/* REPORT */
+.rpt{font-family:inherit;color:var(--ink)}
+.rpt-top{background:linear-gradient(135deg,#0D2547 0%,#1A5FA8 55%,#4B47B8 100%);border-radius:var(--r-xl) var(--r-xl) 0 0;padding:1.375rem 1.5rem;color:#fff;position:relative;overflow:hidden}
+.rpt-top::before{content:'';position:absolute;top:-40px;right:-30px;width:160px;height:160px;border-radius:50%;background:rgba(255,255,255,.06)}
+.rpt-title{font-size:17px;font-weight:700;margin-bottom:3px;letter-spacing:-.02em;position:relative;z-index:1}
+.rpt-sub{font-size:11px;opacity:.75;margin-bottom:.875rem;position:relative;z-index:1}
+.rpt-meta{display:flex;gap:10px;flex-wrap:wrap;position:relative;z-index:1}
+.rmi{font-size:11px;opacity:.8;display:flex;align-items:center;gap:4px}
+.rpt-id-box{display:inline-flex;align-items:center;gap:12px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:var(--r-md);padding:6px 14px;margin-top:.75rem;position:relative;z-index:1}
+.rpt-id-lbl{font-size:9.5px;opacity:.75;letter-spacing:.05em;text-transform:uppercase}
+.rpt-id-val{font-size:17px;font-weight:700;letter-spacing:.1em}
+.rpt-fname{border-left:1px solid rgba(255,255,255,.25);padding-left:12px}
+.fname-val{font-size:12px;font-weight:500;letter-spacing:.03em;color:rgba(255,255,255,.9)}
+.rpt-body{padding:1rem 1.25rem;display:grid;gap:.875rem;background:var(--bg)}
+.rpt-sec{border:.5px solid var(--line);border-radius:var(--r-md);overflow:hidden;background:#fff;box-shadow:var(--sh-sm)}
+.rsh{padding:.5rem .875rem;font-size:10.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;display:flex;align-items:center;gap:6px;border-bottom:.5px solid var(--line)}
+.rsb{padding:.75rem .875rem}
+.sc-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+.scc{padding:.625rem .875rem;border-radius:var(--r-sm);border:.5px solid}
+.scc-l{font-size:10px;color:var(--ink2);margin-bottom:2px}
+.scc-v{font-size:22px;font-weight:700;line-height:1}
+.scc-s{font-size:10px;margin-top:3px}
+.cr-row{display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:.5px solid var(--line)}
+.cr-row:last-child{border-bottom:none}
+.crl{flex:1;color:var(--ink2);font-size:11px}
+.cbadge{display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:600}
+.bok{background:var(--green-l);color:var(--green-d);border:.5px solid var(--green-m)}
+.balert{background:var(--red-l);color:var(--red-d);border:.5px solid var(--red-m)}
+.bneu{background:var(--bg3);color:var(--ink2);border:.5px solid var(--line2)}
+.bwarn{background:var(--amber-l);color:var(--amber-d);border:.5px solid var(--amber-m)}
+.dot{width:18px;height:18px;border-radius:4px;font-size:9px;display:flex;align-items:center;justify-content:center;font-weight:600;flex-shrink:0}
+.d0{background:#E8E6DF;color:#5F5E5A}.d1{background:#90BEF0;color:#0C3E72}
+.d2{background:#E8B86A;color:#4A2A00}.d3{background:#E08078;color:#fff}
+.dn{background:var(--bg3);color:var(--ink3)}
+.drow{display:flex;gap:3px;flex-wrap:wrap;margin-top:4px}
+.ex-tag{background:var(--bg2);border:.5px solid var(--line2);border-radius:var(--r-sm);padding:2px 7px;font-size:11px;color:var(--ink2);line-height:1.4}
+.case-note{background:var(--bg2);border-left:2.5px solid var(--line2);border-radius:0 var(--r-sm) var(--r-sm) 0;padding:4px 9px;font-size:11px;color:var(--ink2);margin-top:4px;line-height:1.5;font-style:italic}
+.imp5{display:grid;grid-template-columns:repeat(5,1fr);gap:4px}
+.imc{padding:5px 3px;border-radius:var(--r-sm);text-align:center;border:.5px solid}
+.imc-l{font-size:8.5px;line-height:1.3;margin-bottom:2px}
+.imc-v{font-size:14px;font-weight:700}
+.clin-item{display:flex;gap:8px;align-items:flex-start;padding:6px 8px;border-radius:var(--r-sm);margin-bottom:5px;border-left:3px solid}
+.clin-main{background:var(--green-l);border-color:var(--green)}
+.clin-warn{background:var(--amber-l);border-color:var(--amber)}
+.clin-diff{background:var(--red-l);border-color:var(--red)}
+.clin-sum{background:var(--blue-l);border-color:var(--blue)}
+.clin-item span{font-size:11px;line-height:1.65}
+.ci-icon{font-size:13px;flex-shrink:0;margin-top:1px}
+/* 인쇄 버튼 */
+.action-row{display:flex;gap:8px;justify-content:center;padding:.875rem 1.25rem 1rem;flex-wrap:wrap;background:var(--bg)}
+.act-btn{display:flex;align-items:center;gap:6px;padding:9px 16px;border:1.5px solid var(--line2);border-radius:var(--r-md);background:#fff;color:var(--ink);font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;box-shadow:var(--sh-sm)}
+.act-btn:hover{background:var(--bg2)}
+.act-prim{background:var(--blue);color:#fff;border-color:var(--blue);box-shadow:0 2px 8px rgba(26,95,168,.25)}
+.act-prim:hover{background:var(--blue-d)}
+/* 파일명 복사 안내 박스 */
+.fname-hint{background:var(--blue-l);border:.5px solid var(--blue-m);border-radius:var(--r-md);padding:.75rem 1rem;margin:.5rem 1.25rem 0;display:flex;align-items:center;gap:.75rem;font-size:12px;color:var(--blue-d)}
+.fname-chip{background:var(--blue-d);color:#fff;border-radius:var(--r-sm);padding:4px 10px;font-size:13px;font-weight:700;letter-spacing:.04em;font-family:monospace;white-space:nowrap}
+.toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:9px 20px;border-radius:20px;font-size:12px;font-weight:600;z-index:9999;opacity:0;transition:opacity .25s;pointer-events:none;box-shadow:var(--sh-md)}
+.toast.show{opacity:1}
+@media print{.topbar,.tabs,.bot,.action-row,.toast,.fname-hint{display:none!important}.app{padding:0;max-width:none}.rpt-body{background:#fff}}
+</style>
+
+<div class="app" id="app">
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="brand-dot"><i class="ti ti-brain" style="color:#fff;font-size:18px"></i></div>
+    <div style="flex:1">
+      <h1>성인 ADHD 사전 평가지</h1>
+      <p>DIVA 2.0 기반 진료 보조 자료 · 이 자료만으로 진단되지 않습니다</p>
+    </div>
+  </div>
+  <div class="pb-wrap">
+    <div class="pb"><div class="pbf" id="pf" style="width:0%"></div></div>
+    <span class="pb-pct" id="pct">0%</span>
+  </div>
+</div>
+<div class="tabs" id="tabs"></div>
+<div id="pages"></div>
+<div class="bot">
+  <button class="btn" id="bP" onclick="nav(-1)">← 이전</button>
+  <span class="plbl" id="plbl"></span>
+  <button class="btn btnp" id="bN" onclick="nav(1)">다음 →</button>
+</div>
+<div class="toast" id="toast"></div>
+</div>
+
+<script>
+const SC={},CS={},EX={},IN={},ASRS={};
+const NOW=new Date();
+const TODAY=NOW.toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric'});
+const YYYYMM=`${NOW.getFullYear()}${String(NOW.getMonth()+1).padStart(2,'0')}`;
+const TCOLS=['#1A5FA8','#2E6B16','#E8540A','#6B62CC','#6B62CC','#0C6E57','#0C6E57','#B87014','#B87014','#A33020','#1A5FA8'];
+const TNAMES=['안내','기본 정보','ADHD\n선별','성인\n주의력결핍','성인\n과잉행동','아동기\n주의력결핍','아동기\n과잉행동','증상\n시작','생활\n영향','감별\n진단','결과\n보고서'];
+const PKEYS=['intro','basic','asrs','adA','adH','chA','chH','onset','imp','diff','sum'];
+let cur=0;
+
+const ASRS_Q=[
+  {id:'as1',lbl:'어떤 일의 어려운 부분은 끝내 놓고, 그 일을 마무리를 짓지 못해 곤란을 겪은 적이 있습니까?',_shd:[2,3,4]},
+  {id:'as2',lbl:'체계가 필요한 일을 해야 할 때 순서대로 진행하기 어려운 경우가 있습니까?',_shd:[2,3,4]},
+  {id:'as3',lbl:'약속이나 해야 할 일을 잊어버려 곤란을 겪은 적이 있습니까?',_shd:[2,3,4]},
+  {id:'as4',lbl:'골치 아픈 일은 피하거나 미루는 경우가 있습니까?',_shd:[2,3,4]},
+  {id:'as5',lbl:'오래 앉아 있을 때, 손을 만지작거리거나 발을 꼼지락거리는 경우가 있습니까?',_shd:[3,4]},
+  {id:'as6',lbl:'마치 모터가 달린 것처럼, 과도하게 혹은 멈출 수 없이 활동을 하는 경우가 있습니까?',_shd:[3,4]},
+];
+const ASRS_LBL=['전혀 없음','거의 없음','가끔 있음','자주 있음','매우 자주'];
+
+const DA=[
+  {id:'A1',lbl:'세부적인 부분에 부주의한 실수를 자주 하나요?',ex:['업무·공부에서 숫자·날짜·세부 조건을 잘못 봄','이메일·서류·과제에서 빠뜨리는 부분이 많음','지시사항을 끝까지 읽지 않아 실수함','검토 없이 제출해 나중에 오류를 발견함'],ph:'위 예시 외에 기억나는 사례를 적어주세요.'},
+  {id:'A2',lbl:'과제나 활동에 집중을 오래 유지하기 어렵나요?',ex:['업무·공부·강의·회의에 오래 집중하기 어려움','책이나 긴 글을 끝까지 읽기 어려움','대화 중 다른 생각으로 쉽게 빠짐','흥미로운 일은 오래 하지만 재미없는 필수 업무는 집중이 어려움'],ph:'위 예시 외에 기억나는 사례를 적어주세요.'},
+  {id:'A3',lbl:'다른 사람이 말했는데도 못 들은 것처럼 반응하거나 나중에 기억하지 못하는 일이 있나요?',ex:['대화 중 멍해 보인다는 말을 들음','"내 말 듣고 있어?"라는 말을 자주 들음','가족·동료가 여러 번 다시 말해줘야 함'],ph:'위 예시 외에 기억나는 사례를 적어주세요.'},
+  {id:'A4',lbl:'지시를 따르거나 일을 끝까지 마치기 어렵나요?',ex:['일을 시작하지만 마무리하지 못함','마감이 있어야 겨우 끝냄','여러 단계가 있는 일을 하면 중간에서 흐트러짐'],ph:'위 예시 외에 기억나는 사례를 적어주세요.'},
+  {id:'A5',lbl:'일의 순서, 시간, 준비물을 정리하고 계획하기 어렵나요?',ex:['하루 일정·업무 순서를 계획하기 어려움','시간 관리를 잘 못함 / 자주 늦음','집·책상·가방·파일이 지저분함'],ph:'위 예시 외에 기억나는 사례를 적어주세요.'},
+  {id:'A6',lbl:'오래 집중해야 하는 일을 피하거나 미루나요?',ex:['보고서·서류·공부·행정업무를 자주 미룸','지루하거나 복잡한 일을 시작하기 어려움','마감 직전까지 미루다 급하게 처리함'],ph:'위 예시 외에 기억나는 사례를 적어주세요.'},
+  {id:'A7',lbl:'필요한 물건을 자주 잃어버리거나 어디 두었는지 몰라 찾나요?',ex:['휴대폰·지갑·카드·열쇠·안경을 자주 찾음','물건을 두고 외출하거나 놓고 옴','중요한 물건을 엉뚱한 장소에 둠'],ph:'위 예시 외에 기억나는 사례를 적어주세요.'},
+  {id:'A8',lbl:'주변 소리, 알림, 움직임 같은 자극 때문에 쉽게 산만해지나요?',ex:['주변 소리·알림·움직임에 쉽게 주의가 뺏김','한 번 산만해지면 다시 시작하기 어려움','머릿속 생각이 계속 떠올라 집중하기 어려움'],ph:'위 예시 외에 기억나는 사례를 적어주세요.'},
+  {id:'A9',lbl:'약속, 연락, 결제, 준비물처럼 해야 할 일을 자주 잊어버리나요?',ex:['약속이나 일정을 잊음','해야 할 연락·결제·회신·심부름을 잊음','가족·동료가 자주 상기시켜줘야 함'],ph:'위 예시 외에 기억나는 사례를 적어주세요.'}
+];
+const DH=[
+  {id:'HI1',lbl:'손이나 발을 자꾸 움직이거나 몸을 가만히 두기 어렵나요?',ex:['앉아 있을 때 다리를 떨거나 몸을 움직임','펜·물건을 계속 만지작거림','가만히 앉아 있으려면 긴장됨'],ph:'위 예시 외에 기억나는 사례를 적어주세요.'},
+  {id:'HI2',lbl:'앉아 있어야 하는 상황에서 자주 자리를 뜨거나 움직이나요?',ex:['회의·강의·행사에서 오래 앉아 있기 어려움','앉아 있기보다 돌아다니는 것이 편함'],ph:'위 예시 외에 기억나는 사례를 적어주세요.'},
+  {id:'HI3',lbl:'마음속으로 초조하거나 계속 움직여야 할 것 같은 느낌이 있나요?',ex:['내적으로 불안하고 쫓기는 느낌이 있음','쉬는 시간에도 편하지 않음','아무것도 하지 않는 시간이 견디기 어려움'],ph:'위 예시 외에 기억나는 사례를 적어주세요.'},
+  {id:'HI4',lbl:'조용히 쉬거나 여유 있게 활동하기 어렵나요?',ex:['쉬는 날에도 계속 뭔가를 해야 함','차분하게 시간을 보내는 것이 어렵다는 말을 들음'],ph:'위 예시 외에 기억나는 사례를 적어주세요.'},
+  {id:'HI5',lbl:'"늘 바쁘다" "멈추기 어렵다" "모터가 달린 것 같다"는 느낌이 있나요?',ex:['항상 무언가를 하느라 바쁨','몰두하면 그만두기 어려움'],ph:'위 예시 외에 기억나는 사례를 적어주세요.'},
+  {id:'HI6',lbl:'말을 지나치게 많이 하거나 멈추기 어렵나요?',ex:['말을 많이 한다는 이야기를 자주 들음','대화에서 상대에게 말할 기회를 덜 줌'],ph:'위 예시 외에 기억나는 사례를 적어주세요.'},
+  {id:'HI7',lbl:'질문이 끝나기 전에 대답하거나 상대 말을 끊는 일이 있나요?',ex:['상대 말이 끝나기 전에 대답함','다른 사람의 말을 가로챔'],ph:'위 예시 외에 기억나는 사례를 적어주세요.'},
+  {id:'HI8',lbl:'차례를 기다리기 어렵나요?',ex:['줄 서기나 대기 시간이 매우 힘듦','답변을 기다리기 어려워 재촉함'],ph:'위 예시 외에 기억나는 사례를 적어주세요.'},
+  {id:'HI9',lbl:'다른 사람의 활동을 방해하거나 침범하는 일이 있나요?',ex:['대화에 자주 끼어듦','부탁받지 않았는데 다른 사람 일에 관여함'],ph:'위 예시 외에 기억나는 사례를 적어주세요.'}
+];
+const CA=[
+  {id:'cA1',lbl:'숙제·시험·과제에서 부주의한 실수가 많았나요?',ex:['문제를 잘못 읽음','시험지 뒷면을 안 풀었음','답을 검토하지 않음'],ph:'위 예시 외에 기억나는 사례를 적어주세요.'},
+  {id:'cA2',lbl:'수업·숙제·놀이에 집중을 오래 유지하기 어려웠나요?',ex:['수업 중 딴생각','숙제하다 금방 다른 것 함','쉽게 산만해짐'],ph:'위 예시 외에 기억나는 사례를 적어주세요.'},
+  {id:'cA3',lbl:'부모님·선생님이 말해도 듣지 않는 것처럼 보였나요?',ex:['여러 번 불러야 반응함','멍해 보임'],ph:'위 예시 외에 기억나는 사례를 적어주세요.'},
+  {id:'cA4',lbl:'지시를 따르거나 숙제·과제를 끝까지 마치기 어려웠나요?',ex:['숙제를 끝내지 못함','여러 단계 지시를 따라가기 어려움'],ph:'위 예시 외에 기억나는 사례를 적어주세요.'},
+  {id:'cA5',lbl:'정리·계획·시간 관리가 어려웠나요?',ex:['방·책상이 지저분함','준비물을 못 챙김','마감시간을 못 맞춤'],ph:'위 예시 외에 기억나는 사례를 적어주세요.'},
+  {id:'cA6',lbl:'집중이 필요한 일을 싫어하거나 피했나요?',ex:['숙제를 미룸','독서를 싫어함','오래 앉아 공부하는 것을 힘들어함'],ph:'위 예시 외에 기억나는 사례를 적어주세요.'},
+  {id:'cA7',lbl:'준비물이나 물건을 자주 잃어버렸나요?',ex:['연필·책·숙제·준비물을 잃어버림','학교·친구 집에 물건을 두고 옴'],ph:'위 예시 외에 기억나는 사례를 적어주세요.'},
+  {id:'cA8',lbl:'외부 자극에 쉽게 산만해졌나요?',ex:['수업 중 창밖을 봄','주변 소리·친구 행동에 쉽게 주의가 뺏김'],ph:'위 예시 외에 기억나는 사례를 적어주세요.'},
+  {id:'cA9',lbl:'일상적인 일을 자주 잊어버렸나요?',ex:['준비물·심부름·숙제·약속을 잊음','자주 상기시켜줘야 했음'],ph:'위 예시 외에 기억나는 사례를 적어주세요.'}
+];
+const CH=[
+  {id:'cHI1',lbl:'가만히 앉아 있지 못하고 손발·몸을 자주 움직였나요?',ex:['다리를 떨거나 손을 계속 움직임','손톱을 물어뜯음'],ph:'위 예시 외에 기억나는 사례를 적어주세요.'},
+  {id:'cHI2',lbl:'앉아 있어야 하는 상황에서 자주 일어났나요?',ex:['수업 중 자리 이탈','식사 중 자주 일어남'],ph:'위 예시 외에 기억나는 사례를 적어주세요.'},
+  {id:'cHI3',lbl:'뛰어다니거나 높은 곳에 올라가는 등 몸을 많이 움직였나요?',ex:['부적절한 장소에서 뛰어다님','가구 위로 올라감'],ph:'위 예시 외에 기억나는 사례를 적어주세요.'},
+  {id:'cHI4',lbl:'조용히 놀거나 차분하게 활동하기 어려웠나요?',ex:['놀 때도 시끄러움','조용히 하라는 말을 자주 들음'],ph:'위 예시 외에 기억나는 사례를 적어주세요.'},
+  {id:'cHI5',lbl:'늘 바쁘게 움직이거나 에너지가 많다는 말을 들었나요?',ex:['계속 무엇인가를 함','"모터가 달린 것 같다"는 말을 들음'],ph:'위 예시 외에 기억나는 사례를 적어주세요.'},
+  {id:'cHI6',lbl:'말을 너무 많이 한다는 지적을 받았나요?',ex:['수다쟁이로 알려짐','수업 중 떠들어서 지적받음'],ph:'위 예시 외에 기억나는 사례를 적어주세요.'},
+  {id:'cHI7',lbl:'질문이 끝나기 전에 대답하거나 말을 끊었나요?',ex:['먼저 대답하려 함','친구·어른의 말을 끊음'],ph:'위 예시 외에 기억나는 사례를 적어주세요.'},
+  {id:'cHI8',lbl:'차례를 기다리기 어려웠나요?',ex:['놀이·운동에서 순서를 기다리기 힘들어함','쉽게 인내심을 잃음'],ph:'위 예시 외에 기억나는 사례를 적어주세요.'},
+  {id:'cHI9',lbl:'다른 아이의 놀이·대화·물건에 끼어들거나 방해했나요?',ex:['다른 아이의 놀이에 끼어듦','허락 없이 물건을 사용함'],ph:'위 예시 외에 기억나는 사례를 적어주세요.'}
+];
+
+function getFilename(){return `${(IN.uid||'ADHD평가').replace(/\s+/g,'')}_${YYYYMM}`;}
+function setScore(id,v){SC[id]=v;const sw=document.getElementById('sw_'+id);if(!sw)return;sw.querySelectorAll('.sc').forEach(b=>{b.className='sc'+(v===parseInt(b.dataset.v)?' s'+v:'');});}
+function setAsrs(id,v){ASRS[id]=v;const sw=document.getElementById('asw_'+id);if(!sw)return;sw.querySelectorAll('.asrs-sc').forEach(b=>{b.className='asrs-sc'+(v===parseInt(b.dataset.v)?' av'+v:'');});const p=document.getElementById('asrs-progress');if(p){const n=ASRS_Q.filter(q=>ASRS[q.id]!=null).length;p.textContent=`${n}/6 문항 응답 완료`;p.style.color=n===6?'var(--green-d)':'var(--ink3)';}}
+function toggleCb(id,i,v){if(!IN[id])IN[id]=[];IN[id][i]=v;}
+
+/* 해당없음 — 항목 아래에 위치, 선택 시 체크 해제 */
+function toggleNone(domId,totalItems,checked){
+  IN['none_'+domId]=checked;
+  const nb=document.getElementById('none_cb_'+domId);if(nb)nb.checked=checked;
+  const el=document.getElementById('none_row_'+domId);if(el)el.classList.toggle('checked',checked);
+  if(checked){IN[domId]=Array(totalItems).fill(false);document.querySelectorAll('.dcb_'+domId).forEach(c=>{c.checked=false;});}
+}
+function toggleDomItem(id,i,v){if(!IN[id])IN[id]=[];IN[id][i]=v;if(v){IN['none_'+id]=false;const nb=document.getElementById('none_cb_'+id);if(nb)nb.checked=false;const el=document.getElementById('none_row_'+id);if(el)el.classList.remove('checked');}}
+function toggleDiffNone(id,checked){
+  IN['none_'+id]=checked;
+  const nb=document.getElementById('dnone_cb_'+id);if(nb)nb.checked=checked;
+  const el=document.getElementById('dnone_row_'+id);if(el)el.classList.toggle('checked',checked);
+  if(checked){IN[id]=[];document.querySelectorAll('.dncb_'+id).forEach(c=>{c.checked=false;});}
+}
+function toggleDiffItem(id,i,v){if(!IN[id])IN[id]=[];IN[id][i]=v;if(v){IN['none_'+id]=false;const nb=document.getElementById('dnone_cb_'+id);if(nb)nb.checked=false;const el=document.getElementById('dnone_row_'+id);if(el)el.classList.remove('checked');}}
+
+function asrsScore(){return ASRS_Q.filter(q=>ASRS[q.id]!=null&&q._shd.includes(ASRS[q.id])).length;}
+function asrsTotal(){return ASRS_Q.reduce((s,q)=>s+(ASRS[q.id]||0),0);}
+function cntP(arr){return arr.filter(q=>SC[q.id]>=2).length;}
+function showToast(msg,dur=2200){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),dur);}
+
+function mkItem(q,i,ac){
+  const id=q.id;const alt=i%2===1;
+  return `<div class="qw" style="${alt?'background:var(--bg)':''}"><div class="qi">
+<div class="qlbl"><span class="qnum" style="background:${ac};color:#fff">${i+1}</span>${q.lbl}</div>
+<div class="sr" id="sw_${id}">${[[0,'거의 없음'],[1,'가끔'],[2,'자주'],[3,'매우 자주']].map(([v,l])=>`<button class="sc${SC[id]===v?' s'+v:''}" data-v="${v}" onclick="setScore('${id}',${v})"><strong>${v}</strong>${l}</button>`).join('')}</div>
+<div class="exl">${q.ex.map((e,ei)=>`<label class="exi"><input type="checkbox" onchange="if(!EX['${id}'])EX['${id}']=[]; EX['${id}'][${ei}]=this.checked" ${(EX[id]||[])[ei]?'checked':''}> ${e}</label>`).join('')}</div>
+<div class="cw"><div class="cw-hdr"><i class="ti ti-pencil" style="font-size:12px;color:var(--ink3)"></i><span class="cw-lbl">그 외 기억나는 사례</span></div>
+<textarea class="cta" placeholder="${q.ph}" onchange="CS['${id}']=this.value">${CS[id]||''}</textarea></div>
+</div></div>`;
+}
+
+function suppBlk(qtext,key){return `<div class="supp"><div class="supp-h"><i class="ti ti-check-circle" style="font-size:11px;margin-right:3px"></i>보충 확인</div><div class="supp-b"><div class="supp-q">${qtext}</div><div class="supp-opts">${['예','아니오'].map(v=>`<label><input type="radio" name="${key}" value="${v}" onchange="IN['${key}']=this.value" ${IN[key]===v?'checked':''}> ${v}</label>`).join('')}</div></div></div>`;}
+
+function mkImpDom(iconBg,icon,title,id,items,domain){
+  const noneChecked=!!IN['none_'+id];
+  return `<div class="dom-block">
+<div class="dom-title-row"><div class="dom-icon" style="background:${iconBg}"><i class="ti ti-${icon}" style="color:#fff;font-size:13px"></i></div><span class="dom-title">${title}</span></div>
+<div class="dom-items">${items.map((it,i)=>`<label class="dom-item"><input type="checkbox" class="dcb_${id}" onchange="toggleDomItem('${id}',${i},this.checked)" ${(IN[id]||[])[i]&&!noneChecked?'checked':''}> ${it}</label>`).join('')}</div>
+<div class="cw" style="margin-bottom:9px"><div class="cw-hdr"><i class="ti ti-pencil" style="font-size:12px;color:var(--ink3)"></i><span class="cw-lbl">위 예시 외에, ${domain} 영역에서 기억나는 사례</span></div><textarea class="cta" style="min-height:32px" placeholder="기억나는 사례가 있으면 적어주세요." onchange="CS['i_${id}']=this.value">${CS['i_'+id]||''}</textarea></div>
+<label class="none-row ${noneChecked?'checked':''}" id="none_row_${id}">
+  <input type="checkbox" id="none_cb_${id}" ${noneChecked?'checked':''} onchange="toggleNone('${id}',${items.length},this.checked)">
+  <span>이 영역에서는 특별히 어려움이 없었습니다</span>
+</label>
+</div>`;
+}
+
+function mkDiff(title,desc,id,items){
+  const noneChecked=!!IN['none_'+id];
+  return `<div class="diff-block"><div class="diff-title">${title}</div><div class="diff-desc">${desc}</div>
+<div class="diff-items">${items.map((it,i)=>`<label class="diff-item"><input type="checkbox" class="dncb_${id}" onchange="toggleDiffItem('${id}',${i},this.checked)" ${(IN[id]||[])[i]&&!noneChecked?'checked':''}> ${it}</label>`).join('')}</div>
+<div class="diff-when">해당되는 경우, 언제부터인지 적어주세요</div>
+<input class="diff-inp" style="margin-bottom:8px" type="text" placeholder="예: 2년 전부터 / 취직 이후 등 (해당 없으면 비워두세요)" onchange="CS['df_${id}']=this.value" value="${CS['df_'+id]||''}">
+<label class="diff-none ${noneChecked?'checked':''}" id="dnone_row_${id}">
+  <input type="checkbox" id="dnone_cb_${id}" ${noneChecked?'checked':''} onchange="toggleDiffNone('${id}',this.checked)">
+  <span>해당 없음 — 이 항목과 관련된 어려움이 없습니다</span>
+</label>
+</div>`;
+}
+
+// ── REPORT ──────────────────────────────────────────────────
+function buildReport(){
+  const aA=cntP(DA),aH=cntP(DH),cA=cntP(CA),cH=cntP(CH);
+  const aAmet=aA>=5,aHmet=aH>=5,cAmet=cA>=6,cHmet=cH>=6;
+  const onset12=IN.on2==='예';const persist=IN.on3&&IN.on3.includes('예');
+  const adDoms=['aw','af','as','al','ac'],chDoms=['ce','cf','cs','cl','cc'];
+  const adImpCnt=adDoms.filter(d=>(IN[d]||[]).some(Boolean)).length;
+  const chImpCnt=chDoms.filter(d=>(IN[d]||[]).some(Boolean)).length;
+  const uid=IN.uid||'(미기재)';
+  const asrsPos=asrsScore(),asrsTot=asrsTotal();
+  const fname=getFilename();
+  let sub='기준 미충족',subCol='var(--ink2)';
+  if(aAmet&&aHmet){sub='복합형 (Combined)';subCol='var(--red-d)';}
+  else if(aAmet){sub='주의력결핍 우세형';subCol='var(--blue-d)';}
+  else if(aHmet){sub='과잉행동·충동성 우세형';subCol='var(--purple-d)';}
+  function cbadge(met,t){if(met===true)return `<span class="cbadge bok"><i class="ti ti-check" style="font-size:10px"></i>${t}</span>`;if(met===false)return `<span class="cbadge balert"><i class="ti ti-x" style="font-size:10px"></i>${t}</span>`;return `<span class="cbadge bneu">${t}</span>`;}
+  const clinItems=[];
+  if(aAmet&&aHmet)clinItems.push({t:'main',s:`성인기 주의력결핍(${aA}/9)과 과잉행동·충동성(${aH}/9) 모두 DSM-5 성인 기준(≥5개)을 충족합니다. 복합형 가능성이 시사됩니다.`});
+  else if(aAmet)clinItems.push({t:'main',s:`성인기 주의력결핍(${aA}/9)이 DSM-5 기준(≥5개)을 충족합니다.`});
+  else if(aHmet)clinItems.push({t:'main',s:`성인기 과잉행동·충동성(${aH}/9)이 DSM-5 기준(≥5개)을 충족합니다.`});
+  else clinItems.push({t:'warn',s:`성인기 증상이 DSM-5 기준에 미치지 못합니다 (주의력결핍 ${aA}/9, 과잉행동·충동성 ${aH}/9). 임상 면담에서 추가 확인이 필요합니다.`});
+  if(asrsPos>=4)clinItems.push({t:'main',s:`ASRS Part A 양성 (음영 응답 ${asrsPos}/6, 총점 ${asrsTot}/20). 건강보험 청구 기준을 충족합니다.`});
+  else clinItems.push({t:'warn',s:`ASRS Part A 음성 (음영 응답 ${asrsPos}/6, 총점 ${asrsTot}/20). 양성 기준 미충족 — 임상 판단 필요.`});
+  if(cAmet||cHmet)clinItems.push({t:'main',s:`아동기 증상(주의력결핍 ${cA}/9, 과잉행동·충동성 ${cH}/9)이 아동기 기준(≥6개)을 충족합니다.`});
+  else clinItems.push({t:'warn',s:`아동기 증상 기준 미충족 (주의력결핍 ${cA}/9, 과잉행동·충동성 ${cH}/9). 기억 제한 또는 보호자 정보 부재 가능성을 고려해주세요.`});
+  if(onset12&&persist)clinItems.push({t:'main',s:'12세 이전 시작 및 성인기까지 지속이 보고되어 DSM-5 기준 B를 지지합니다.'});
+  else if(!onset12)clinItems.push({t:'warn',s:'12세 이전 시작 여부가 불명확합니다. 부모·보호자 면담 또는 과거 기록 확인을 권장합니다.'});
+  if(adImpCnt>=2)clinItems.push({t:'main',s:`성인기 기능 손상이 ${adImpCnt}개 영역에서 보고되어 DSM-5 기준 C/D를 충족합니다.`});
+  else clinItems.push({t:'warn',s:`성인기 기능 손상 ${adImpCnt}개 영역 — 기준 C/D는 2개 이상 영역의 손상을 요구합니다.`});
+  const diffMeta=[{id:'sleep',lbl:'수면 문제',note:'수면장애는 집중력 저하·충동성 증가의 독립적 원인이 될 수 있습니다.'},{id:'dep',lbl:'우울 증상',note:'우울 삽화에서도 집중력 저하·무기력·실행기능 저하가 나타나 ADHD와 유사할 수 있습니다.'},{id:'anx',lbl:'불안 증상',note:'불안장애는 과제 회피·집중 저하를 유발할 수 있습니다.'},{id:'bp',lbl:'양극성 관련',note:'경조증·조증 삽화의 과활동·충동성은 ADHD와 현상학적으로 유사합니다. 삽화 기간을 확인해주세요.'},{id:'sub',lbl:'물질/행동 조절',note:'물질 사용 및 행동 중독은 ADHD 증상을 악화시키거나 모방할 수 있습니다.'}].filter(f=>(IN[f.id]||[]).some(Boolean));
+  diffMeta.forEach(f=>clinItems.push({t:'diff',s:`[${f.lbl}] ${f.note}`}));
+  const fullCrit=(aAmet||aHmet)&&onset12&&persist&&adImpCnt>=2;
+  const partCrit=(aAmet||aHmet)&&adImpCnt>=2;
+  if(fullCrit)clinItems.push({t:'sum',s:'자가보고 기준으로 DSM-5 주요 진단 기준(A·B·C/D)을 충족할 가능성이 있습니다. 임상 면담을 통한 최종 확인이 필요합니다.'});
+  else if(partCrit)clinItems.push({t:'sum',s:'성인기 증상과 기능 손상은 확인되었으나, 발달력(12세 이전 시작·지속성) 추가 확인이 필요합니다.'});
+  else clinItems.push({t:'sum',s:'현재 자가보고만으로는 기준 충족 여부를 확정하기 어렵습니다. 임상 면담에서 구체적인 평가가 필요합니다.'});
+  function dotRow(arr){return arr.map(q=>{const v=SC[q.id];const c=v===0?'d0':v===1?'d1':v===2?'d2':v===3?'d3':'dn';return `<div class="dot ${c}">${v==null?'–':v}</div>`;}).join('');}
+  function symRows(arr){return arr.filter(q=>SC[q.id]>=2).map(q=>{const v=SC[q.id];const tags=q.ex.filter((_,i)=>(EX[q.id]||[])[i]).map(e=>`<span class="ex-tag">${e}</span>`).join('');const note=CS[q.id]?`<div class="case-note">${CS[q.id]}</div>`:'';return `<div style="padding:5px 0;border-bottom:.5px solid var(--line)"><div style="display:flex;gap:8px;align-items:flex-start"><div class="dot d${v}" style="flex-shrink:0;margin-top:1px">${v}</div><div style="flex:1"><div style="font-size:11px;font-weight:500;color:var(--ink);line-height:1.4;margin-bottom:3px">${q.lbl}</div>${tags?`<div style="display:flex;flex-wrap:wrap;gap:3px;margin-bottom:3px">${tags}</div>`:''}${note}</div></div></div>`;}).join('');}
+  const impDD=[{id:'aw',lbl:'직업/학업',items:['교육 과정 수료 어려움','능력 대비 낮은 성취','싫증','직장·전공 변경 욕구','행정·계획 어려움','실수·지각·마감','외부 장치 의존','임기응변으로 가림']},{id:'af',lbl:'대인관계/가정',items:['관계 싫증','충동적 관계','역할 불균형','반복 갈등','집안일 어려움','재정 문제']},{id:'as',lbl:'사회적 교류',items:['모임 싫증','관계 유지 어려움','말실수·갈등','기념일·연락 망각']},{id:'al',lbl:'여가/취미',items:['여가에도 못 쉼','취미 잦은 변경','완주 어려움','위험 감수','운전 문제','폭식·과소비']},{id:'ac',lbl:'자신감/자아상',items:['자신감 저하','부정적 자아상','비판 과민','완벽주의']}];
+  const chDD=[{id:'ce',lbl:'교육',items:['능력 대비 낮은 성적','학업 어려움','숙제 미완성','교사 지적','특수 관리','외부 구조 의존']},{id:'cf',lbl:'가정생활',items:['형제 갈등','잦은 훈육','장기 보살핌 필요','가족 갈등']},{id:'cs',lbl:'사회적 교류',items:['친구 유지 어려움','말·행동 갈등','사교 어려움','따돌림','다른 아이 방해']},{id:'cl',lbl:'여가/취미',items:['조용한 여가 어려움','잦은 사고','완주 어려움','취미 변경']},{id:'cc',lbl:'자신감',items:['자신감 저하','부정적 자아상','비판 과민','완벽주의']}];
+  function impRowRpt(dd){return dd.map(d=>{if(IN['none_'+d.id])return `<div style="padding:4px 0;border-bottom:.5px solid var(--line)"><span style="font-size:10px;font-weight:600;color:var(--ink3)">${d.lbl}</span> <span style="font-size:10px;color:var(--ink3);font-style:italic">— 해당없음</span></div>`;const ci=d.items.filter((_,i)=>(IN[d.id]||[])[i]);const note=CS['i_'+d.id];if(!ci.length&&!note)return '';return `<div style="padding:4px 0;border-bottom:.5px solid var(--line)"><div style="font-size:10px;font-weight:600;color:var(--ink2);margin-bottom:3px">${d.lbl}</div><div style="display:flex;flex-wrap:wrap;gap:3px">${ci.map(it=>`<span class="ex-tag">${it}</span>`).join('')}</div>${note?`<div class="case-note">${note}</div>`:''}</div>`;}).join('');}
+  const cc={main:'clin-main',warn:'clin-warn',diff:'clin-diff',sum:'clin-sum'};
+  const co={main:'var(--green-d)',warn:'var(--amber-d)',diff:'var(--red-d)',sum:'var(--blue-d)'};
+  const ci={main:'ti-circle-check',warn:'ti-alert-circle',diff:'ti-flag-3',sum:'ti-clipboard-list'};
+  return `<div class="rpt">
+<div class="rpt-top">
+  <div class="rpt-title">ADHD 사전 평가 결과 보고서</div>
+  <div class="rpt-sub">DIVA 2.0 기반 자가보고 · 진료 보조 자료 · 어떠한 개인정보도 서버에 저장되지 않습니다</div>
+  <div class="rpt-meta"><div class="rmi"><i class="ti ti-calendar"></i>${TODAY}</div><div class="rmi"><i class="ti ti-users"></i>함께 작성: ${IN.coll||'미기재'}</div></div>
+  <div class="rpt-id-box"><div><div class="rpt-id-lbl">식별 아이디</div><div class="rpt-id-val">${uid}</div></div><div class="rpt-fname"><div class="rpt-id-lbl">저장 파일명</div><div class="fname-val">${fname}</div></div></div>
+</div>
+<div class="rpt-body">
+  ${(IN.c1||IN.c2||IN.c3)?`<div class="rpt-sec"><div class="rsh" style="background:var(--bg2);color:var(--ink2)"><i class="ti ti-message-circle"></i>주요 호소</div><div class="rsb">${[IN.c1,IN.c2,IN.c3].filter(Boolean).map((c,i)=>`<div style="display:flex;gap:8px;padding:3px 0;font-size:12px"><span style="color:var(--ink3);flex-shrink:0;font-weight:600">${i+1}.</span>${c}</div>`).join('')}</div></div>`:''}
+  <div class="rpt-sec"><div class="rsh" style="background:#FFF5F0;color:#5C1F00"><i class="ti ti-clipboard-check"></i>ASRS v1.1 Part A</div><div class="rsb"><div style="display:grid;grid-template-columns:repeat(6,1fr);gap:4px;margin-bottom:8px">${ASRS_Q.map((q,qi)=>{const v=ASRS[q.id];const sh=v!=null&&q._shd.includes(v);return `<div style="text-align:center;padding:5px 2px;border-radius:var(--r-sm);border:1.5px solid ${sh?'#E8540A':'var(--line)'};background:${sh?'#FFF0E8':'#fff'}"><div style="font-size:9px;color:var(--ink3);margin-bottom:2px">Q${qi+1}</div><div style="font-size:16px;font-weight:700;color:${sh?'#4A0E00':'var(--ink3)'}">${v!=null?v:'–'}</div></div>`;}).join('')}</div><div style="display:flex;align-items:center;gap:.875rem;padding:.625rem .875rem;border-radius:var(--r-sm);border:.5px solid;background:${asrsPos>=4?'#FFDFD0':asrsPos===3?'var(--amber-l)':'var(--green-l)'};border-color:${asrsPos>=4?'#E84B1A':asrsPos===3?'var(--amber-m)':'var(--green-m)'}"><div style="font-size:28px;font-weight:700;color:${asrsPos>=4?'#4A0E00':asrsPos===3?'var(--amber-d)':'var(--green-d)'};flex-shrink:0">${asrsPos}<span style="font-size:13px;opacity:.6">/6</span></div><div><div style="font-size:11px;font-weight:600;color:${asrsPos>=4?'#4A0E00':asrsPos===3?'var(--amber-d)':'var(--green-d)'};margin-bottom:2px">${asrsPos>=4?'Part A 양성 — 건강보험 청구 기준 충족':asrsPos===3?'경계선 — 임상 판단 필요':'Part A 음성'}</div><div style="font-size:10.5px;opacity:.8;color:${asrsPos>=4?'#4A0E00':asrsPos===3?'var(--amber-d)':'var(--green-d)'}">음영 응답 ${asrsPos}/6문항 · 총점 ${asrsTot}/20</div></div></div></div></div>
+  <div class="rpt-sec"><div class="rsh" style="background:var(--purple-l);color:var(--purple-d)"><i class="ti ti-clipboard-check"></i>DSM-5 기준 충족 여부</div><div class="rsb"><div class="sc-grid" style="margin-bottom:10px">${[['성인기 주의력결핍',aA,9,5,aAmet,'var(--blue-l)','var(--blue)','var(--blue-d)'],['성인기 과잉행동·충동성',aH,9,5,aHmet,'var(--purple-l)','var(--purple)','var(--purple-d)'],['아동기 주의력결핍',cA,9,6,cAmet,'var(--teal-l)','var(--teal)','var(--teal-d)'],['아동기 과잉행동·충동성',cH,9,6,cHmet,'var(--red-l)','var(--red)','var(--red-d)']].map(([l,v,t,th,met,bg,border,col])=>`<div class="scc" style="background:${bg};border-color:${border}44"><div class="scc-l">${l}</div><div class="scc-v" style="color:${col}">${v}<span style="font-size:13px;color:var(--ink3)">/${t}</span></div><div class="scc-s">${met?`<span class="cbadge bok" style="font-size:10px">충족 ≥${th}</span>`:`<span class="cbadge bneu" style="font-size:10px">미충족 &lt;${th}</span>`}</div></div>`).join('')}</div>${[['기준 A — 성인기 증상',aAmet||aHmet,(aAmet||aHmet)?'충족 가능':'미충족'],['기준 B — 12세 이전 시작',onset12,onset12?'보고됨':'불명확'],['기준 B — 지속성',persist,persist?'보고됨':'불명확'],['기준 C/D — 성인기 손상 2개↑',adImpCnt>=2,adImpCnt+'개 영역'],['기준 C/D — 아동기 손상 2개↑',chImpCnt>=2,chImpCnt+'개 영역']].map(([l,met,desc])=>`<div class="cr-row"><span class="crl">${l}</span>${cbadge(met,desc)}</div>`).join('')}<div style="display:flex;align-items:center;justify-content:space-between;padding:8px;background:var(--bg2);border-radius:var(--r-sm);margin-top:8px"><div><div style="font-size:10px;color:var(--ink3);margin-bottom:2px">추정 표현형</div><div style="font-size:13px;font-weight:700;color:${subCol}">${sub}</div></div><div style="text-align:right"><div style="font-size:10px;color:var(--ink3);margin-bottom:2px">증상 시작 시기</div><div style="font-size:12px;font-weight:600;color:var(--ink)">${IN.on1||'미기재'}</div></div></div></div></div>
+  <div class="rpt-sec"><div class="rsh" style="background:var(--green-l);color:var(--green-d)"><i class="ti ti-stethoscope"></i>임상적 해석</div><div class="rsb">${clinItems.map(item=>`<div class="clin-item ${cc[item.t]||'clin-main'}"><i class="ti ${ci[item.t]||'ti-circle-check'} ci-icon" style="color:${co[item.t]||'var(--green-d)'}"></i><span style="color:${co[item.t]||'var(--green-d)'}">${item.s}</span></div>`).join('')}</div></div>
+  <div class="rpt-sec"><div class="rsh" style="background:var(--purple-l);color:var(--purple-d)"><i class="ti ti-chart-dots"></i>증상 응답 분포</div><div class="rsb"><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">${[['성인 주의력결핍',DA],['성인 과잉행동·충동성',DH],['아동기 주의력결핍',CA],['아동기 과잉행동·충동성',CH]].map(([l,arr])=>`<div><div style="font-size:10px;color:var(--ink3);font-weight:500;margin-bottom:4px">${l}</div><div class="drow">${dotRow(arr)}</div></div>`).join('')}</div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">${[['d0','0'],['d1','1'],['d2','2'],['d3','3'],['dn','미답']].map(([c,l])=>`<div style="display:flex;align-items:center;gap:3px;font-size:10px;color:var(--ink3)"><div class="dot ${c}" style="width:14px;height:14px;font-size:0"></div>${l}</div>`).join('')}</div></div></div>
+  ${(DA.some(q=>SC[q.id]>=2)||DH.some(q=>SC[q.id]>=2))?`<div class="rpt-sec"><div class="rsh" style="background:var(--blue-l);color:var(--blue-d)"><i class="ti ti-list-check"></i>성인기 주요 증상 (2점↑)</div><div class="rsb">${DA.some(q=>SC[q.id]>=2)?`<div style="font-size:10px;font-weight:600;color:var(--ink3);margin-bottom:4px">주의력결핍</div>${symRows(DA)}`:''}${DH.some(q=>SC[q.id]>=2)?`<div style="font-size:10px;font-weight:600;color:var(--ink3);margin:8px 0 4px">과잉행동·충동성</div>${symRows(DH)}`:''}  </div></div>`:''}
+  ${(CA.some(q=>SC[q.id]>=2)||CH.some(q=>SC[q.id]>=2))?`<div class="rpt-sec"><div class="rsh" style="background:var(--teal-l);color:var(--teal-d)"><i class="ti ti-list-check"></i>아동기 주요 증상 (2점↑)</div><div class="rsb">${CA.some(q=>SC[q.id]>=2)?`<div style="font-size:10px;font-weight:600;color:var(--ink3);margin-bottom:4px">주의력결핍</div>${symRows(CA)}`:''}${CH.some(q=>SC[q.id]>=2)?`<div style="font-size:10px;font-weight:600;color:var(--ink3);margin:8px 0 4px">과잉행동·충동성</div>${symRows(CH)}`:''}  </div></div>`:''}
+  <div class="rpt-sec"><div class="rsh" style="background:var(--amber-l);color:var(--amber-d)"><i class="ti ti-timeline"></i>증상 시작과 지속성</div><div class="rsb">${[['시작 시기',IN.on1],['12세 이전 시작',IN.on2],['성인기까지 지속',IN.on3]].map(([l,v])=>`<div class="cr-row"><span class="crl">${l}</span><span style="font-size:12px;font-weight:600;color:var(--ink)">${v||'미기재'}</span></div>`).join('')}${IN.onNote?`<div class="case-note" style="margin-top:6px">특이 시기/계기: ${IN.onNote}</div>`:''}</div></div>
+  <div class="rpt-sec"><div class="rsh" style="background:var(--green-l);color:var(--green-d)"><i class="ti ti-activity"></i>기능 손상</div><div class="rsb"><div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:.5rem"><div><div style="font-size:10px;font-weight:600;color:var(--ink3);margin-bottom:5px">성인기 (${adImpCnt}/5 영역)</div><div class="imp5">${[{id:'aw',lbl:'직업/학업'},{id:'af',lbl:'대인관계'},{id:'as',lbl:'사회적교류'},{id:'al',lbl:'여가/취미'},{id:'ac',lbl:'자아상'}].map(d=>{const cnt=(IN[d.id]||[]).filter(Boolean).length;const none=IN['none_'+d.id];const has=cnt>0;return `<div class="imc" style="background:${none?'var(--bg3)':has?'var(--green-l)':'var(--bg2)'};border-color:${none?'var(--line2)':has?'var(--green-m)':'var(--line)'}"><div class="imc-l" style="color:${none?'var(--ink3)':has?'var(--green-d)':'var(--ink3)'}">${d.lbl}</div><div class="imc-v" style="color:${none?'var(--ink3)':has?'var(--green-d)':'var(--ink3)'}">${none?'—':cnt}</div></div>`;}).join('')}</div></div><div><div style="font-size:10px;font-weight:600;color:var(--ink3);margin-bottom:5px">아동기 (${chImpCnt}/5 영역)</div><div class="imp5">${[{id:'ce',lbl:'교육'},{id:'cf',lbl:'가정생활'},{id:'cs',lbl:'사회적교류'},{id:'cl',lbl:'여가/취미'},{id:'cc',lbl:'자아상'}].map(d=>{const cnt=(IN[d.id]||[]).filter(Boolean).length;const none=IN['none_'+d.id];const has=cnt>0;return `<div class="imc" style="background:${none?'var(--bg3)':has?'var(--green-l)':'var(--bg2)'};border-color:${none?'var(--line2)':has?'var(--green-m)':'var(--line)'}"><div class="imc-l" style="color:${none?'var(--ink3)':has?'var(--green-d)':'var(--ink3)'}">${d.lbl}</div><div class="imc-v" style="color:${none?'var(--ink3)':has?'var(--green-d)':'var(--ink3)'}">${none?'—':cnt}</div></div>`;}).join('')}</div></div></div>${impRowRpt(impDD)}${impRowRpt(chDD)}</div></div>
+  ${diffMeta.length?`<div class="rpt-sec"><div class="rsh" style="background:var(--red-l);color:var(--red-d)"><i class="ti ti-alert-triangle"></i>감별진단 / 동반 문제</div><div class="rsb"><div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px">${diffMeta.map(f=>`<span class="cbadge bwarn">${f.lbl}</span>`).join('')}</div>${diffMeta.map(f=>{const checks=IN[f.id]||[];const al={sleep:['수면 패턴 불규칙','수면 부족','자주 깸','낮 졸림','수면무호흡 의심','불규칙 생활'],dep:['의욕 저하','흥미 감소','피로','자책·무가치감','사고 속도 저하','사라지고 싶은 생각'],anx:['걱정 과다','긴장·초조','실수 두려움','불안 미루기','공황 경험','평가 상황 두려움'],bp:['수면 감소에도 에너지','말·사고 빨라짐','과도한 자신감','과소비·충동 행동'],sub:['음주 조절 어려움','카페인·니코틴 과다','게임·SNS 조절 어려움','충동적 식사']};const items=(al[f.id]||[]).filter((_,i)=>checks[i]);const when=CS['df_'+f.id];return `<div style="padding:5px 8px;border-radius:var(--r-sm);background:var(--amber-l);margin-bottom:4px;border:.5px solid var(--amber-m)"><div style="font-size:10px;font-weight:600;color:var(--amber-d);margin-bottom:3px">${f.lbl}</div><div style="display:flex;flex-wrap:wrap;gap:3px">${items.map(it=>`<span class="ex-tag">${it}</span>`).join('')}</div>${when?`<div class="case-note" style="margin-top:3px">시작: ${when}</div>`:''}</div>`;}).join('')}</div></div>`:''}
+  <div style="font-size:10px;color:var(--ink3);line-height:1.6;padding:.5rem;border-top:.5px solid var(--line);text-align:center;background:#fff">ASRS v1.1: WHO / Kessler et al. (2005) · DIVA 2.0: Kooij &amp; Francken (2010) · DSM-5: APA (2013) · DIVA 민감도 90.0%, 특이도 72.9% (Pettersson et al., 2018)</div>
+</div>
+</div>
+<div class="fname-hint">
+  <div style="flex:1">
+    <div style="font-size:11px;font-weight:600;color:var(--blue-d);margin-bottom:3px">📋 PDF 저장 방법</div>
+    <div style="font-size:11px;color:var(--blue-d);line-height:1.6">① 아래 버튼을 누르면 파일명 <span class="fname-chip">${fname}</span>이 클립보드에 복사됩니다.<br>② 저장 창에서 파일 이름 칸을 클릭하고 <strong>Ctrl+V</strong>로 붙여넣기 하세요.</div>
+  </div>
+</div>
+<div class="action-row">
+  <button class="act-btn act-prim" onclick="printWithCopy()"><i class="ti ti-printer"></i> 인쇄 / PDF 저장</button>
+  <button class="act-btn" onclick="copyReport()"><i class="ti ti-clipboard"></i> 결과 복사</button>
+</div>`;
+}
+
+function printWithCopy(){
+  const fname=getFilename();
+  navigator.clipboard.writeText(fname).then(()=>{
+    showToast(`파일명 "${fname}" 복사됨 — 저장창에서 Ctrl+V`,3000);
+    setTimeout(()=>{const orig=document.title;document.title=fname;window.print();setTimeout(()=>{document.title=orig;},1500);},300);
+  }).catch(()=>{
+    const orig=document.title;document.title=fname;window.print();setTimeout(()=>{document.title=orig;},1500);
+  });
+}
+
+function copyReport(){
+  const aA=cntP(DA),aH=cntP(DH),cA=cntP(CA),cH=cntP(CH);const ap=asrsScore(),at=asrsTotal();
+  const lines=['═══════════════════════════════','ADHD 사전 평가 결과 보고서','═══════════════════════════════',`아이디: ${IN.uid||'미기재'}  ·  ${TODAY}`,`파일명: ${getFilename()}`,'',`ASRS Part A: ${ap}/6 (총점 ${at}/20) → ${ap>=4?'양성':'음성'}`,`성인기 주의력결핍: ${aA}/9 ${aA>=5?'[충족]':'[미충족]'}`,`성인기 과잉행동·충동성: ${aH}/9 ${aH>=5?'[충족]':'[미충족]'}`,`아동기 주의력결핍: ${cA}/9 ${cA>=6?'[충족]':'[미충족]'}`,`아동기 과잉행동·충동성: ${cH}/9 ${cH>=6?'[충족]':'[미충족]'}`,'',`시작 시기: ${IN.on1||'미기재'}  ·  12세 이전: ${IN.on2||'미기재'}  ·  지속: ${IN.on3||'미기재'}`];
+  navigator.clipboard.writeText(lines.join('\n')).then(()=>showToast('클립보드에 복사되었습니다')).catch(()=>showToast('복사 실패'));
+}
+
+// ── PAGE BUILDER ─────────────────────────────────────────────
+function buildPage(k){
+  const ac=TCOLS[PKEYS.indexOf(k)];
+  if(k==='intro') return `<div class="card"><div class="card-head"><span class="card-pill" style="background:var(--blue-l);color:var(--blue-d)"><i class="ti ti-info-circle" style="font-size:11px"></i>안내</span><h2>작성 전 꼭 읽어주세요</h2></div><div style="padding:1rem 1.375rem"><div class="notice">이 자료는 ADHD를 스스로 진단하는 검사가 아닙니다. 진료실에서 보다 정확하고 효율적인 평가를 위해, 현재 생활의 어려움과 어린 시절부터 이어진 양상을 미리 정리해 오시는 용도입니다.</div><div style="display:grid;gap:9px;margin-top:.875rem">${['본인은 최근 6개월 이상 지속되거나 반복된 모습을 기준으로 작성합니다.','보호자·배우자는 본인이 놓칠 수 있는 생활 장면을 보완해 작성합니다.','아동기 문항은 부모님·형제자매 등 어린 시절을 기억하는 분과 함께 확인해주세요.','체크보다 더 중요한 것은 실제 사례입니다. 기억나는 장면을 짧게 적어주세요.'].map(t=>`<div style="display:flex;align-items:flex-start;gap:9px;font-size:13px;line-height:1.6;color:var(--ink)"><div style="width:20px;height:20px;border-radius:50%;background:var(--blue-l);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px"><i class="ti ti-check" style="color:var(--blue-d);font-size:11px"></i></div>${t}</div>`).join('')}</div><div style="margin-top:1rem;background:var(--bg2);border-radius:var(--r-md);padding:1rem 1.125rem;border:.5px solid var(--line)"><div style="font-size:11px;font-weight:600;color:var(--ink2);margin-bottom:10px;letter-spacing:.03em;text-transform:uppercase">응답 기준</div><div style="display:grid;gap:6px">${[[0,'거의 없음','지난 6개월간 거의 경험하지 않음','d0'],[1,'가끔','또래와 비슷하거나 가끔 있는 정도','d1'],[2,'자주','또래보다 더 자주, 반복적으로 나타남','d2'],[3,'매우 자주','거의 매일 나타나거나 실제 생활에 뚜렷한 지장','d3']].map(([n,t,d,c])=>`<div style="display:flex;align-items:center;gap:10px;font-size:12px"><div class="dot ${c}" style="flex-shrink:0;width:22px;height:22px">${n}</div><strong style="width:62px;color:var(--ink)">${t}</strong><span style="color:var(--ink2)">${d}</span></div>`).join('')}</div><p style="font-size:11px;color:var(--ink3);margin-top:9px;line-height:1.5">※ 또래나 주변 사람에 비해 더 자주·더 심하게·더 반복적으로 나타나는지를 기준으로 판단해주세요.</p></div></div></div>`;
+  if(k==='basic') return `<div class="id-card"><div class="id-top"><div class="id-icon"><i class="ti ti-id-badge" style="color:#fff;font-size:17px"></i></div><div><h3>나만의 식별 아이디</h3></div></div><p>진료실에서 이 아이디를 알려주시면 선생님이 자료를 찾을 수 있습니다.</p><div class="id-input-row"><input class="id-input" type="text" placeholder="예: bluemoon77, pine2024, cat0312..." maxlength="20" oninput="IN.uid=this.value.trim()" value="${IN.uid||''}"></div><div class="id-tip"><i class="ti ti-bulb" style="font-size:12px"></i>기억하기 쉬운 아이디를 미리 메모나 사진으로 저장해두세요.</div></div><div class="card"><div class="card-head"><span class="card-pill" style="background:var(--green-l);color:var(--green-d)"><i class="ti ti-user" style="font-size:11px"></i>기본 정보</span><h2>작성 정보</h2></div><div class="fg"><div class="fi ff"><label>어릴 때 모습을 아는 분이 함께 작성 또는 확인했나요?</label><div class="rg">${['예 — 부모','예 — 형제자매','예 — 배우자/파트너','아니오'].map(v=>`<label class="ri"><input type="radio" name="col" value="${v}" onchange="IN.coll=this.value" ${IN.coll===v?'checked':''}> ${v}</label>`).join('')}</div></div></div></div><div class="card"><div class="card-head"><span class="card-pill" style="background:var(--amber-l);color:var(--amber-d)"><i class="ti ti-message-dots" style="font-size:11px"></i>주요 호소</span><h2>현재 가장 불편한 문제</h2><p>진료 전 가장 힘든 부분을 3가지까지 적어주세요. 생각나는 것만 적으셔도 됩니다.</p></div><div class="comp-grid">${[1,2,3].map(n=>`<div class="comp-row"><div class="comp-num cn${n}">${n}</div><input class="comp-inp" type="text" placeholder="${n===1?'예: 집중이 너무 안 돼서 일을 마무리 못 함':n===2?'예: 뭐든 미루다가 마감 직전에 몰아서 함':'예: 물건을 너무 자주 잃어버림 (선택 사항)'}" oninput="IN['c'+${n}]=this.value" value="${IN['c'+n]||''}"></div>`).join('')}</div><p class="comp-hint">꼭 3가지를 채우지 않아도 됩니다.</p></div>`;
+  if(k==='asrs') return `<div class="asrs-wrap"><div class="asrs-head"><div class="asrs-badge"><i class="ti ti-clipboard-check" style="font-size:10px"></i>ASRS v1.1 Part A</div><h2>성인 ADHD 선별검사</h2><p>지난 6개월 동안의 상태를 기준으로, 각 문항이 얼마나 자주 해당되는지 선택해주세요.</p></div>${ASRS_Q.map((q,qi)=>`<div class="asrs-qw" style="${qi%2===1?'background:#FFFCFB':''}"><div class="asrs-qi"><div class="asrs-ql"><span class="asrs-qn">${qi+1}</span>${q.lbl}</div><div class="asrs-sr" id="asw_${q.id}">${[0,1,2,3,4].map(v=>`<button class="asrs-sc${ASRS[q.id]===v?' av'+v:''}" data-v="${v}" onclick="setAsrs('${q.id}',${v})"><strong>${v}</strong>${ASRS_LBL[v]}</button>`).join('')}</div></div></div>`).join('')}<div class="asrs-result-area"><span id="asrs-progress" style="font-size:12px;color:var(--ink3)">${ASRS_Q.filter(q=>ASRS[q.id]!=null).length}/6 문항 응답 완료</span></div></div>`;
+  if(k==='adA') return `<div class="card"><div class="card-head"><span class="card-pill" style="background:var(--purple-l);color:var(--purple-d)"><i class="ti ti-focus" style="font-size:11px"></i>성인기 · A1~A9</span><h2>주의력결핍 증상</h2><p>최근 6개월 동안 반복적으로 나타난 모습을 기준으로 체크해주세요.</p></div>${DA.map((q,i)=>mkItem(q,i,ac)).join('')}${suppBlk('지금까지 나온 주의력결핍 증상들이, 같은 나이대 다른 사람들에 비해 더 자주·더 심하게 나타난다고 생각하나요?','suppAdA')}</div>`;
+  if(k==='adH') return `<div class="card"><div class="card-head"><span class="card-pill" style="background:var(--purple-l);color:var(--purple-d)"><i class="ti ti-bolt" style="font-size:11px"></i>성인기 · H/I 1~9</span><h2>과잉행동·충동성 증상</h2><p>성인에서는 신체적 과잉행동보다 내적 초조감, 충동적 언행, 과도한 분주함으로 나타나는 경우가 많습니다.</p></div>${DH.map((q,i)=>mkItem(q,i,ac)).join('')}${suppBlk('과잉행동·충동성 증상들이, 같은 나이대 다른 사람들에 비해 더 자주·더 심하게 나타난다고 생각하나요?','suppAdH')}</div>`;
+  if(k==='chA') return `<div class="card"><div class="card-head"><span class="card-pill" style="background:var(--teal-l);color:var(--teal-d)"><i class="ti ti-focus" style="font-size:11px"></i>아동기 · 만 5~12세</span><h2>아동기 주의력결핍 증상</h2><p>초등학교 시기까지의 모습을 떠올려 주세요.</p></div><div class="notice gn">채점 기준 — 0: 거의 없었음 / 1: 조금 있었음 / 2: 또래보다 뚜렷했음 / 3: 가족·선생님이 자주 지적할 정도</div>${CA.map((q,i)=>mkItem(q,i,ac)).join('')}${suppBlk('어릴 때 주의력결핍 증상들이, 같은 나이 또래보다 더 자주·더 심하게 나타났다고 생각하나요?','suppChA')}</div>`;
+  if(k==='chH') return `<div class="card"><div class="card-head"><span class="card-pill" style="background:var(--teal-l);color:var(--teal-d)"><i class="ti ti-bolt" style="font-size:11px"></i>아동기 · 만 5~12세</span><h2>아동기 과잉행동·충동성 증상</h2></div><div class="notice gn">채점 기준 — 0: 거의 없었음 / 1: 조금 있었음 / 2: 또래보다 뚜렷했음 / 3: 가족·선생님이 자주 지적할 정도</div>${CH.map((q,i)=>mkItem(q,i,ac)).join('')}${suppBlk('어릴 때 과잉행동·충동성 증상들이, 같은 나이 또래보다 더 자주·더 심하게 나타났다고 생각하나요?','suppChH')}</div>`;
+  if(k==='onset') return `<div class="card"><div class="card-head"><span class="card-pill" style="background:var(--amber-l);color:var(--amber-d)"><i class="ti ti-timeline" style="font-size:11px"></i>발달력</span><h2>증상의 시작과 지속성</h2></div><div class="onset-block"><div class="onset-q">위와 같은 특성이 언제부터 있었다고 생각하나요?</div><div class="rg">${['초등학교 입학 전부터','초등학교 시기부터','중학교 이후부터','성인 이후부터','잘 모르겠음'].map(v=>`<label class="ri"><input type="radio" name="on1" value="${v}" onchange="IN.on1=this.value" ${IN.on1===v?'checked':''}> ${v}</label>`).join('')}</div></div><div class="onset-block"><div class="onset-q">12세 이전에도 비슷한 모습이 있었다고 생각하나요?</div><div class="rg">${['예','아니오','잘 모르겠음'].map(v=>`<label class="ri"><input type="radio" name="on2" value="${v}" onchange="IN.on2=this.value" ${IN.on2===v?'checked':''}> ${v}</label>`).join('')}</div></div><div class="onset-block"><div class="onset-q">성인기까지 비슷한 양상이 이어져 왔다고 생각하나요?</div><div class="rg">${['예 (어린 시절부터 지금까지 지속됨)','아니오','시기별로 다름','잘 모르겠음'].map(v=>`<label class="ri"><input type="radio" name="on3" value="${v}" onchange="IN.on3=this.value" ${IN.on3===v?'checked':''}> ${v}</label>`).join('')}</div></div><div class="onset-block"><div class="onset-q">특정 시기 이후 갑자기 시작되었다면, 그 시기와 계기를 적어주세요</div><p style="font-size:11px;color:var(--ink3);margin-bottom:6px">예: 우울증 이후 / 번아웃 이후 / 출산 이후 — 해당 없으면 비워두세요.</p><div class="cw"><textarea class="cta" style="min-height:38px" placeholder="예: 작년 이직 이후 갑자기 심해진 것 같음..." oninput="IN.onNote=this.value">${IN.onNote||''}</textarea></div></div></div>`;
+  if(k==='imp') return `<div class="card"><div class="card-head"><span class="card-pill" style="background:var(--green-l);color:var(--green-d)"><i class="ti ti-activity" style="font-size:11px"></i>성인기</span><h2>성인기 생활에 미친 영향</h2><p>각 영역의 예시를 읽어보신 후, 해당되는 항목만 체크해주세요. 마지막에 "해당없음"도 선택할 수 있습니다.</p></div>${mkImpDom('var(--blue)','briefcase','직업 또는 학업','aw',['학교, 자격증, 직무교육, 과제 등을 끝까지 마치기 어려웠음','능력이나 기대에 비해 결과가 잘 나오지 않았다고 느낌','일·공부에 쉽게 싫증을 냄','행정업무·서류작업·계획 세우기가 어려움','실수·지각·마감 문제로 지적을 받음','외부 장치나 도움이 있어야 겨우 유지됨','높은 지능이나 임기응변으로 문제를 가려온 편임'],'직업 또는 학업')}${mkImpDom('var(--teal)','home','대인관계 및 가정생활','af',['관계에 빨리 싫증을 느낌','충동적으로 관계를 시작하거나 끝냄','가사, 육아, 돈 관리가 한 사람에게 쏠려 갈등이 생김','반복되는 다툼·갈등이 있음','돈 관리·충동구매 등 재정 문제가 있음'],'대인관계 및 가정생활')}${mkImpDom('var(--purple)','users','사회적 교류','as',['모임·대화에서 쉽게 싫증을 냄','대인관계를 꾸준히 관리하기 어려움','말실수·끼어들기·연락 문제로 갈등이 있음','연락, 기념일, 배려 표현을 잊어 상대가 서운해함'],'사회적 교류')}${mkImpDom('var(--amber)','puzzle','여가와 취미','al',['여가 시간에도 편히 쉬지 못함','취미가 자주 바뀌거나 쉽게 싫증남','책·영화를 끝까지 보기 어려움','자극 추구나 위험 감수 행동이 있음','폭식·과소비·게임·인터넷 사용이 과해질 때가 있음'],'여가와 취미')}${mkImpDom('var(--red)','heart','자신감과 자아상','ac',['반복된 지적으로 자신감이 낮아짐','실패 경험이 많아 부정적인 자아상이 있음','비판에 과도하게 예민하게 반응함','완벽하게 하려다 시작을 못 함'],'자신감과 자아상')}</div><div class="card" style="margin-top:0"><div class="card-head"><span class="card-pill" style="background:var(--teal-l);color:var(--teal-d)"><i class="ti ti-activity" style="font-size:11px"></i>아동기</span><h2>아동기 생활에 미친 영향</h2><p>각 영역의 예시를 읽어보신 후, 어릴 때 해당됐던 항목만 체크해주세요.</p></div>${mkImpDom('var(--blue)','book','교육','ce',['지능·잠재력에 비해 성적이 낮았음','숙제를 마치지 못하거나 제출하지 못함','교사에게 집중력·행동 문제로 지적받음','부모·학원 등 외부 구조 덕분에 겨우 유지됨'],'교육')}${mkImpDom('var(--teal)','home','가정생활','cf',['형제자매와 자주 다툼','자주 혼나거나 벌을 받음','또래보다 오랜 기간 부모의 보살핌·관리가 필요했음'],'가정생활')}${mkImpDom('var(--purple)','users','사회적 교류','cs',['친구관계를 관리하기 어려웠음','친구를 사귀거나 유지하는 데 어려움이 있었음','놀림을 당하거나 단체활동에서 밀려난 적이 있음'],'사회적 교류')}${mkImpDom('var(--amber)','puzzle','여가와 취미','cl',['조용한 여가를 즐기기 어려웠음','다치거나 사고가 잦았음','취미가 자주 바뀌거나 쉽게 싫증남'],'여가와 취미')}${mkImpDom('var(--red)','heart','자신감과 자아상','cc',['자주 지적받아 자신감이 낮아졌음','비판에 예민하게 반응함','완벽하게 하려다 시작하지 못하는 모습이 있었음'],'자신감과 자아상')}<div style="padding:1rem 1.375rem;border-top:.5px solid var(--line)"><div style="font-size:13px;font-weight:600;color:var(--ink);margin-bottom:7px">어린 시절 관련 자료</div><div class="cg">${['생활기록부','성적표','담임교사 의견','심리검사 결과','부모/가족 진술','없음'].map((v,i)=>`<label class="ci"><input type="checkbox" onchange="toggleCb('cDoc',${i},this.checked)" ${(IN.cDoc||[])[i]?'checked':''}> ${v}</label>`).join('')}</div></div></div>`;
+  if(k==='diff') return `<div class="card"><div class="card-head"><span class="card-pill" style="background:var(--red-l);color:var(--red-d)"><i class="ti ti-stethoscope" style="font-size:11px"></i>감별진단</span><h2>감별진단 및 동반 문제 확인</h2><p>각 항목의 내용을 읽어보신 후, 해당되는 증상이 있을 때만 체크해주세요. 없으면 "해당 없음"을 선택해주세요.</p></div>${mkDiff('수면 문제','수면 상태를 확인하기 위한 항목입니다. 잠을 잘 못 자거나 수면 리듬이 불규칙하면 집중력 저하와 충동성이 심해질 수 있습니다.','sleep',['잠드는 시간이 매우 늦거나 수면 패턴이 불규칙하다.','수면 시간이 부족하다. (6시간 이하인 날이 많다)','밤에 자주 깨거나 깊게 잠들지 못한다.','낮에 졸림이 심해 일상생활이 힘들다.','코골이 또는 수면 중 숨이 막히는 것 같다는 말을 들어본 적 있다.','교대근무, 밤샘 등 불규칙한 생활 패턴이 있다.'])}${mkDiff('우울 증상','우울 증상이 있으면 집중력이 떨어지고, 무기력함·미루기·의욕 저하가 ADHD처럼 보일 수 있습니다.','dep',['의욕이 뚜렷하게 떨어지거나, 아무것도 하기 싫다는 느낌이 든다.','예전에는 좋아했던 것들이 더 이상 즐겁지 않다.','이유 없이 몸이 무겁고 피로하다.','나 자신을 자책하거나 쓸모없다는 생각이 자주 든다.','생각이 느려지거나 집중이 잘 안 된다.','죽고 싶다는 생각, 또는 사라지고 싶다는 생각이 든 적이 있다.'])}${mkDiff('불안 증상','불안이 심하면 집중하기 어렵고, 실수가 두려워 시작을 못 하거나 일을 미루는 패턴이 생길 수 있습니다.','anx',['걱정이 너무 많아서 집중하기가 어렵다.','긴장감, 예민함, 초조함이 일상적으로 심하다.','실수할까 봐 두려워서 일을 시작하지 못한다.','불안 때문에 해야 할 일을 자꾸 미루게 된다.','갑자기 심장이 두근거리고 숨이 막히는 느낌이 든 적이 있다.','사람들 앞에서 평가받는 상황이 매우 힘들다.'])}${mkDiff('양극성 관련 증상','조증·경조증 삽화는 ADHD와 겹치는 증상이 많아 감별이 필요합니다. 다음과 같은 시기가 있었다면 체크해주세요.','bp',['잠을 평소보다 훨씬 적게 자도 피곤하지 않고 에너지가 넘쳤던 시기가 있었다.','평소보다 말이 많아지고 생각이 너무 빨리 돌아갔던 시기가 있었다.','자신감이 과도하게 높아지거나, 무리한 계획을 잔뜩 세웠던 시기가 있었다.','과소비, 충동적 결정, 위험한 행동이 갑자기 늘었던 시기가 있었다.'])}${mkDiff('물질 사용 및 행동 조절 문제','카페인, 알코올, 게임, SNS 등 특정 물질이나 행동에 과도하게 의존하면 주의력과 충동 조절에 영향을 줄 수 있습니다.','sub',['술을 마시면 멈추기가 어렵거나, 자신도 모르게 많이 마신다.','카페인, 에너지드링크, 담배 등을 하루에 많이 사용한다.','게임, 쇼츠, SNS, 쇼핑 등을 조절하기 어렵다는 느낌이 든다.','폭식을 하거나 먹는 것을 충동적으로 조절하기 어렵다.'])}<div class="diff-block"><div class="diff-title">의학적 요인 및 복용 약물</div><div class="diff-desc">신체 질환이나 복용 중인 약물이 집중력·피로감·기억력에 영향을 줄 수 있습니다.</div><div class="cg" style="margin-bottom:8px">${['갑상선 질환','빈혈','만성피로','수면장애','뇌진탕/두부외상','해당 없음'].map((v,i)=>`<label class="ci"><input type="checkbox" onchange="toggleCb('medC',${i},this.checked)" ${(IN.medC||[])[i]?'checked':''}> ${v}</label>`).join('')}</div><div class="diff-when" style="margin-bottom:3px">현재 복용 중인 약물 (없으면 비워두세요)</div><input class="diff-inp" type="text" placeholder="없음, 또는 약물명 기재" oninput="IN.meds=this.value" value="${IN.meds||''}"></div></div>`;
+  if(k==='sum') return buildReport();
+  return '';
+}
+
+function render(){
+  document.getElementById('pages').innerHTML=buildPage(PKEYS[cur]);
+  const pct=Math.round(cur/(PKEYS.length-1)*100);
+  document.getElementById('pf').style.width=pct+'%';
+  document.getElementById('pf').style.background=TCOLS[cur];
+  document.getElementById('pct').textContent=pct+'%';
+  document.getElementById('plbl').textContent=`${cur+1} / ${PKEYS.length}`;
+  document.getElementById('bP').style.visibility=cur===0?'hidden':'visible';
+  document.getElementById('bN').textContent=cur===PKEYS.length-1?'완료':'다음 →';
+  document.getElementById('tabs').innerHTML=PKEYS.map((k,i)=>`<button class="tab t${i}${i===cur?' active':''}" onclick="goTo(${i})"><span class="tab-num">${i+1}</span>${TNAMES[i]}</button>`).join('');
+}
+function nav(d){const n=cur+d;if(n<0||n>=PKEYS.length)return;cur=n;render();document.getElementById('app').scrollIntoView({behavior:'smooth'});}
+function goTo(i){cur=i;render();document.getElementById('app').scrollIntoView({behavior:'smooth'});}
+render();
+</script>
