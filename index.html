@@ -158,8 +158,10 @@
         .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
 
         /* ── 검사 카드 강조선 ────────────────────────── */
-        .test-card-phq  { border-left: 4px solid #6B8E23; }
-        .test-card-gad  { border-left: 4px solid #D4A55A; }
+        .test-card-phq  { border-left: 4px solid #6B8E23; cursor: pointer; transition: transform 0.15s ease, box-shadow 0.15s ease; }
+        .test-card-phq:active  { transform: scale(0.98); box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+        .test-card-gad  { border-left: 4px solid #D4A55A; cursor: pointer; transition: transform 0.15s ease, box-shadow 0.15s ease; }
+        .test-card-gad:active  { transform: scale(0.98); box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
         .test-card-diva { border-left: 4px solid #6D5BA3; cursor: pointer; transition: transform 0.15s ease, box-shadow 0.15s ease; }
         .test-card-diva:active { transform: scale(0.98); box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
 
@@ -938,7 +940,10 @@
             <div class="space-y-4" id="tests-cards">
 
                 <!-- PHQ-9 카드 -->
-                <div class="card test-card-phq">
+                <div class="card test-card-phq"
+                     onclick="window.location.href = './phq9.html'"
+                     role="button" tabindex="0"
+                     aria-label="PHQ-9 우울증 검사 시작하기">
                     <div class="flex items-start justify-between mb-3">
                         <div class="flex items-center gap-3">
                             <div class="w-12 h-12 rounded-xl flex items-center justify-center"
@@ -962,16 +967,18 @@
                             <span class="mx-1">·</span>
                             <i class="fas fa-user-check"></i> 42명 완료
                         </span>
-                        <button onclick="showToast('PHQ-9 검사는 다음 업데이트에서 제공됩니다')"
-                                class="px-5 py-2.5 rounded-xl text-sm font-bold text-white"
-                                style="background: #6B8E23;">
+                        <span class="flex items-center gap-1 px-5 py-2.5 rounded-xl text-sm font-bold text-white pointer-events-none"
+                              style="background: #6B8E23;">
                             검사 시작 <i class="fas fa-arrow-right ml-1 text-xs"></i>
-                        </button>
+                        </span>
                     </div>
                 </div>
 
                 <!-- GAD-7 카드 -->
-                <div class="card test-card-gad">
+                <div class="card test-card-gad"
+                     onclick="window.location.href = './gad7.html'"
+                     role="button" tabindex="0"
+                     aria-label="GAD-7 불안 척도 검사 시작하기">
                     <div class="flex items-start justify-between mb-3">
                         <div class="flex items-center gap-3">
                             <div class="w-12 h-12 rounded-xl flex items-center justify-center"
@@ -995,11 +1002,10 @@
                             <span class="mx-1">·</span>
                             <i class="fas fa-user-check"></i> 35명 완료
                         </span>
-                        <button onclick="showToast('GAD-7 검사는 다음 업데이트에서 제공됩니다')"
-                                class="px-5 py-2.5 rounded-xl text-sm font-bold text-white"
-                                style="background: #D4A55A;">
+                        <span class="flex items-center gap-1 px-5 py-2.5 rounded-xl text-sm font-bold text-white pointer-events-none"
+                              style="background: #D4A55A;">
                             검사 시작 <i class="fas fa-arrow-right ml-1 text-xs"></i>
-                        </button>
+                        </span>
                     </div>
                 </div>
 

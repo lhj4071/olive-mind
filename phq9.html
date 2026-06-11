@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PHQ-9 우울 자가 평가</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&family=Noto+Serif+KR:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+:root {
+  --bg:           #F5F4F0;
+  --surface:      #FFFFFF;
+  --surface-sub:  #F9F8F6;
+  --line:         #E8E5DF;
+  --line-strong:  #C8C4BC;
+  --ink:          #1C1917;
+  --ink-2:        #4A4540;
+  --ink-3:        #8A857E;
+
+  --accent:       #2E6B5E;
+  --accent-soft:  #EAF2EF;
+  --accent-mid:   #4A9080;
+  --accent-dark:  #1D4F45;
+
+  --warn:         #B84C1E;
+  --warn-soft:    #FBF0EB;
+
+  --sev-0: #3D8A5E;   /* 최소 */
+  --sev-1: #917920;   /* 경도 */
+  --sev-2: #B86020;   /* 중등도 */
+  --sev-3: #A52828;   /* 중증 */
+
+  --r: 12px;
+  --r-sm: 8px;
+  --r-pill: 999px;
+  --trans: 0.22s cubic-bezier(0.22, 0.68, 0, 1.2);
+}
+
+body {
+  font-family: 'Noto Sans KR', sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  min-height: 100vh;
+  font-size: 15px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── TOP NAV ── */
+#topnav {
+  display: none;
+  position: sticky; top: 0; z-index: 200;
+  background: rgba(245,244,240,0.94);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--line);
+}
+.nav-inner {
+  max-width: 660px; margin: 0 auto;
+  padding: 12px 20px 10px;
+}
+.nav-row {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 8px;
+}
+.nav-brand {
+  display: flex; align-items: center; gap: 10px;
+}
+.nav-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--accent);
+}
+.nav-title {
+  font-size: 13px; font-weight: 600; letter-spacing: 0.04em;
+  color: var(--accent);
+}
+.nav-count {
+  font-size: 12px; color: var(--ink-3);
+  font-variant-numeric: tabular-nums;
+}
+.progress-rail {
+  height: 3px; background: var(--line); border-radius: var(--r-pill); overflow: hidden;
+}
+.progress-bar {
+  height: 100%; border-radius: var(--r-pill);
+  background: linear-gradient(90deg, var(--accent) 0%, var(--accent-mid) 100%);
+  transition: width 0.5s ease;
+}
+
+/* ── SCREENS ── */
+#intro-screen { display: block; }
+#survey-screen { display: none; }
+#result-screen { display: none; }
+#main-wrap { max-width: 660px; margin: 0 auto; padding: 32px 18px 120px; }
+
+/* ── INTRO ── */
+.intro-wrap {
+  max-width: 520px; margin: 0 auto;
+  padding: 72px 20px 60px;
+  text-align: center;
+}
+.intro-eyebrow {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: var(--accent-soft); color: var(--accent-dark);
+  border-radius: var(--r-pill);
+  padding: 5px 16px;
+  font-size: 12px; font-weight: 600; letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 24px;
+}
+.intro-eyebrow-dot {
+  width: 6px; height: 6px; border-radius: 50%; background: var(--accent);
+}
+.intro-title {
+  font-family: 'Noto Serif KR', serif;
+  font-size: 34px; font-weight: 600; line-height: 1.32;
+  color: var(--ink);
+  margin-bottom: 18px;
+  letter-spacing: -0.01em;
+}
+.intro-title em {
+  font-style: normal;
+  color: var(--accent);
+}
+.intro-sub {
+  font-size: 15px; color: var(--ink-2); line-height: 1.75;
+  margin-bottom: 44px;
+  font-weight: 300;
+}
+.intro-meta-row {
+  display: flex; justify-content: center; gap: 28px;
+  margin-bottom: 40px;
+}
+.intro-meta-item {
+  text-align: center;
+}
+.intro-meta-num {
+  font-family: 'Noto Serif KR', serif;
+  font-size: 28px; font-weight: 600;
+  color: var(--ink); line-height: 1;
+  margin-bottom: 5px;
+}
+.intro-meta-label {
+  font-size: 12px; color: var(--ink-3); letter-spacing: 0.04em;
+}
+.intro-sep { width: 1px; background: var(--line); align-self: stretch; }
+.start-btn {
+  display: inline-flex; align-items: center; gap: 10px;
+  background: var(--accent); color: #fff;
+  border: none; border-radius: var(--r-pill);
+  padding: 16px 40px;
+  font-size: 15px; font-weight: 600;
+  cursor: pointer;
+  font-family: 'Noto Sans KR', sans-serif;
+  box-shadow: 0 4px 20px rgba(46,107,94,0.25), 0 1px 4px rgba(46,107,94,0.15);
+  transition: all 0.2s;
+  letter-spacing: 0.02em;
+}
+.start-btn:hover { background: var(--accent-dark); transform: translateY(-2px); box-shadow: 0 8px 28px rgba(46,107,94,0.32); }
+.start-btn:active { transform: translateY(0); }
+.intro-note { font-size: 12px; color: var(--ink-3); margin-top: 14px; }
+
+/* ── SECTION BANNER ── */
+.sec-banner {
+  background: var(--accent-soft);
+  border: 1px solid #C4DDD6;
+  border-radius: var(--r);
+  padding: 16px 20px;
+  margin-bottom: 20px;
+  display: flex; align-items: flex-start; gap: 12px;
+}
+.sec-banner-icon {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: var(--accent); color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 700;
+  flex-shrink: 0; margin-top: 1px;
+  font-family: 'Noto Serif KR', serif;
+}
+.sec-banner-text { font-size: 13.5px; color: var(--accent-dark); line-height: 1.65; }
+.sec-banner-head { font-weight: 600; margin-bottom: 3px; }
+
+/* ── Q CARDS ── */
+.q-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  padding: 22px 22px;
+  margin-bottom: 8px;
+}
+.q-card.active {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(46,107,94,0.08), 0 4px 20px rgba(46,107,94,0.10);
+  animation: cardIn 0.3s cubic-bezier(0.22, 0.68, 0, 1.2) forwards;
+}
+.q-card.answered {
+  background: var(--surface-sub);
+  border-color: transparent;
+  box-shadow: none;
+  padding: 11px 16px;
+}
+.q-card.hidden { display: none; }
+
+@keyframes cardIn {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes btnIn {
+  from { opacity: 0; transform: translateY(7px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* answered row */
+.ans-row {
+  display: flex; align-items: center; gap: 10px;
+}
+.ans-idx {
+  font-size: 11px; font-weight: 600; color: var(--ink-3);
+  min-width: 18px;
+}
+.ans-q {
+  flex: 1; font-size: 13px; color: var(--ink-3);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.ans-v {
+  font-size: 12.5px; font-weight: 600; color: var(--accent);
+  white-space: nowrap; max-width: 150px; overflow: hidden; text-overflow: ellipsis;
+}
+.ans-edit {
+  font-size: 11px; color: var(--ink-3);
+  background: none; border: 1px solid var(--line); border-radius: var(--r-pill);
+  padding: 2px 10px; cursor: pointer;
+  transition: all 0.15s; flex-shrink: 0;
+  font-family: 'Noto Sans KR', sans-serif;
+}
+.ans-edit:hover { border-color: var(--accent); color: var(--accent); }
+
+/* active card header */
+.q-idx {
+  font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
+  color: var(--accent); text-transform: uppercase;
+  margin-bottom: 7px;
+}
+.q-warn-badge {
+  display: inline-block;
+  background: var(--warn-soft); color: var(--warn);
+  border-radius: var(--r-pill);
+  font-size: 11px; font-weight: 600;
+  padding: 2px 10px; margin-left: 8px;
+  letter-spacing: 0.04em;
+}
+.q-text {
+  font-size: 16px; font-weight: 400; line-height: 1.65;
+  color: var(--ink); margin-bottom: 20px;
+  font-family: 'Noto Serif KR', serif;
+}
+
+/* ── LIKERT GRID ── */
+.likert-wrap { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; }
+@media (max-width: 480px) {
+  .likert-wrap { grid-template-columns: repeat(2,1fr); }
+}
+.lk-opt {
+  display: flex; flex-direction: column; align-items: center;
+  padding: 14px 8px 12px;
+  border: 1.5px solid var(--line);
+  border-radius: var(--r-sm);
+  cursor: pointer;
+  background: var(--bg);
+  transition: all var(--trans);
+  gap: 5px; text-align: center;
+  user-select: none;
+}
+.lk-opt:hover { border-color: var(--accent-mid); background: var(--accent-soft); }
+.lk-opt.sel {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #fff;
+}
+.lk-num {
+  font-family: 'Noto Serif KR', serif;
+  font-size: 22px; font-weight: 600; line-height: 1;
+  color: var(--ink-2);
+}
+.lk-opt.sel .lk-num { color: #fff; }
+.lk-label {
+  font-size: 11px; line-height: 1.45; color: var(--ink-3);
+}
+.lk-opt.sel .lk-label { color: rgba(255,255,255,0.82); }
+
+/* freq bar below likert */
+.freq-bar {
+  display: flex; margin-top: 10px; gap: 2px; height: 3px;
+}
+.freq-seg {
+  flex: 1; border-radius: 99px;
+  background: var(--line); transition: background 0.25s;
+}
+.freq-seg.on { background: var(--accent); }
+
+/* ── CONTINUE BTN ── */
+.cont-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  margin-top: 16px;
+  background: var(--accent); color: #fff;
+  border: none; border-radius: var(--r-pill);
+  padding: 10px 24px;
+  font-size: 14px; font-weight: 600;
+  cursor: pointer;
+  font-family: 'Noto Sans KR', sans-serif;
+  animation: btnIn 0.2s ease forwards;
+  transition: background 0.2s, transform 0.1s;
+}
+.cont-btn:hover { background: var(--accent-dark); transform: translateY(-1px); }
+
+/* ── SECTION NEXT ── */
+#sec-next-wrap { margin-top: 28px; text-align: center; }
+.sec-next-btn {
+  display: inline-flex; align-items: center; gap: 10px;
+  background: var(--accent); color: #fff;
+  border: none; border-radius: var(--r-pill);
+  padding: 15px 44px;
+  font-size: 15px; font-weight: 700;
+  cursor: pointer;
+  font-family: 'Noto Sans KR', sans-serif;
+  box-shadow: 0 4px 20px rgba(46,107,94,0.28), 0 1px 4px rgba(46,107,94,0.12);
+  animation: btnIn 0.3s ease forwards;
+  transition: all 0.2s;
+  letter-spacing: 0.02em;
+}
+.sec-next-btn:hover { background: var(--accent-dark); transform: translateY(-2px); box-shadow: 0 8px 28px rgba(46,107,94,0.36); }
+
+/* ── RESULT ── */
+.res-wrap { max-width: 640px; margin: 0 auto; padding: 48px 18px 80px; }
+.res-header { margin-bottom: 32px; }
+.res-eyebrow {
+  font-size: 11px; font-weight: 700; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--accent);
+  margin-bottom: 10px;
+}
+.res-title {
+  font-family: 'Noto Serif KR', serif;
+  font-size: 26px; font-weight: 600;
+  color: var(--ink); margin-bottom: 6px;
+}
+.res-date { font-size: 13px; color: var(--ink-3); }
+
+/* score hero */
+.score-hero {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 28px 28px 24px;
+  margin-bottom: 16px;
+  display: flex; align-items: flex-start; gap: 24px;
+  flex-wrap: wrap;
+}
+.sh-left { flex: 1; min-width: 180px; }
+.sh-scale {
+  font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--ink-3);
+  margin-bottom: 8px;
+}
+.sh-score-row {
+  display: flex; align-items: baseline; gap: 6px;
+  margin-bottom: 10px;
+}
+.sh-score {
+  font-family: 'Noto Serif KR', serif;
+  font-size: 56px; font-weight: 600; line-height: 1;
+  color: var(--ink);
+}
+.sh-max { font-size: 18px; color: var(--ink-3); }
+.sh-badge {
+  display: inline-block;
+  border-radius: var(--r-pill);
+  padding: 5px 16px;
+  font-size: 13px; font-weight: 700;
+  margin-bottom: 14px;
+}
+.sh-bar-track {
+  height: 8px; background: var(--line); border-radius: var(--r-pill); overflow: hidden;
+  margin-bottom: 14px;
+}
+.sh-bar-fill {
+  height: 100%; border-radius: var(--r-pill);
+  transition: width 1s ease;
+}
+.sh-interp {
+  font-size: 14px; color: var(--ink-2); line-height: 1.7;
+}
+.sh-right {
+  min-width: 160px;
+  display: flex; flex-direction: column; gap: 8px;
+  padding-top: 4px;
+}
+.sh-norm {
+  font-size: 12px; color: var(--ink-3); line-height: 1.6;
+  background: var(--bg); border-radius: var(--r-sm);
+  padding: 10px 12px;
+  border-left: 2px solid var(--line-strong);
+}
+.sh-norm strong { color: var(--ink-2); }
+
+/* sub grid */
+.sub-title {
+  font-size: 12px; font-weight: 600; letter-spacing: 0.06em;
+  text-transform: uppercase; color: var(--ink-3);
+  margin: 18px 0 10px;
+}
+.sub-grid {
+  display: grid; grid-template-columns: repeat(3,1fr); gap: 8px;
+}
+@media (max-width: 480px) { .sub-grid { grid-template-columns: 1fr 1fr; } }
+.sub-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  padding: 14px 14px;
+}
+.sub-label { font-size: 11px; color: var(--ink-3); margin-bottom: 6px; }
+.sub-track {
+  height: 5px; background: var(--line); border-radius: var(--r-pill); overflow: hidden; margin-bottom: 6px;
+}
+.sub-fill { height: 100%; border-radius: var(--r-pill); background: var(--accent); }
+.sub-score { font-size: 13px; font-weight: 600; color: var(--ink-2); }
+
+/* item list */
+.item-section-title {
+  font-size: 12px; font-weight: 600; letter-spacing: 0.06em;
+  text-transform: uppercase; color: var(--ink-3);
+  margin: 24px 0 10px;
+}
+.item-list {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  overflow: hidden;
+}
+.item-row {
+  display: flex; align-items: center; gap: 14px;
+  padding: 11px 16px;
+  border-bottom: 1px solid var(--line);
+}
+.item-row:last-child { border-bottom: none; }
+.item-row.flagged { background: var(--warn-soft); }
+.item-num { font-size: 11px; font-weight: 700; color: var(--ink-3); min-width: 20px; }
+.item-q { flex: 1; font-size: 13px; color: var(--ink-2); line-height: 1.5; }
+.item-val {
+  font-size: 12px; font-weight: 700;
+  border-radius: var(--r-pill);
+  padding: 3px 10px;
+  min-width: 28px; text-align: center;
+  flex-shrink: 0;
+}
+.val-0 { background: #DCEEE6; color: #1D6040; }
+.val-1 { background: #FFF3CC; color: #7A5C00; }
+.val-2 { background: #FFE0C4; color: #8A3800; }
+.val-3 { background: #FFD0D0; color: #7A1010; }
+
+/* flag box */
+.flag-box {
+  border: 1px solid #E8A880;
+  background: var(--warn-soft);
+  border-radius: var(--r);
+  padding: 16px 18px;
+  margin-bottom: 14px;
+}
+.flag-head {
+  font-size: 13px; font-weight: 700; color: var(--warn);
+  margin-bottom: 6px;
+  display: flex; align-items: center; gap: 7px;
+}
+.flag-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--warn); flex-shrink: 0;
+}
+.flag-body { font-size: 13px; color: #7A3010; line-height: 1.65; }
+
+/* severity scale visual */
+.sev-track {
+  display: flex; gap: 4px; margin: 10px 0 6px;
+}
+.sev-seg {
+  height: 6px; flex: 1; border-radius: 99px;
+  background: var(--line);
+}
+.sev-seg.active-0 { background: var(--sev-0); }
+.sev-seg.active-1 { background: var(--sev-1); }
+.sev-seg.active-2 { background: var(--sev-2); }
+.sev-seg.active-3 { background: var(--sev-3); }
+.sev-labels {
+  display: flex; justify-content: space-between;
+  font-size: 10.5px; color: var(--ink-3);
+}
+
+/* disclaimer */
+.disclaimer {
+  text-align: center;
+  font-size: 12px; color: var(--ink-3);
+  line-height: 1.75;
+  padding: 24px 0 14px;
+  border-top: 1px solid var(--line);
+  margin-top: 28px;
+}
+.res-actions {
+  display: flex; gap: 10px; justify-content: center; margin-top: 18px; flex-wrap: wrap;
+}
+.res-btn {
+  padding: 11px 28px;
+  border-radius: var(--r-pill);
+  font-size: 14px; font-weight: 600;
+  cursor: pointer;
+  font-family: 'Noto Sans KR', sans-serif;
+  border: none; transition: all 0.18s;
+}
+.res-btn-primary { background: var(--accent); color: #fff; }
+.res-btn-primary:hover { background: var(--accent-dark); transform: translateY(-1px); }
+.res-btn-outline { background: transparent; color: var(--ink-2); border: 1px solid var(--line-strong); }
+.res-btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+
+@media print {
+  #topnav, #intro-screen, #survey-screen { display: none !important; }
+  #result-screen { display: block !important; }
+  .res-actions { display: none !important; }
+  body { background: white; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .q-card.active, .cont-btn, .sec-next-btn { animation: none; }
+  .lk-opt, .start-btn { transition: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<div id="topnav">
+  <div class="nav-inner">
+    <div class="nav-row">
+      <div class="nav-brand">
+        <div class="nav-dot"></div>
+        <span class="nav-title">PHQ-9 — 우울 자가 평가</span>
+      </div>
+      <span class="nav-count" id="nav-count">0 / 9</span>
+    </div>
+    <div class="progress-rail">
+      <div class="progress-bar" id="prog-bar" style="width:0%"></div>
+    </div>
+  </div>
+</div>
+
+<!-- INTRO -->
+<div id="intro-screen">
+  <div class="intro-wrap">
+    <div class="intro-eyebrow">
+      <span class="intro-eyebrow-dot"></span>
+      정신건강의학과 사전 설문
+    </div>
+    <h1 class="intro-title">PHQ-9<br><em>우울 자가 평가</em></h1>
+    <p class="intro-sub">지난 2주 동안 경험하신 증상에 대한<br>9가지 질문에 솔직하게 답해 주세요.<br>결과는 담당의 진료 참고 자료로만 활용됩니다.</p>
+    <div class="intro-meta-row">
+      <div class="intro-meta-item">
+        <div class="intro-meta-num">9</div>
+        <div class="intro-meta-label">문항</div>
+      </div>
+      <div class="intro-sep"></div>
+      <div class="intro-meta-item">
+        <div class="intro-meta-num">2~3</div>
+        <div class="intro-meta-label">분 소요</div>
+      </div>
+      <div class="intro-sep"></div>
+      <div class="intro-meta-item">
+        <div class="intro-meta-num">27</div>
+        <div class="intro-meta-label">점 만점</div>
+      </div>
+    </div>
+    <button class="start-btn" onclick="startSurvey()">
+      설문 시작하기 &nbsp;→
+    </button>
+    <p class="intro-note">선택 즉시 자동으로 다음 문항으로 이동합니다</p>
+  </div>
+</div>
+
+<!-- SURVEY -->
+<div id="survey-screen">
+  <div id="main-wrap">
+    <div id="q-area"></div>
+    <div id="sec-next-wrap"></div>
+  </div>
+</div>
+
+<!-- RESULT -->
+<div id="result-screen"></div>
+
+<script>
+const GUIDE = '지난 2주 동안, 다음 문제들로 인해 얼마나 자주 방해를 받았습니까?';
+
+const ITEMS = [
+  '일을 하는 데 흥미나 즐거움을 거의 느끼지 못함',
+  '기분이 가라앉거나, 우울하거나, 희망이 없음',
+  '잠들기 어렵거나 자꾸 깨어남, 또는 너무 많이 잠',
+  '피곤하다고 느끼거나 기운이 거의 없음',
+  '입맛이 없거나 과식을 함',
+  '자신이 나쁜 사람이라는 느낌, 또는 자신을 실패자라 느끼거나 자신 또는 가족을 실망시켰다는 느낌',
+  '신문을 읽거나 TV를 보는 것 등에 집중하기 어려움',
+  '남들이 알아챌 정도로 움직임이나 말이 느려짐, 또는 반대로 너무 안절부절 못하거나 들떠 있어서 평소보다 많이 움직임',
+  '자신이 죽는 것이 더 낫겠다는 생각, 또는 어떤 식으로든 자해를 하겠다는 생각'
+];
+
+const LKLAB = ['전혀\n없었다','여러 날\n있었다','7일 이상\n있었다','거의\n매일 있었다'];
+
+let answers = {};
+let QS = [];
+let DONE = new Set();
+
+function startSurvey() {
+  document.getElementById('intro-screen').style.display = 'none';
+  document.getElementById('topnav').style.display = 'block';
+  document.getElementById('survey-screen').style.display = 'block';
+  QS = ITEMS.map((text, i) => ({ key: `q${i}`, idx: i+1, text, isSI: i === 8 }));
+  DONE = new Set();
+  repaint();
+}
+
+function repaint() {
+  const area = document.getElementById('q-area');
+  area.innerHTML = '';
+
+  const firstOpen = QS.findIndex(q => !DONE.has(q.key));
+
+  if (firstOpen === 0) area.appendChild(buildBanner());
+
+  QS.forEach((q, i) => {
+    if (DONE.has(q.key)) {
+      area.appendChild(buildAnswered(q));
+    } else if (i === firstOpen) {
+      area.appendChild(buildActive(q));
+    }
+  });
+
+  checkDone();
+  updateProg();
+  scrollActive();
+}
+
+function buildBanner() {
+  const d = document.createElement('div');
+  d.className = 'sec-banner';
+  d.innerHTML = `
+    <div class="sec-banner-icon">P</div>
+    <div class="sec-banner-text">
+      <div class="sec-banner-head">PHQ-9 · 우울 증상 평가</div>
+      ${GUIDE}. 선택 즉시 다음 문항으로 이동합니다.
+    </div>`;
+  return d;
+}
+
+function buildAnswered(q) {
+  const d = document.createElement('div');
+  d.className = 'q-card answered';
+  const v = answers[q.key];
+  const labels = ['전혀 없었다','여러 날 있었다','7일 이상 있었다','거의 매일 있었다'];
+  d.innerHTML = `
+    <div class="ans-row">
+      <span class="ans-idx">${q.idx}</span>
+      <span class="ans-q">${q.text}</span>
+      <span class="ans-v">${v !== undefined ? v + ' — ' + labels[v] : ''}</span>
+      <button class="ans-edit" onclick="editQ('${q.key}')">수정</button>
+    </div>`;
+  return d;
+}
+
+function buildActive(q) {
+  const d = document.createElement('div');
+  d.className = 'q-card active';
+
+  let head = `<div class="q-idx">문항 ${q.idx} / ${ITEMS.length}`;
+  if (q.isSI) head += `<span class="q-warn-badge">주의 문항</span>`;
+  head += `</div>`;
+
+  d.innerHTML = head + `<div class="q-text">${q.text}</div>`;
+
+  const grid = document.createElement('div');
+  grid.className = 'likert-wrap';
+  [0,1,2,3].forEach(n => {
+    const opt = document.createElement('div');
+    opt.className = 'lk-opt' + (answers[q.key] === n ? ' sel' : '');
+    opt.innerHTML = `<span class="lk-num">${n}</span><span class="lk-label">${LKLAB[n].replace('\n','<br>')}</span>`;
+    opt.addEventListener('click', () => {
+      answers[q.key] = n;
+      DONE.add(q.key);
+      setTimeout(() => repaint(), 260);
+    });
+    grid.appendChild(opt);
+  });
+
+  // freq bar
+  const bar = document.createElement('div');
+  bar.className = 'freq-bar';
+  [0,1,2,3].forEach(n => {
+    const seg = document.createElement('div');
+    seg.className = 'freq-seg' + (answers[q.key] !== undefined && answers[q.key] >= n ? ' on' : '');
+    bar.appendChild(seg);
+  });
+
+  d.appendChild(grid);
+  d.appendChild(bar);
+  return d;
+}
+
+function editQ(key) {
+  const idx = QS.findIndex(q => q.key === key);
+  if (idx < 0) return;
+  QS.slice(idx).forEach(q => DONE.delete(q.key));
+  document.getElementById('sec-next-wrap').innerHTML = '';
+  repaint();
+}
+
+function scrollActive() {
+  setTimeout(() => {
+    const el = document.querySelector('.q-card.active');
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, 80);
+}
+
+function updateProg() {
+  const done = Object.keys(answers).length;
+  const pct = Math.round((done / ITEMS.length) * 100);
+  document.getElementById('prog-bar').style.width = pct + '%';
+  document.getElementById('nav-count').textContent = `${done} / ${ITEMS.length}`;
+}
+
+function checkDone() {
+  const allDone = QS.every(q => DONE.has(q.key));
+  const wrap = document.getElementById('sec-next-wrap');
+  if (allDone && !wrap.querySelector('.sec-next-btn')) {
+    const btn = document.createElement('button');
+    btn.className = 'sec-next-btn';
+    btn.innerHTML = '결과 확인하기 &nbsp;→';
+    btn.onclick = showResult;
+    wrap.appendChild(btn);
+  }
+}
+
+/* ── SCORING ── */
+function score() {
+  let total = 0;
+  for (let i = 0; i < 9; i++) total += (answers[`q${i}`] || 0);
+  const somatic   = [0,1,2,3,4].reduce((s,i) => s+(answers[`q${i}`]||0), 0);
+  const cognitive = [5,6,7].reduce((s,i) => s+(answers[`q${i}`]||0), 0);
+  const si        = answers['q8'] || 0;
+
+  let level, color, badgeCls, interp, sevIdx;
+  if (total <= 4)       { level='최소 수준'; color='#3D8A5E'; badgeCls='bsev0'; interp='우울 증상이 거의 없는 수준입니다.'; sevIdx=0; }
+  else if (total <= 9)  { level='경도';     color='#917920'; badgeCls='bsev1'; interp='경도 우울 증상이 확인됩니다. 증상 변화를 주의 깊게 관찰해 주세요.'; sevIdx=1; }
+  else if (total <= 14) { level='중등도';   color='#B86020'; badgeCls='bsev2'; interp='중등도 우울 증상이 확인됩니다. 전문적 상담과 치료를 적극 권장합니다.'; sevIdx=2; }
+  else if (total <= 19) { level='중고도';   color='#A52828'; badgeCls='bsev3'; interp='중고도 우울 증상이 확인됩니다. 빠른 전문적 평가와 치료 계획이 필요합니다.'; sevIdx=3; }
+  else                  { level='중증';     color='#A52828'; badgeCls='bsev3'; interp='중증 우울 증상입니다. 즉각적인 전문적 평가 및 치료가 필요합니다.'; sevIdx=3; }
+
+  return { total, somatic, cognitive, si, level, color, badgeCls, interp, sevIdx };
+}
+
+function showResult() {
+  document.getElementById('survey-screen').style.display = 'none';
+  document.getElementById('topnav').style.display = 'none';
+
+  const sc = score();
+  const pct = Math.round((sc.total / 27) * 100);
+  const now = new Date();
+  const dateStr = `${now.getFullYear()}년 ${now.getMonth()+1}월 ${now.getDate()}일`;
+  const hasSI = sc.si >= 1;
+
+  const sevLabels = ['최소','경도','중등도','중고도/중증'];
+  const sevSegs = [0,1,2,3].map(i =>
+    `<div class="sev-seg ${i <= sc.sevIdx ? 'active-'+sc.sevIdx : ''}"></div>`
+  ).join('');
+
+  const itemRows = ITEMS.map((text, i) => {
+    const v = answers[`q${i}`] || 0;
+    const flagged = (i === 8 && v >= 1);
+    return `<div class="item-row ${flagged ? 'flagged' : ''}">
+      <span class="item-num">${i+1}</span>
+      <span class="item-q">${text}</span>
+      <span class="item-val val-${v}">${v}</span>
+    </div>`;
+  }).join('');
+
+  const bsevColors = {
+    bsev0: { bg:'#DCEEE6', color:'#1D6040' },
+    bsev1: { bg:'#FFF3CC', color:'#7A5C00' },
+    bsev2: { bg:'#FFE0C4', color:'#8A3800' },
+    bsev3: { bg:'#FFD0D0', color:'#7A1010' },
+  };
+  const bc = bsevColors[sc.badgeCls];
+
+  const rs = document.getElementById('result-screen');
+  rs.style.display = 'block';
+  rs.innerHTML = `
+  <div class="res-wrap">
+    <div class="res-header">
+      <div class="res-eyebrow">PHQ-9 · 우울 증상 평가 결과</div>
+      <div class="res-title">환자 건강 설문지 (PHQ-9)</div>
+      <div class="res-date">작성일: ${dateStr}</div>
+    </div>
+
+    ${hasSI ? `
+    <div class="flag-box">
+      <div class="flag-head"><div class="flag-dot"></div> 9번 문항 — 자해·자살 사고 보고됨</div>
+      <div class="flag-body">PHQ-9 9번 문항 점수: <strong>${sc.si}점</strong>. 자해 또는 자살에 관한 생각이 보고되었습니다. 담당 의사의 즉각적인 임상 평가가 권장됩니다.</div>
+    </div>` : ''}
+
+    <div class="score-hero">
+      <div class="sh-left">
+        <div class="sh-scale">PHQ-9 총점</div>
+        <div class="sh-score-row">
+          <span class="sh-score">${sc.total}</span>
+          <span class="sh-max">/ 27점</span>
+        </div>
+        <div class="sh-badge" style="background:${bc.bg};color:${bc.color}">${sc.level}</div>
+        <div class="sh-bar-track">
+          <div class="sh-bar-fill" style="width:${pct}%;background:${sc.color}"></div>
+        </div>
+        <div class="sev-track">${sevSegs}</div>
+        <div class="sev-labels">
+          ${sevLabels.map(l=>`<span>${l}</span>`).join('')}
+        </div>
+        <div class="sh-interp" style="margin-top:14px">${sc.interp}</div>
+      </div>
+      <div class="sh-right">
+        <div class="sh-norm">
+          <strong>일반 성인 기준</strong><br>
+          평균 약 2.9점<br>절단점 10점 이상 = 중등도
+        </div>
+        <div class="sh-norm">
+          <strong>9번 문항 (자해 사고)</strong><br>
+          현재 ${sc.si}점 — ${sc.si === 0 ? '해당 없음' : sc.si === 1 ? '여러 날 경험' : sc.si >= 2 ? '7일 이상 경험' : ''}
+        </div>
+      </div>
+    </div>
+
+    <div class="sub-title">하위 영역</div>
+    <div class="sub-grid">
+      <div class="sub-card">
+        <div class="sub-label">신체·활동 저하 (1~5번)</div>
+        <div class="sub-track"><div class="sub-fill" style="width:${Math.round(sc.somatic/15*100)}%"></div></div>
+        <div class="sub-score">${sc.somatic} / 15점</div>
+      </div>
+      <div class="sub-card">
+        <div class="sub-label">인지·기능 저하 (6~8번)</div>
+        <div class="sub-track"><div class="sub-fill" style="width:${Math.round(sc.cognitive/9*100)}%"></div></div>
+        <div class="sub-score">${sc.cognitive} / 9점</div>
+      </div>
+      <div class="sub-card">
+        <div class="sub-label">자해 사고 (9번)</div>
+        <div class="sub-track"><div class="sub-fill" style="width:${Math.round(sc.si/3*100)}%;background:${sc.si>=1?'var(--warn)':'var(--accent)'}"></div></div>
+        <div class="sub-score" style="color:${sc.si>=1?'var(--warn)':'var(--ink-2)'}">${sc.si} / 3점</div>
+      </div>
+    </div>
+
+    <div class="item-section-title">문항별 응답</div>
+    <div class="item-list">${itemRows}</div>
+
+    <div class="disclaimer">
+      본 결과는 선별 목적의 참고 자료이며 진단을 대체하지 않습니다.<br>
+      해석 및 치료 계획은 반드시 담당 의사와 상담하시기 바랍니다.
+    </div>
+    <div class="res-actions">
+      <button class="res-btn res-btn-primary" onclick="window.print()">인쇄</button>
+      <button class="res-btn res-btn-outline" onclick="location.reload()">처음으로</button>
+    </div>
+  </div>`;
+}
+</script>
+</body>
+</html>

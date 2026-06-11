@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GAD-7 불안 자가 평가</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&family=Noto+Serif+KR:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+:root {
+  --bg:           #F4F5F7;
+  --surface:      #FFFFFF;
+  --surface-sub:  #F8F9FA;
+  --line:         #E4E6EB;
+  --line-strong:  #C0C4CC;
+  --ink:          #1A1D24;
+  --ink-2:        #42475A;
+  --ink-3:        #858C9E;
+
+  --accent:       #3B5BAD;
+  --accent-soft:  #EDF0FA;
+  --accent-mid:   #5C7AC8;
+  --accent-dark:  #2A4190;
+
+  --warn:         #B84C1E;
+  --warn-soft:    #FBF0EB;
+
+  --sev-0: #3D8A5E;
+  --sev-1: #917920;
+  --sev-2: #B86020;
+  --sev-3: #A52828;
+
+  --r: 12px;
+  --r-sm: 8px;
+  --r-pill: 999px;
+  --trans: 0.22s cubic-bezier(0.22, 0.68, 0, 1.2);
+}
+
+body {
+  font-family: 'Noto Sans KR', sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  min-height: 100vh;
+  font-size: 15px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── TOP NAV ── */
+#topnav {
+  display: none;
+  position: sticky; top: 0; z-index: 200;
+  background: rgba(244,245,247,0.94);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--line);
+}
+.nav-inner {
+  max-width: 660px; margin: 0 auto;
+  padding: 12px 20px 10px;
+}
+.nav-row {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 8px;
+}
+.nav-brand { display: flex; align-items: center; gap: 10px; }
+.nav-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
+.nav-title { font-size: 13px; font-weight: 600; letter-spacing: 0.04em; color: var(--accent); }
+.nav-count { font-size: 12px; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+.progress-rail { height: 3px; background: var(--line); border-radius: var(--r-pill); overflow: hidden; }
+.progress-bar {
+  height: 100%; border-radius: var(--r-pill);
+  background: linear-gradient(90deg, var(--accent) 0%, var(--accent-mid) 100%);
+  transition: width 0.5s ease;
+}
+
+#intro-screen { display: block; }
+#survey-screen { display: none; }
+#result-screen { display: none; }
+#main-wrap { max-width: 660px; margin: 0 auto; padding: 32px 18px 120px; }
+
+/* ── INTRO ── */
+.intro-wrap {
+  max-width: 520px; margin: 0 auto;
+  padding: 72px 20px 60px;
+  text-align: center;
+}
+.intro-eyebrow {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: var(--accent-soft); color: var(--accent-dark);
+  border-radius: var(--r-pill);
+  padding: 5px 16px;
+  font-size: 12px; font-weight: 600; letter-spacing: 0.08em;
+  text-transform: uppercase; margin-bottom: 24px;
+}
+.intro-eyebrow-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+.intro-title {
+  font-family: 'Noto Serif KR', serif;
+  font-size: 34px; font-weight: 600; line-height: 1.32;
+  color: var(--ink); margin-bottom: 18px; letter-spacing: -0.01em;
+}
+.intro-title em { font-style: normal; color: var(--accent); }
+.intro-sub {
+  font-size: 15px; color: var(--ink-2); line-height: 1.75;
+  margin-bottom: 44px; font-weight: 300;
+}
+.intro-meta-row { display: flex; justify-content: center; gap: 28px; margin-bottom: 40px; }
+.intro-meta-item { text-align: center; }
+.intro-meta-num {
+  font-family: 'Noto Serif KR', serif;
+  font-size: 28px; font-weight: 600;
+  color: var(--ink); line-height: 1; margin-bottom: 5px;
+}
+.intro-meta-label { font-size: 12px; color: var(--ink-3); letter-spacing: 0.04em; }
+.intro-sep { width: 1px; background: var(--line); align-self: stretch; }
+.start-btn {
+  display: inline-flex; align-items: center; gap: 10px;
+  background: var(--accent); color: #fff;
+  border: none; border-radius: var(--r-pill);
+  padding: 16px 40px;
+  font-size: 15px; font-weight: 600;
+  cursor: pointer; font-family: 'Noto Sans KR', sans-serif;
+  box-shadow: 0 4px 20px rgba(59,91,173,0.25), 0 1px 4px rgba(59,91,173,0.15);
+  transition: all 0.2s; letter-spacing: 0.02em;
+}
+.start-btn:hover { background: var(--accent-dark); transform: translateY(-2px); box-shadow: 0 8px 28px rgba(59,91,173,0.32); }
+.start-btn:active { transform: translateY(0); }
+.intro-note { font-size: 12px; color: var(--ink-3); margin-top: 14px; }
+
+/* ── SECTION BANNER ── */
+.sec-banner {
+  background: var(--accent-soft); border: 1px solid #C0CDE8;
+  border-radius: var(--r); padding: 16px 20px;
+  margin-bottom: 20px; display: flex; align-items: flex-start; gap: 12px;
+}
+.sec-banner-icon {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: var(--accent); color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 700; flex-shrink: 0; margin-top: 1px;
+  font-family: 'Noto Serif KR', serif;
+}
+.sec-banner-text { font-size: 13.5px; color: var(--accent-dark); line-height: 1.65; }
+.sec-banner-head { font-weight: 600; margin-bottom: 3px; }
+
+/* ── Q CARDS ── */
+.q-card {
+  background: var(--surface); border: 1px solid var(--line);
+  border-radius: var(--r); padding: 22px 22px; margin-bottom: 8px;
+}
+.q-card.active {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(59,91,173,0.08), 0 4px 20px rgba(59,91,173,0.10);
+  animation: cardIn 0.3s cubic-bezier(0.22, 0.68, 0, 1.2) forwards;
+}
+.q-card.answered { background: var(--surface-sub); border-color: transparent; box-shadow: none; padding: 11px 16px; }
+.q-card.hidden { display: none; }
+
+@keyframes cardIn {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.ans-row { display: flex; align-items: center; gap: 10px; }
+.ans-idx { font-size: 11px; font-weight: 600; color: var(--ink-3); min-width: 18px; }
+.ans-q { flex: 1; font-size: 13px; color: var(--ink-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ans-v { font-size: 12.5px; font-weight: 600; color: var(--accent); white-space: nowrap; max-width: 150px; overflow: hidden; text-overflow: ellipsis; }
+.ans-edit {
+  font-size: 11px; color: var(--ink-3);
+  background: none; border: 1px solid var(--line); border-radius: var(--r-pill);
+  padding: 2px 10px; cursor: pointer; transition: all 0.15s; flex-shrink: 0;
+  font-family: 'Noto Sans KR', sans-serif;
+}
+.ans-edit:hover { border-color: var(--accent); color: var(--accent); }
+
+.q-idx {
+  font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
+  color: var(--accent); text-transform: uppercase; margin-bottom: 7px;
+}
+.q-text {
+  font-size: 16px; font-weight: 400; line-height: 1.65;
+  color: var(--ink); margin-bottom: 20px;
+  font-family: 'Noto Serif KR', serif;
+}
+
+/* ── LIKERT ── */
+.likert-wrap { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; }
+@media (max-width: 480px) { .likert-wrap { grid-template-columns: repeat(2,1fr); } }
+
+.lk-opt {
+  display: flex; flex-direction: column; align-items: center;
+  padding: 14px 8px 12px;
+  border: 1.5px solid var(--line); border-radius: var(--r-sm);
+  cursor: pointer; background: var(--bg);
+  transition: all var(--trans); gap: 5px; text-align: center; user-select: none;
+}
+.lk-opt:hover { border-color: var(--accent-mid); background: var(--accent-soft); }
+.lk-opt.sel { border-color: var(--accent); background: var(--accent); color: #fff; }
+.lk-num {
+  font-family: 'Noto Serif KR', serif;
+  font-size: 22px; font-weight: 600; line-height: 1; color: var(--ink-2);
+}
+.lk-opt.sel .lk-num { color: #fff; }
+.lk-label { font-size: 11px; line-height: 1.45; color: var(--ink-3); }
+.lk-opt.sel .lk-label { color: rgba(255,255,255,0.82); }
+
+.freq-bar { display: flex; margin-top: 10px; gap: 2px; height: 3px; }
+.freq-seg { flex: 1; border-radius: 99px; background: var(--line); transition: background 0.25s; }
+.freq-seg.on { background: var(--accent); }
+
+.cont-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  margin-top: 16px; background: var(--accent); color: #fff;
+  border: none; border-radius: var(--r-pill);
+  padding: 10px 24px; font-size: 14px; font-weight: 600;
+  cursor: pointer; font-family: 'Noto Sans KR', sans-serif;
+  animation: btnIn 0.2s ease forwards; transition: background 0.2s, transform 0.1s;
+}
+.cont-btn:hover { background: var(--accent-dark); transform: translateY(-1px); }
+
+@keyframes btnIn {
+  from { opacity: 0; transform: translateY(7px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+#sec-next-wrap { margin-top: 28px; text-align: center; }
+.sec-next-btn {
+  display: inline-flex; align-items: center; gap: 10px;
+  background: var(--accent); color: #fff;
+  border: none; border-radius: var(--r-pill);
+  padding: 15px 44px; font-size: 15px; font-weight: 700;
+  cursor: pointer; font-family: 'Noto Sans KR', sans-serif;
+  box-shadow: 0 4px 20px rgba(59,91,173,0.28), 0 1px 4px rgba(59,91,173,0.12);
+  animation: btnIn 0.3s ease forwards; transition: all 0.2s; letter-spacing: 0.02em;
+}
+.sec-next-btn:hover { background: var(--accent-dark); transform: translateY(-2px); box-shadow: 0 8px 28px rgba(59,91,173,0.36); }
+
+/* ── RESULT ── */
+.res-wrap { max-width: 640px; margin: 0 auto; padding: 48px 18px 80px; }
+.res-header { margin-bottom: 32px; }
+.res-eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; }
+.res-title { font-family: 'Noto Serif KR', serif; font-size: 26px; font-weight: 600; color: var(--ink); margin-bottom: 6px; }
+.res-date { font-size: 13px; color: var(--ink-3); }
+
+.score-hero {
+  background: var(--surface); border: 1px solid var(--line);
+  border-radius: 16px; padding: 28px 28px 24px; margin-bottom: 16px;
+  display: flex; align-items: flex-start; gap: 24px; flex-wrap: wrap;
+}
+.sh-left { flex: 1; min-width: 180px; }
+.sh-scale { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 8px; }
+.sh-score-row { display: flex; align-items: baseline; gap: 6px; margin-bottom: 10px; }
+.sh-score { font-family: 'Noto Serif KR', serif; font-size: 56px; font-weight: 600; line-height: 1; color: var(--ink); }
+.sh-max { font-size: 18px; color: var(--ink-3); }
+.sh-badge { display: inline-block; border-radius: var(--r-pill); padding: 5px 16px; font-size: 13px; font-weight: 700; margin-bottom: 14px; }
+.sh-bar-track { height: 8px; background: var(--line); border-radius: var(--r-pill); overflow: hidden; margin-bottom: 14px; }
+.sh-bar-fill { height: 100%; border-radius: var(--r-pill); transition: width 1s ease; }
+.sh-interp { font-size: 14px; color: var(--ink-2); line-height: 1.7; margin-top: 14px; }
+.sh-right { min-width: 160px; display: flex; flex-direction: column; gap: 8px; padding-top: 4px; }
+.sh-norm { font-size: 12px; color: var(--ink-3); line-height: 1.6; background: var(--bg); border-radius: var(--r-sm); padding: 10px 12px; border-left: 2px solid var(--line-strong); }
+.sh-norm strong { color: var(--ink-2); }
+
+.sev-track { display: flex; gap: 4px; margin: 10px 0 6px; }
+.sev-seg { height: 6px; flex: 1; border-radius: 99px; background: var(--line); }
+.sev-seg.active-0 { background: var(--sev-0); }
+.sev-seg.active-1 { background: var(--sev-1); }
+.sev-seg.active-2 { background: var(--sev-2); }
+.sev-seg.active-3 { background: var(--sev-3); }
+.sev-labels { display: flex; justify-content: space-between; font-size: 10.5px; color: var(--ink-3); }
+
+.sub-title { font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-3); margin: 18px 0 10px; }
+.sub-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 8px; }
+.sub-card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-sm); padding: 14px 14px; }
+.sub-label { font-size: 11px; color: var(--ink-3); margin-bottom: 6px; }
+.sub-track { height: 5px; background: var(--line); border-radius: var(--r-pill); overflow: hidden; margin-bottom: 6px; }
+.sub-fill { height: 100%; border-radius: var(--r-pill); background: var(--accent); }
+.sub-score { font-size: 13px; font-weight: 600; color: var(--ink-2); }
+
+.item-section-title { font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-3); margin: 24px 0 10px; }
+.item-list { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; }
+.item-row { display: flex; align-items: center; gap: 14px; padding: 11px 16px; border-bottom: 1px solid var(--line); }
+.item-row:last-child { border-bottom: none; }
+.item-num { font-size: 11px; font-weight: 700; color: var(--ink-3); min-width: 20px; }
+.item-q { flex: 1; font-size: 13px; color: var(--ink-2); line-height: 1.5; }
+.item-val { font-size: 12px; font-weight: 700; border-radius: var(--r-pill); padding: 3px 10px; min-width: 28px; text-align: center; flex-shrink: 0; }
+.val-0 { background: #DCEEE6; color: #1D6040; }
+.val-1 { background: #FFF3CC; color: #7A5C00; }
+.val-2 { background: #FFE0C4; color: #8A3800; }
+.val-3 { background: #FFD0D0; color: #7A1010; }
+
+.disclaimer { text-align: center; font-size: 12px; color: var(--ink-3); line-height: 1.75; padding: 24px 0 14px; border-top: 1px solid var(--line); margin-top: 28px; }
+.res-actions { display: flex; gap: 10px; justify-content: center; margin-top: 18px; flex-wrap: wrap; }
+.res-btn { padding: 11px 28px; border-radius: var(--r-pill); font-size: 14px; font-weight: 600; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; border: none; transition: all 0.18s; }
+.res-btn-primary { background: var(--accent); color: #fff; }
+.res-btn-primary:hover { background: var(--accent-dark); transform: translateY(-1px); }
+.res-btn-outline { background: transparent; color: var(--ink-2); border: 1px solid var(--line-strong); }
+.res-btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+
+@media print {
+  #topnav, #intro-screen, #survey-screen { display: none !important; }
+  #result-screen { display: block !important; }
+  .res-actions { display: none !important; }
+  body { background: white; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .q-card.active, .cont-btn, .sec-next-btn { animation: none; }
+  .lk-opt, .start-btn { transition: none; }
+}
+</style>
+</head>
+<body>
+
+<div id="topnav">
+  <div class="nav-inner">
+    <div class="nav-row">
+      <div class="nav-brand">
+        <div class="nav-dot"></div>
+        <span class="nav-title">GAD-7 — 불안 자가 평가</span>
+      </div>
+      <span class="nav-count" id="nav-count">0 / 7</span>
+    </div>
+    <div class="progress-rail">
+      <div class="progress-bar" id="prog-bar" style="width:0%"></div>
+    </div>
+  </div>
+</div>
+
+<div id="intro-screen">
+  <div class="intro-wrap">
+    <div class="intro-eyebrow">
+      <span class="intro-eyebrow-dot"></span>
+      정신건강의학과 사전 설문
+    </div>
+    <h1 class="intro-title">GAD-7<br><em>불안 자가 평가</em></h1>
+    <p class="intro-sub">지난 2주 동안 경험하신 불안 증상에 대한<br>7가지 질문에 솔직하게 답해 주세요.<br>결과는 담당의 진료 참고 자료로만 활용됩니다.</p>
+    <div class="intro-meta-row">
+      <div class="intro-meta-item">
+        <div class="intro-meta-num">7</div>
+        <div class="intro-meta-label">문항</div>
+      </div>
+      <div class="intro-sep"></div>
+      <div class="intro-meta-item">
+        <div class="intro-meta-num">2~3</div>
+        <div class="intro-meta-label">분 소요</div>
+      </div>
+      <div class="intro-sep"></div>
+      <div class="intro-meta-item">
+        <div class="intro-meta-num">21</div>
+        <div class="intro-meta-label">점 만점</div>
+      </div>
+    </div>
+    <button class="start-btn" onclick="startSurvey()">
+      설문 시작하기 &nbsp;→
+    </button>
+    <p class="intro-note">선택 즉시 자동으로 다음 문항으로 이동합니다</p>
+  </div>
+</div>
+
+<div id="survey-screen">
+  <div id="main-wrap">
+    <div id="q-area"></div>
+    <div id="sec-next-wrap"></div>
+  </div>
+</div>
+
+<div id="result-screen"></div>
+
+<script>
+const GUIDE = '지난 2주 동안, 다음 문제들로 인해 얼마나 자주 방해를 받았습니까?';
+
+const ITEMS = [
+  '초조하거나, 불안하거나, 조마조마하다고 느낌',
+  '걱정하는 것을 멈추거나 조절하기 어려움',
+  '여러 가지 것들에 대해 너무 많이 걱정함',
+  '긴장하여 쉬기 어려움',
+  '너무 안절부절 못해서 가만히 있기 어려움',
+  '쉽게 짜증이 나거나 날카로워짐',
+  '마치 끔찍한 일이 일어날 것 같아 두려움'
+];
+
+const LKLAB = ['전혀\n없었다','여러 날\n있었다','7일 이상\n있었다','거의\n매일 있었다'];
+
+let answers = {};
+let QS = [];
+let DONE = new Set();
+
+function startSurvey() {
+  document.getElementById('intro-screen').style.display = 'none';
+  document.getElementById('topnav').style.display = 'block';
+  document.getElementById('survey-screen').style.display = 'block';
+  QS = ITEMS.map((text, i) => ({ key: `q${i}`, idx: i+1, text }));
+  DONE = new Set();
+  repaint();
+}
+
+function repaint() {
+  const area = document.getElementById('q-area');
+  area.innerHTML = '';
+  const firstOpen = QS.findIndex(q => !DONE.has(q.key));
+  if (firstOpen === 0) area.appendChild(buildBanner());
+  QS.forEach((q, i) => {
+    if (DONE.has(q.key)) area.appendChild(buildAnswered(q));
+    else if (i === firstOpen) area.appendChild(buildActive(q));
+  });
+  checkDone();
+  updateProg();
+  scrollActive();
+}
+
+function buildBanner() {
+  const d = document.createElement('div');
+  d.className = 'sec-banner';
+  d.innerHTML = `
+    <div class="sec-banner-icon">G</div>
+    <div class="sec-banner-text">
+      <div class="sec-banner-head">GAD-7 · 불안 증상 평가</div>
+      ${GUIDE}. 선택 즉시 다음 문항으로 이동합니다.
+    </div>`;
+  return d;
+}
+
+function buildAnswered(q) {
+  const d = document.createElement('div');
+  d.className = 'q-card answered';
+  const v = answers[q.key];
+  const labels = ['전혀 없었다','여러 날 있었다','7일 이상 있었다','거의 매일 있었다'];
+  d.innerHTML = `
+    <div class="ans-row">
+      <span class="ans-idx">${q.idx}</span>
+      <span class="ans-q">${q.text}</span>
+      <span class="ans-v">${v !== undefined ? v + ' — ' + labels[v] : ''}</span>
+      <button class="ans-edit" onclick="editQ('${q.key}')">수정</button>
+    </div>`;
+  return d;
+}
+
+function buildActive(q) {
+  const d = document.createElement('div');
+  d.className = 'q-card active';
+  d.innerHTML = `<div class="q-idx">문항 ${q.idx} / ${ITEMS.length}</div>
+                 <div class="q-text">${q.text}</div>`;
+
+  const grid = document.createElement('div');
+  grid.className = 'likert-wrap';
+  [0,1,2,3].forEach(n => {
+    const opt = document.createElement('div');
+    opt.className = 'lk-opt' + (answers[q.key] === n ? ' sel' : '');
+    opt.innerHTML = `<span class="lk-num">${n}</span><span class="lk-label">${LKLAB[n].replace('\n','<br>')}</span>`;
+    opt.addEventListener('click', () => {
+      answers[q.key] = n;
+      DONE.add(q.key);
+      setTimeout(() => repaint(), 260);
+    });
+    grid.appendChild(opt);
+  });
+
+  const bar = document.createElement('div');
+  bar.className = 'freq-bar';
+  [0,1,2,3].forEach(n => {
+    const seg = document.createElement('div');
+    seg.className = 'freq-seg' + (answers[q.key] !== undefined && answers[q.key] >= n ? ' on' : '');
+    bar.appendChild(seg);
+  });
+
+  d.appendChild(grid);
+  d.appendChild(bar);
+  return d;
+}
+
+function editQ(key) {
+  const idx = QS.findIndex(q => q.key === key);
+  if (idx < 0) return;
+  QS.slice(idx).forEach(q => DONE.delete(q.key));
+  document.getElementById('sec-next-wrap').innerHTML = '';
+  repaint();
+}
+
+function scrollActive() {
+  setTimeout(() => {
+    const el = document.querySelector('.q-card.active');
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, 80);
+}
+
+function updateProg() {
+  const done = Object.keys(answers).length;
+  const pct = Math.round((done / ITEMS.length) * 100);
+  document.getElementById('prog-bar').style.width = pct + '%';
+  document.getElementById('nav-count').textContent = `${done} / ${ITEMS.length}`;
+}
+
+function checkDone() {
+  const allDone = QS.every(q => DONE.has(q.key));
+  const wrap = document.getElementById('sec-next-wrap');
+  if (allDone && !wrap.querySelector('.sec-next-btn')) {
+    const btn = document.createElement('button');
+    btn.className = 'sec-next-btn';
+    btn.innerHTML = '결과 확인하기 &nbsp;→';
+    btn.onclick = showResult;
+    wrap.appendChild(btn);
+  }
+}
+
+function score() {
+  let total = 0;
+  for (let i = 0; i < 7; i++) total += (answers[`q${i}`] || 0);
+  const anxiety = [0,1,2].reduce((s,i) => s+(answers[`q${i}`]||0), 0);
+  const tension = [3,4,5,6].reduce((s,i) => s+(answers[`q${i}`]||0), 0);
+
+  let level, color, badgeCls, interp, sevIdx;
+  if (total <= 4)       { level='최소 수준'; color='#3D8A5E'; badgeCls='bsev0'; interp='불안 증상이 거의 없는 수준입니다.'; sevIdx=0; }
+  else if (total <= 9)  { level='경도';     color='#917920'; badgeCls='bsev1'; interp='경도 불안 증상이 확인됩니다. 스트레스 관리와 생활 습관 개선이 도움이 될 수 있습니다.'; sevIdx=1; }
+  else if (total <= 14) { level='중등도';   color='#B86020'; badgeCls='bsev2'; interp='중등도 불안 증상이 확인됩니다. 전문적 상담과 치료를 적극 권장합니다.'; sevIdx=2; }
+  else                  { level='중증';     color='#A52828'; badgeCls='bsev3'; interp='중증 불안 증상입니다. 즉각적인 전문적 평가 및 치료가 권장됩니다.'; sevIdx=3; }
+
+  return { total, anxiety, tension, level, color, badgeCls, interp, sevIdx };
+}
+
+function showResult() {
+  document.getElementById('survey-screen').style.display = 'none';
+  document.getElementById('topnav').style.display = 'none';
+
+  const sc = score();
+  const pct = Math.round((sc.total / 21) * 100);
+  const now = new Date();
+  const dateStr = `${now.getFullYear()}년 ${now.getMonth()+1}월 ${now.getDate()}일`;
+
+  const sevLabels = ['최소','경도','중등도','중증'];
+  const sevSegs = [0,1,2,3].map(i =>
+    `<div class="sev-seg ${i <= sc.sevIdx ? 'active-'+sc.sevIdx : ''}"></div>`
+  ).join('');
+
+  const itemRows = ITEMS.map((text, i) => {
+    const v = answers[`q${i}`] || 0;
+    return `<div class="item-row">
+      <span class="item-num">${i+1}</span>
+      <span class="item-q">${text}</span>
+      <span class="item-val val-${v}">${v}</span>
+    </div>`;
+  }).join('');
+
+  const bsevColors = {
+    bsev0: { bg:'#DCEEE6', color:'#1D6040' },
+    bsev1: { bg:'#FFF3CC', color:'#7A5C00' },
+    bsev2: { bg:'#FFE0C4', color:'#8A3800' },
+    bsev3: { bg:'#FFD0D0', color:'#7A1010' },
+  };
+  const bc = bsevColors[sc.badgeCls];
+
+  const rs = document.getElementById('result-screen');
+  rs.style.display = 'block';
+  rs.innerHTML = `
+  <div class="res-wrap">
+    <div class="res-header">
+      <div class="res-eyebrow">GAD-7 · 불안 증상 평가 결과</div>
+      <div class="res-title">범불안장애 척도 (GAD-7)</div>
+      <div class="res-date">작성일: ${dateStr}</div>
+    </div>
+
+    <div class="score-hero">
+      <div class="sh-left">
+        <div class="sh-scale">GAD-7 총점</div>
+        <div class="sh-score-row">
+          <span class="sh-score">${sc.total}</span>
+          <span class="sh-max">/ 21점</span>
+        </div>
+        <div class="sh-badge" style="background:${bc.bg};color:${bc.color}">${sc.level}</div>
+        <div class="sh-bar-track">
+          <div class="sh-bar-fill" style="width:${pct}%;background:${sc.color}"></div>
+        </div>
+        <div class="sev-track">${sevSegs}</div>
+        <div class="sev-labels">
+          ${sevLabels.map(l=>`<span>${l}</span>`).join('')}
+        </div>
+        <div class="sh-interp">${sc.interp}</div>
+      </div>
+      <div class="sh-right">
+        <div class="sh-norm">
+          <strong>일반 성인 기준</strong><br>
+          평균 약 2.8점<br>절단점 10점 이상 = 중등도
+        </div>
+        <div class="sh-norm">
+          <strong>하위 영역 요약</strong><br>
+          불안·걱정: ${sc.anxiety}/9점<br>
+          긴장·공포: ${sc.tension}/12점
+        </div>
+      </div>
+    </div>
+
+    <div class="sub-title">하위 영역</div>
+    <div class="sub-grid">
+      <div class="sub-card">
+        <div class="sub-label">불안·걱정 (1~3번)</div>
+        <div class="sub-track"><div class="sub-fill" style="width:${Math.round(sc.anxiety/9*100)}%"></div></div>
+        <div class="sub-score">${sc.anxiety} / 9점</div>
+      </div>
+      <div class="sub-card">
+        <div class="sub-label">긴장·공포 (4~7번)</div>
+        <div class="sub-track"><div class="sub-fill" style="width:${Math.round(sc.tension/12*100)}%"></div></div>
+        <div class="sub-score">${sc.tension} / 12점</div>
+      </div>
+    </div>
+
+    <div class="item-section-title">문항별 응답</div>
+    <div class="item-list">${itemRows}</div>
+
+    <div class="disclaimer">
+      본 결과는 선별 목적의 참고 자료이며 진단을 대체하지 않습니다.<br>
+      해석 및 치료 계획은 반드시 담당 의사와 상담하시기 바랍니다.
+    </div>
+    <div class="res-actions">
+      <button class="res-btn res-btn-primary" onclick="window.print()">인쇄</button>
+      <button class="res-btn res-btn-outline" onclick="location.reload()">처음으로</button>
+    </div>
+  </div>`;
+}
+</script>
+</body>
+</html>
