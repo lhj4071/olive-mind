@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>정신건강 사전 설문 — 강박·공황·식이</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@400;700&display=swap');
+:root{
+  --bg:#F7F6F3;--sf:#fff;--s2:#F0EEE9;--bd:#DDD9D0;
+  --t1:#1A1916;--t2:#6B6860;--tm:#9E9B94;
+  --ac:#3D6B58;--al:#EAF2EE;--ah:#2D5244;
+  --wn:#C45E2E;--wl:#FBF0EB;
+  --r:12px;--rs:8px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--t1);min-height:100vh;line-height:1.7;font-size:15px}
+.shell{max-width:620px;margin:0 auto;padding:0 16px 100px}
+.hdr{padding:18px 0 14px;border-bottom:1px solid var(--bd);margin-bottom:18px;display:flex;align-items:center;gap:10px;position:sticky;top:0;background:var(--bg);z-index:50}
+.hdr-mk{width:30px;height:30px;background:var(--ac);border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.hdr-mk svg{width:16px;height:16px;fill:none;stroke:#fff;stroke-width:2}
+.hdr h1{font-family:'Noto Serif KR',serif;font-size:14px;font-weight:700}
+.hdr p{font-size:11px;color:var(--tm)}
+.prog{margin-bottom:18px}
+.prog-row{display:flex;justify-content:space-between;margin-bottom:5px}
+.prog-lbl{font-size:11.5px;color:var(--t2);font-weight:500}
+.prog-fr{font-size:11.5px;color:var(--tm)}
+.prog-tr{height:3px;background:#E0DDD6;border-radius:2px;overflow:hidden}
+.prog-fi{height:100%;background:var(--ac);border-radius:2px;transition:width .45s cubic-bezier(.4,0,.2,1)}
+.sec-hdr{background:var(--sf);border-radius:var(--r);border:1px solid var(--bd);padding:18px 18px 16px;margin-bottom:14px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.eyebrow{font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ac);margin-bottom:3px}
+.sec-title{font-family:'Noto Serif KR',serif;font-size:17px;font-weight:700;line-height:1.4;margin-bottom:4px;letter-spacing:-.4px}
+.sec-desc{font-size:12.5px;color:var(--t2);line-height:1.7;border-left:3px solid var(--bd);padding-left:9px}
+.guide-box{background:var(--s2);border-radius:var(--rs);padding:9px 12px;margin-top:10px;font-size:12px;color:var(--t2);line-height:1.85}
+.guide-box strong{color:var(--t1)}
+.panic-sym{background:var(--s2);border-radius:var(--rs);padding:10px 13px;margin-top:10px;font-size:11.5px;color:var(--t2);line-height:1.9;columns:2;column-gap:12px}
+.panic-sym-title{font-size:11px;font-weight:700;color:var(--t1);margin-bottom:4px;column-span:all}
+.q-card{background:var(--sf);border-radius:var(--r);border:1px solid var(--bd);padding:20px 18px 16px;margin-bottom:10px;box-shadow:0 1px 3px rgba(0,0,0,.04);transition:all .22s ease}
+.q-card.active{animation:qIn .28s cubic-bezier(.22,.68,0,1.15) forwards}
+@keyframes qIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.q-card.done{padding:9px 14px;background:var(--s2);border-color:transparent;box-shadow:none;cursor:default}
+.q-card.future{display:none}
+.done-row{display:flex;align-items:center;gap:8px;min-width:0}
+.done-num{font-size:11px;color:var(--tm);flex-shrink:0;min-width:22px}
+.done-q{font-size:12.5px;color:var(--t2);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.done-a{font-size:12.5px;font-weight:600;color:var(--ac);flex-shrink:0;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.edit-btn{font-size:11px;color:var(--tm);cursor:pointer;padding:2px 7px;border-radius:4px;border:1px solid var(--bd);background:var(--sf);flex-shrink:0;transition:all .12s}
+.edit-btn:hover{color:var(--ac);border-color:var(--ac)}
+.q-lbl{font-size:14px;font-weight:500;line-height:1.65;margin-bottom:11px;color:var(--t1)}
+.q-num{display:inline;font-size:11.5px;font-weight:700;color:var(--tm);margin-right:4px}
+.q-hint{font-size:11.5px;color:var(--tm);margin-top:-4px;line-height:1.55;margin-bottom:10px;background:var(--s2);padding:7px 10px;border-radius:6px;border-left:2px solid var(--bd)}
+/* radio */
+.rg{display:flex;flex-direction:column;gap:6px}
+.ro{display:flex;align-items:flex-start;gap:9px;padding:10px 12px;border:1.5px solid var(--bd);border-radius:var(--rs);cursor:pointer;font-size:13px;color:var(--t2);user-select:none;transition:all .13s;line-height:1.5}
+.ro:hover{border-color:var(--ac);background:var(--al)}
+.ro.sel{border-color:var(--ac);background:var(--al);color:var(--ac);font-weight:500}
+.rdot{width:15px;height:15px;border-radius:50%;border:2px solid var(--bd);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+.ro.sel .rdot{border-color:var(--ac)}
+.rdi{width:7px;height:7px;border-radius:50%;background:var(--ac);opacity:0}
+.ro.sel .rdi{opacity:1}
+/* likert 5 */
+.lg5{display:grid;grid-template-columns:repeat(5,1fr);gap:5px}
+.lo{display:flex;flex-direction:column;align-items:center;gap:3px;padding:9px 4px 7px;border:1.5px solid var(--bd);border-radius:var(--rs);cursor:pointer;text-align:center;font-size:11px;color:var(--t2);line-height:1.3;user-select:none;transition:all .13s}
+.lo:hover{border-color:var(--ac);background:var(--al)}
+.lo.sel{border-color:var(--ac);background:var(--al);color:var(--ac);font-weight:500}
+.lo-n{font-size:15px;font-weight:700;font-family:'Noto Serif KR',serif;color:var(--tm);line-height:1}
+.lo.sel .lo-n{color:var(--ac)}
+/* binary */
+.bg2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.bo{padding:11px;border:1.5px solid var(--bd);border-radius:var(--rs);cursor:pointer;text-align:center;font-size:14px;font-weight:500;color:var(--t2);transition:all .13s;user-select:none}
+.bo:hover{border-color:var(--ac);background:var(--al)}
+.bo.sel{border-color:var(--ac);background:var(--al);color:var(--ac)}
+.bo.w.sel{border-color:var(--wn);background:var(--wl);color:var(--wn)}
+/* text input */
+.ti{width:100%;border:1.5px solid var(--bd);border-radius:var(--rs);padding:10px 11px;font-family:'Noto Sans KR',sans-serif;font-size:13.5px;color:var(--t1);background:var(--sf);outline:none;transition:border-color .13s}
+.ti:focus{border-color:var(--ac)}
+/* buttons */
+.cont-btn{margin-top:12px;width:100%;padding:11px;background:var(--ac);color:#fff;border:none;border-radius:var(--rs);font-family:'Noto Sans KR',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:background .13s;animation:qIn .2s ease forwards}
+.cont-btn:hover{background:var(--ah)}
+.next-sec-btn{margin-top:14px;width:100%;padding:13px;background:var(--ac);color:#fff;border:none;border-radius:var(--rs);font-family:'Noto Sans KR',sans-serif;font-size:14.5px;font-weight:600;cursor:pointer;transition:background .13s}
+.next-sec-btn:hover{background:var(--ah)}
+.back-btn{margin-top:8px;width:100%;padding:10px;background:var(--s2);color:var(--t2);border:1px solid var(--bd);border-radius:var(--rs);font-family:'Noto Sans KR',sans-serif;font-size:13px;cursor:pointer;transition:background .13s}
+.back-btn:hover{background:var(--bd)}
+/* intro */
+.intro-card{background:var(--sf);border-radius:var(--r);border:1px solid var(--bd);padding:28px 20px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.intro{text-align:center;padding:8px 0 4px}
+.intro-ic{width:52px;height:52px;background:var(--ac);border-radius:13px;display:inline-flex;align-items:center;justify-content:center;margin-bottom:16px}
+.intro-ic svg{width:28px;height:28px;fill:none;stroke:#fff;stroke-width:1.8}
+.intro h1{font-family:'Noto Serif KR',serif;font-size:21px;font-weight:700;margin-bottom:8px;letter-spacing:-.5px;line-height:1.4}
+.intro-sub{font-size:13.5px;color:var(--t2);line-height:1.8;max-width:380px;margin:0 auto 20px}
+.chips{display:flex;flex-wrap:wrap;gap:5px;justify-content:center;margin-bottom:16px}
+.chip{padding:3px 10px;background:var(--s2);border:1px solid var(--bd);border-radius:20px;font-size:11.5px;color:var(--t2)}
+.tnote{font-size:12.5px;color:var(--tm);margin-bottom:18px}
+.start-btn{background:var(--ac);color:#fff;border:none;border-radius:var(--rs);padding:13px 30px;font-family:'Noto Sans KR',sans-serif;font-size:15px;font-weight:600;cursor:pointer;transition:background .13s}
+.start-btn:hover{background:var(--ah)}
+.id-field{text-align:left;max-width:340px;margin:0 auto 20px}
+.id-label{font-size:12.5px;font-weight:600;color:var(--t2);display:block;margin-bottom:5px}
+.id-err{font-size:11.5px;color:var(--wn);margin-top:4px;display:none}
+/* result */
+.res-page{background:var(--sf);border-radius:var(--r);border:1px solid var(--bd);padding:22px 18px;box-shadow:0 1px 4px rgba(0,0,0,.05)}
+.res-hdr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;padding-bottom:12px;border-bottom:2px solid var(--t1)}
+.res-hdr h2{font-family:'Noto Serif KR',serif;font-size:17px;font-weight:700;letter-spacing:-.4px}
+.res-date{font-size:11px;color:var(--tm);margin-top:2px}
+.res-id{font-size:12px;color:var(--t2)}
+.scores-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:10px}
+.sc{background:var(--s2);border-radius:var(--rs);padding:11px 12px;border:1px solid var(--bd)}
+.sc.full{grid-column:1/-1}
+.sc-name{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--t2);margin-bottom:3px}
+.sc-top{display:flex;align-items:baseline;gap:5px;margin-bottom:3px}
+.sc-score{font-family:'Noto Serif KR',serif;font-size:22px;font-weight:700;color:var(--t1);line-height:1}
+.sc-max{font-size:10.5px;color:var(--tm)}
+.sc-badge{font-size:10px;font-weight:600;padding:2px 7px;border-radius:10px;margin-left:auto}
+.b-low{background:#EAF4EE;color:#2E7D4A}.b-mild{background:#FBF5E6;color:#8A6300}
+.b-mod{background:#FBF0E6;color:#A0470A}.b-sev{background:#FCEAEA;color:#A02020}
+.sbar{height:4px;background:rgba(0,0,0,.08);border-radius:2px;overflow:hidden;margin-bottom:5px}
+.sfill{height:100%;border-radius:2px;transition:width .7s cubic-bezier(.4,0,.2,1) .1s}
+.c-low{background:#5A9E6F}.c-mild{background:#D4A843}.c-mod{background:#D47343}.c-sev{background:#C4432E}
+.sc-interp{font-size:11px;color:var(--t1);background:rgba(255,255,255,.75);border-radius:4px;padding:4px 7px;margin-bottom:4px;line-height:1.55}
+.sub-row{display:grid;gap:3px;margin-top:5px}
+.si{background:var(--sf);border-radius:4px;padding:4px 6px;text-align:center}
+.si-n{font-size:9px;color:var(--tm);line-height:1.2;margin-bottom:1px}
+.si-v{font-size:11.5px;font-weight:700;color:var(--t1)}
+/* SCOFF table */
+.scoff-rows{display:flex;flex-direction:column;gap:4px;margin-top:6px}
+.scoff-item{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--t2);padding:4px 6px;border-radius:4px;background:var(--sf)}
+.scoff-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.scoff-dot.yes{background:var(--wn)}.scoff-dot.no{background:#5A9E6F}
+.res-disc{margin-top:11px;padding:9px 12px;background:var(--s2);border-radius:var(--rs);font-size:11.5px;color:var(--t2);line-height:1.7;border-left:3px solid var(--bd)}
+.alert-box{background:#FFFBF0;border:1px solid #E8D9A0;border-radius:var(--rs);padding:9px 12px;margin-bottom:9px;font-size:12px;color:#7A6200;line-height:1.8}
+.print-row{display:flex;gap:8px;margin-top:10px}
+.pbtn{flex:1;padding:10px;border:1px solid var(--bd);border-radius:var(--rs);font-family:'Noto Sans KR',sans-serif;font-size:13px;cursor:pointer;background:var(--s2);color:var(--t2);font-weight:500}
+.pbtn:hover{background:var(--bd)}
+.pbtn.prim{background:var(--ac);color:#fff;border-color:var(--ac)}
+.pbtn.prim:hover{background:var(--ah)}
+@media(max-width:480px){
+  .lg5{grid-template-columns:repeat(3,1fr)}
+  .scores-grid{grid-template-columns:1fr}
+  .sub-row{grid-template-columns:repeat(2,1fr)!important}
+}
+@media print{
+  body{background:white}.shell{padding:0 8px}
+  .hdr,.prog,.back-btn,.next-sec-btn,.print-row{display:none!important}
+  .res-page{box-shadow:none;border:1px solid #ccc}
+}
+</style>
+</head>
+<body>
+<div class="shell">
+<header class="hdr">
+  <div class="hdr-mk"><svg viewBox="0 0 24 24"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+  <div><h1>정신건강 사전 설문</h1><p>정신건강의학과 진료 사전 평가 — 파트 3</p></div>
+</header>
+<div id="progWrap" style="display:none" class="prog">
+  <div class="prog-row"><span class="prog-lbl" id="progLbl"></span><span class="prog-fr" id="progFr"></span></div>
+  <div class="prog-tr"><div class="prog-fi" id="progFi" style="width:0%"></div></div>
+</div>
+<div id="app"></div>
+</div>
+
+<script>
+// ══════════════════════════════════════
+// STATE
+// ══════════════════════════════════════
+const S = { screen:'intro', sec:0 };
+const DATA = { ans:{}, txt:{} };
+const SECS = [
+  {id:'oci',   lbl:'강박 증상 (OCI-R-K)'},
+  {id:'pdss',  lbl:'공황 증상 (PDSS-SR)'},
+  {id:'scoff', lbl:'식이 문제 (SCOFF)'},
+];
+let QS = [];
+let DONE = new Set();
+const ga = k => DATA.ans[k];
+const gt = k => DATA.txt[k] || '';
+const sa = (k,v) => { DATA.ans[k]=v; };
+const st = (k,v) => { DATA.txt[k]=v; };
+
+// ══════════════════════════════════════
+// DOM HELPERS
+// ══════════════════════════════════════
+function el(tag,props={},...ch){
+  const e=document.createElement(tag);
+  for(const [k,v] of Object.entries(props)){
+    if(k==='class')e.className=v;
+    else if(k==='style')Object.assign(e.style,v);
+    else if(k.startsWith('on'))e.addEventListener(k.slice(2),v);
+    else e.setAttribute(k,v);
+  }
+  for(const c of ch){ if(c==null)continue; e.appendChild(typeof c==='string'?document.createTextNode(c):c); }
+  return e;
+}
+const d=(cls,...ch)=>el('div',{class:cls},...ch);
+const p=(cls,txt)=>el('p',{class:cls},txt);
+const sp=(cls,txt)=>el('span',{class:cls},txt);
+
+// ══════════════════════════════════════
+// QUESTION ENGINE
+// ══════════════════════════════════════
+function initSection(id){ QS=[]; DONE=new Set(); if(id==='oci')buildOCI(); else if(id==='pdss')buildPDSS(); else if(id==='scoff')buildSCOFF(); }
+function addQ(q){ QS.push({required:true,...q}); }
+function visibleQs(){ return QS.filter(q=>!q.visibleIf||q.visibleIf()); }
+
+function answered(key,auto){
+  DONE.add(key);
+  if(auto){ setTimeout(()=>{ repaint(); scrollToFirst(); },260); }
+  else { repaint(); }
+}
+
+function repaint(){
+  const app=document.getElementById('app');
+  const sy=window.scrollY;
+  app.innerHTML='';
+  const hdr=buildSecHdr(SECS[S.sec].id);
+  if(hdr)app.appendChild(hdr);
+  const visible=visibleQs();
+  let firstActive=true;
+  for(const q of visible){
+    const isDone=DONE.has(q.key);
+    const card=buildCard(q,isDone,firstActive&&!isDone);
+    if(!isDone&&firstActive)firstActive=false;
+    app.appendChild(card);
+  }
+  const nav=d('');
+  const required=visible.filter(q=>q.required!==false);
+  const allDone=required.every(q=>DONE.has(q.key));
+  if(allDone){
+    const isLast=S.sec===SECS.length-1;
+    nav.appendChild(el('button',{class:'next-sec-btn',onclick:()=>{
+      if(isLast){showResult();}
+      else{S.sec++;initSection(SECS[S.sec].id);repaint();window.scrollTo(0,0);}
+    }},isLast?'결과 보기 →':'다음 섹션으로 →'));
+  }
+  if(S.sec>0){ nav.appendChild(el('button',{class:'back-btn',onclick:()=>{ S.sec--;initSection(SECS[S.sec].id);repaint();window.scrollTo(0,0); }},'← 이전 섹션')); }
+  app.appendChild(nav);
+  document.getElementById('progWrap').style.display='block';
+  document.getElementById('progFi').style.width=Math.round(S.sec/SECS.length*100)+'%';
+  document.getElementById('progLbl').textContent=SECS[S.sec].lbl;
+  document.getElementById('progFr').textContent=`${S.sec+1} / ${SECS.length}`;
+  window.scrollTo(0,sy);
+}
+
+function scrollToFirst(){
+  const f=document.querySelector('.q-card.active');
+  if(f)f.scrollIntoView({behavior:'smooth',block:'center'});
+}
+
+function buildCard(q,isDone,isActive){
+  const card=d('q-card');
+  if(isDone){
+    card.classList.add('done');
+    const row=d('done-row');
+    row.appendChild(sp('done-num',(q.num!==''&&q.num!=null)?String(q.num)+'.':''));
+    row.appendChild(sp('done-q',q.text));
+    row.appendChild(sp('done-a',q.answerLabel?q.answerLabel():'✓'));
+    row.appendChild(el('button',{class:'edit-btn',onclick:e=>{e.stopPropagation();editQ(q.key);}},'수정'));
+    card.appendChild(row);
+    return card;
+  }
+  if(!isActive){ card.classList.add('future'); return card; }
+  card.classList.add('active');
+  card.dataset.qkey=q.key;
+  const lbl=d('q-lbl');
+  if(q.num!==''&&q.num!=null)lbl.appendChild(sp('q-num',String(q.num)+'.'));
+  lbl.appendChild(document.createTextNode(q.text));
+  card.appendChild(lbl);
+  if(q.hint){ const h=d('q-hint'); h.innerHTML=q.hint; card.appendChild(h); }
+  card.appendChild(q.buildControl());
+  return card;
+}
+
+function showContBtn(key){
+  setTimeout(()=>{
+    const card=document.querySelector(`.q-card.active[data-qkey="${key}"]`);
+    if(!card||card.querySelector('.cont-btn'))return;
+    card.appendChild(el('button',{class:'cont-btn',onclick:()=>answered(key,true)},'다음 →'));
+  },0);
+}
+
+function editQ(key){
+  DONE.delete(key);
+  const idx=QS.findIndex(q=>q.key===key);
+  QS.slice(idx+1).forEach(q=>DONE.delete(q.key));
+  repaint();
+  setTimeout(()=>{ const c=document.querySelector(`.q-card.active[data-qkey="${key}"]`); if(c)c.scrollIntoView({behavior:'smooth',block:'center'}); },50);
+}
+
+// ══════════════════════════════════════
+// CONTROLS
+// ══════════════════════════════════════
+function mkRadio(key,opts){
+  const g=d('rg');
+  opts.forEach(([val,lbl])=>{
+    const o=d('ro'+(String(ga(key))===String(val)?' sel':''));
+    o.onclick=()=>{ sa(key,val); g.querySelectorAll('.ro').forEach(x=>x.classList.remove('sel')); o.classList.add('sel'); answered(key,true); };
+    const dot=d('rdot'); dot.appendChild(d('rdi'));
+    o.appendChild(dot); o.appendChild(el('span',{},lbl)); g.appendChild(o);
+  });
+  return g;
+}
+
+// Likert 0-4 (5 cols)
+function mkLikert5(key,lbls){
+  const g=d('lg5');
+  lbls.forEach((lbl,i)=>{
+    const o=d('lo'+(ga(key)===i?' sel':''));
+    o.onclick=()=>{ sa(key,i); g.querySelectorAll('.lo').forEach(x=>x.classList.remove('sel')); o.classList.add('sel'); answered(key,true); };
+    o.appendChild(el('span',{class:'lo-n'},String(i)));
+    o.appendChild(el('span',{},lbl));
+    g.appendChild(o);
+  });
+  return g;
+}
+
+function mkBinary(key,warnY=false){
+  const g=d('bg2');
+  const yo=d('bo'+(ga(key)==='yes'?' sel':'')+(warnY?' w':''));
+  const no=d('bo'+(ga(key)==='no'?' sel':''));
+  yo.textContent='예'; no.textContent='아니오';
+  yo.onclick=()=>{ sa(key,'yes'); yo.classList.add('sel'); no.classList.remove('sel'); answered(key,true); };
+  no.onclick=()=>{ sa(key,'no'); no.classList.add('sel'); yo.classList.remove('sel'); answered(key,true); };
+  g.appendChild(yo); g.appendChild(no);
+  return g;
+}
+
+// ══════════════════════════════════════
+// SECTION HEADERS
+// ══════════════════════════════════════
+function buildSecHdr(id){
+  const app=document.getElementById('app');
+  const hdr=d('sec-hdr');
+  if(id==='oci'){
+    hdr.appendChild(p('eyebrow','01 / 강박 증상'));
+    hdr.appendChild(el('h2',{class:'sec-title'},'OCI-R-K — 강박 증상 척도'));
+    hdr.appendChild(p('sec-desc','지난 1달 동안 다음의 경험들로 인해 얼마나 스트레스를 받았거나 힘들었는지 표시해 주세요.'));
+    const g=d('guide-box'); g.innerHTML='<strong>0</strong> 전혀 그렇지 않다. &nbsp; <strong>1</strong> 약간 그러한 편이다. &nbsp; <strong>2</strong> 중간이다. &nbsp; <strong>3</strong> 꽤 그러한 편이다. &nbsp; <strong>4</strong> 매우 그렇다.'; hdr.appendChild(g);
+  } else if(id==='pdss'){
+    hdr.appendChild(p('eyebrow','02 / 공황 증상'));
+    hdr.appendChild(el('h2',{class:'sec-title'},'PDSS-SR — 공황장애 심각도 척도'));
+    hdr.appendChild(p('sec-desc','다음 몇 가지 질문은 지난 한 주간의 공황 발작 및 제한적 증상 발작에 관한 것입니다.'));
+    const sym=d('panic-sym');
+    const st2=el('div',{class:'panic-sym-title'},'공황 발작 증상 목록 (4가지 이상 → 완전한 공황 발작, 4가지 미만 → 제한적 공황 발작)');
+    sym.appendChild(st2);
+    ['심장이 빨리 뛰거나 두근거림','땀 흘림','몸이 떨리거나 흔들림','숨이 가빠지거나 답답한 느낌','질식할 것 같은 느낌','가슴 통증 또는 불쾌감','메스꺼움 또는 복부 불편감','어지럽거나 기절할 것 같은 느낌','비현실적인 느낌','마비되거나 찌릿찌릿한 느낌','오한 또는 얼굴이 화끈거림','자제력을 잃거나 미칠 것 같은 두려움','죽을 것 같은 두려움'].forEach(s=>{ const i=el('div',{},'· '+s); sym.appendChild(i); });
+    hdr.appendChild(sym);
+  } else if(id==='scoff'){
+    hdr.appendChild(p('eyebrow','03 / 식이 문제'));
+    hdr.appendChild(el('h2',{class:'sec-title'},'SCOFF — 섭식 장애 선별 도구'));
+    hdr.appendChild(p('sec-desc','다음은 섭식 장애 혹은 식이 문제에 대한 선별 설문지입니다. 아래 5가지 질문을 읽고 해당되는 답변에 표시해 주세요.'));
+  }
+  return hdr;
+}
+
+// ══════════════════════════════════════
+// SECTION: OCI-R-K
+// ══════════════════════════════════════
+function buildOCI(){
+  const L5=['전혀 그렇지 않다','약간 그러한 편이다','중간이다','꽤 그러한 편이다','매우 그렇다'];
+  const ITEMS=[
+    '그 동안 모은 너무 많은 물건들이 오히려 방해가 될 정도이다',
+    '나는 필요 이상으로 자주 확인을 하는 편이다.',
+    '나는 물건들이 제대로 정돈되어 있지 않으면 화가 난다.',
+    '나는 어떤 일을 할 때 숫자를 세야 할 것만 같은 느낌이 든다.',
+    '나는 어떤 물건을 낯선 사람들이나 특정 사람들이 만졌다는 사실을 알게 되면 그 물건을 만지기 어렵다.',
+    '나는 내 생각을 내 마음대로 조절하기가 어렵다.',
+    '나는 내가 필요하지 않은 것들을 모으는 습관이 있다.',
+    '나는 습관적으로 문, 창문, 서랍 등을 확인한다.',
+    '나는 내 방식대로 정리한 것들을 다른 사람들이 바꾸어 놓으면 화가 난다.',
+    '나는 어떤 일을 특정 횟수만큼 반복해야만 할 것 같은 느낌이 든다.',
+    '나는 단지 내가 더러워졌다는 생각 때문에 몸을 씻어야 할 때가 있다.',
+    '나는 나의 의지에 반하여 마음속에 떠오르는 생각들 때문에 기분이 나쁘다.',
+    '나는 나중에 필요할지도 모른다는 두려움 때문에 물건을 잘 버리지 못한다.',
+    '나는 가스밸브, 수도꼭지, 전등 스위치를 끄고 나서도 반복적으로 확인하는 습관이 있다.',
+    '나는 물건들이 특정 순서로 정돈되어 있길 원한다.',
+    '나는 좋은 숫자와 나쁜 숫자가 있다고 생각한다.',
+    '나는 필요 이상으로 자주, 오래 손을 씻는 편이다.',
+    '나는 자주 음란한 생각을 하고, 그 생각을 떨쳐버리기가 힘들다.',
+  ];
+  ITEMS.forEach((txt,i)=>{
+    const key=`oci${i+1}`;
+    addQ({key,num:i+1,text:txt,
+      answerLabel:()=>{const v=ga(key);return v!==undefined?`${v} — ${L5[v]}`:'';},
+      buildControl:()=>mkLikert5(key,L5)});
+  });
+}
+
+// ══════════════════════════════════════
+// SECTION: PDSS-SR
+// ══════════════════════════════════════
+function buildPDSS(){
+  const Q1OPTS=[[0,'공황 발작이나 제한적 증상 발작이 전혀 없었음'],[1,'경미함: 완전한 공황 발작은 없었고, 하루에 제한적 증상 발작이 1회를 넘지 않았음'],[2,'중등도: 1-2회의 완전한 공황 발작 및/또는 하루에 여러 차례의 제한적 증상 발작이 있었음'],[3,'심각함: 2회 이상의 완전한 발작이 있었지만, 평균적으로 하루에 1회를 넘지는 않았음'],[4,'극심함: 완전한 공황 발작이 하루에 한 번 이상, 일주일 중 절반 이상의 날에 발생했음']];
+  const Q2OPTS=[[0,'전혀 고통스럽지 않았거나, 지난 한 주 동안 공황 발작이나 제한적 증상 발작이 없었음'],[1,'약간 고통스러웠음 (그다지 심하지 않았음)'],[2,'보통 정도로 고통스러웠음 (심했지만, 감당할 만했음)'],[3,'심하게 고통스러웠음 (매우 심했음)'],[4,'극심하게 고통스러웠음 (모든 발작 동안 극심한 고통을 느낌)']];
+  const Q3OPTS=[[0,'전혀 느끼지 않음'],[1,'가끔 또는 약간 느낌'],[2,'자주 또는 보통 정도로 느낌'],[3,'매우 자주 또는 매우 고통스러운 정도로 느낌'],[4,'거의 끊임없이 그리고 생활에 지장을 줄 정도로 느낌']];
+  const Q4OPTS=[[0,'없음: 두려움이나 회피가 전혀 없었음'],[1,'경미함: 가끔 두려움 및/또는 회피가 있었지만, 보통은 그 상황을 직면하거나 견딜 수 있었음. 이로 인한 생활 방식의 변화는 거의 또는 전혀 없었음.'],[2,'중등도: 눈에 띄는 두려움 및/또는 회피가 있었지만, 여전히 감당할 만했음. 일부 상황은 피했지만, 동반자와 함께라면 직면할 수 있었음. 이로 인해 생활 방식에 약간의 변화는 있었지만, 전반적인 기능은 손상되지 않았음.'],[3,'심각함: 광범위하게 회피함. 회피를 위해 생활 방식을 상당히 수정해야 했으며, 이로 인해 일상 활동을 관리하기 어려웠음.'],[4,'극심함: 만연하고 생활에 지장을 주는 두려움 및/또는 회피. 중요한 과제를 수행하지 못할 정도로 생활 방식을 광범위하게 수정해야 했음.']];
+  const Q5OPTS=[[0,'없음: 불편한 신체 감각 때문에 특정 활동을 피한 적이 전혀 없었음'],[1,'경도: 가끔 두려웠지만 대부분의 활동을 할 수 있었고, 생활에 거의 변화가 없었음'],[2,'중등도: 눈에 띄게 피했지만 감당은 가능했음. 생활에 약간 변화는 있었지만 큰 지장은 없었음'],[3,'심함: 광범위하게 피했음. 이로 인해 생활 방식을 상당히 바꾸거나 기능에 실질적인 방해를 받았음'],[4,'극심함: 거의 모든 활동을 피했음. 이로 인해 중요한 활동을 하지 못하는 등 일상생활이 불가능했음']];
+  const Q6OPTS=[[0,'전혀 방해받지 않았음'],[1,'약간 방해되었지만, 해야 할 일은 거의 다 할 수 있었음'],[2,'상당히 방해되었지만, 해야 할 일은 그럭저럭 해낼 수 있었음'],[3,'심각한 방해를 받았음. 이 문제 때문에 하지 못한 중요한 일들이 많았음'],[4,'극심한 방해를 받았음. 직장이나 집안일을 거의 해낼 수 없었음']];
+  const Q7OPTS=[[0,'전혀 방해받지 않았음'],[1,'약간 방해되었지만, 하고 싶은 활동은 거의 다 할 수 있었음'],[2,'상당히 방해되었지만, 노력하면 대부분의 활동을 할 수 있었음'],[3,'심각한 방해를 받았음. 이 문제 때문에 하지 못한 사교 활동이 많았음'],[4,'극심한 방해를 받았음. 할 수 있는 사교 활동이 거의 없었음']];
+
+  const makeLbl=(opts)=>(key)=>{ const v=ga(key); if(v===undefined)return ''; const o=opts.find(([ov])=>ov===v); return o?`${v}점 — ${o[1].substring(0,20)}...`:''; };
+
+  addQ({key:'pdss1',num:1,text:'지난 한 주간, 공황 발작 또는 제한적 증상 발작을 몇 번 경험했나요?',
+    answerLabel:makeLbl(Q1OPTS)('pdss1'),buildControl:()=>mkRadio('pdss1',Q1OPTS)});
+  addQ({key:'pdss2',num:2,text:'공황 발작이 일어나는 동안 얼마나 고통스러웠나요?',
+    hint:'여러 번이었다면 평균적인 정도로, 제한적 증상 발작만 있었다면 그 경험에 대해 응답해 주세요.',
+    answerLabel:makeLbl(Q2OPTS)('pdss2'),buildControl:()=>mkRadio('pdss2',Q2OPTS)});
+  addQ({key:'pdss3',num:3,text:'다음 공황 발작이 또 올까 봐 얼마나 걱정했나요?',
+    hint:'예: 발작이 신체적 또는 정신적 건강 문제가 있다는 신호라거나, 사회적으로 창피한 상황을 유발할 수 있다는 두려움',
+    answerLabel:makeLbl(Q3OPTS)('pdss3'),buildControl:()=>mkRadio('pdss3',Q3OPTS)});
+  addQ({key:'pdss4',num:4,text:"발작이 두려워 특정 '장소'나 '상황'을 피했나요?",
+    hint:'대중교통, 영화관, 사람 많은 곳, 혼자 있는 것 등을 피하거나 불편해한 경험을 말합니다.',
+    answerLabel:makeLbl(Q4OPTS)('pdss4'),buildControl:()=>mkRadio('pdss4',Q4OPTS)});
+  addQ({key:'pdss5',num:5,text:"발작과 비슷한 '신체 감각'을 일으키는 '활동'을 피했나요?",
+    hint:'운동, 커피 마시기, 뜨거운 샤워, 흥미진진한 영화 보기 등 심장을 뛰게 하거나 발작을 유발할까 봐 두려워 피한 경험을 말합니다.',
+    answerLabel:makeLbl(Q5OPTS)('pdss5'),buildControl:()=>mkRadio('pdss5',Q5OPTS)});
+  addQ({key:'pdss6',num:6,text:"공황 증상 때문에 '직장 생활'이나 '집안 일'에 얼마나 방해를 받았나요?",
+    hint:'지난주에 일이 평소보다 적었다면, 평소와 같았을 경우를 생각하고 답해주세요.',
+    answerLabel:makeLbl(Q6OPTS)('pdss6'),buildControl:()=>mkRadio('pdss6',Q6OPTS)});
+  addQ({key:'pdss7',num:7,text:"공황 증상 때문에 '사회생활(사교 활동)'에 얼마나 방해를 받았나요?",
+    hint:'지난주에 사교 활동 기회가 적었다면, 기회가 있었을 경우를 생각하고 답해주세요.',
+    answerLabel:makeLbl(Q7OPTS)('pdss7'),buildControl:()=>mkRadio('pdss7',Q7OPTS)});
+}
+
+// ══════════════════════════════════════
+// SECTION: SCOFF
+// ══════════════════════════════════════
+function buildSCOFF(){
+  const QS_SCOFF=[
+    {key:'scoff1',num:1,text:'너무 배가 부르다는 불쾌감 때문에 일부러 토하게 한 적이 있습니까?'},
+    {key:'scoff2',num:2,text:'음식을 먹기 시작하면 조절할 수 없을까 봐 걱정한 적이 있습니까?'},
+    {key:'scoff3',num:3,text:'최근 3개월 동안 6kg 이상 체중이 감소한 적이 있습니까?'},
+    {key:'scoff4',num:4,text:'다른 사람들은 당신이 너무 말랐다고 하는데, 스스로는 뚱뚱하다고 생각하십니까?'},
+    {key:'scoff5',num:5,text:'음식에 대한 생각이 당신의 삶을 지배한다고 생각하십니까?'},
+  ];
+  QS_SCOFF.forEach(q=>{
+    addQ({...q,
+      answerLabel:()=>ga(q.key)==='yes'?'예':'아니오',
+      buildControl:()=>mkBinary(q.key,ga(q.key)==='yes')});
+  });
+}
+
+// ══════════════════════════════════════
+// SCORING
+// ══════════════════════════════════════
+function scoreOCI(){
+  // Subscales: Hoarding(H):1,7,13 / Checking(C):2,8,14 / Ordering(O):3,9,15 / Neutralizing/Counting(N):4,10,16 / Washing(W):5,11,17 / Obsessing(Ob):6,12,18
+  const H=[1,7,13],C=[2,8,14],O=[3,9,15],N=[4,10,16],W=[5,11,17],Ob=[6,12,18];
+  let total=0,h=0,c=0,o=0,n=0,w=0,ob=0;
+  for(let i=1;i<=18;i++){
+    const v=ga(`oci${i}`)??0; total+=v;
+    if(H.includes(i))h+=v; else if(C.includes(i))c+=v; else if(O.includes(i))o+=v;
+    else if(N.includes(i))n+=v; else if(W.includes(i))w+=v; else if(Ob.includes(i))ob+=v;
+  }
+  return{total,h,c,o,n,w,ob};
+}
+
+function scorePDSS(){
+  let total=0;
+  for(let i=1;i<=7;i++) total+=(ga(`pdss${i}`)??0);
+  return total;
+}
+
+function scoreSCOFF(){
+  let total=0;
+  for(let i=1;i<=5;i++) if(ga(`scoff${i}`)==='yes') total++;
+  return total;
+}
+
+// ══════════════════════════════════════
+// RESULT
+// ══════════════════════════════════════
+function scCard(name,score,max,bCls,bTxt,fCls,interp,subs,full){
+  const c=d('sc'+(full?' full':''));
+  c.appendChild(el('div',{class:'sc-name'},name));
+  const top=d('sc-top');
+  top.appendChild(el('span',{class:'sc-score'},String(score)));
+  top.appendChild(el('span',{class:'sc-max'},`/ ${max}점`));
+  top.appendChild(el('span',{class:`sc-badge ${bCls}`},bTxt));
+  c.appendChild(top);
+  const bar=d('sbar');bar.appendChild(el('div',{class:`sfill ${fCls}`,style:{width:`${Math.min(100,Math.round(score/max*100))}%`}}));c.appendChild(bar);
+  if(interp){const it=d('sc-interp');it.textContent=interp;c.appendChild(it);}
+  if(subs&&subs.length){
+    const cols=Math.min(subs.length,6);
+    const sr=d('sub-row');sr.style.gridTemplateColumns=`repeat(${cols},1fr)`;
+    subs.forEach(({n,v})=>{const si=d('si');si.appendChild(el('div',{class:'si-n'},n));si.appendChild(el('div',{class:'si-v'},v));sr.appendChild(si);});
+    c.appendChild(sr);
+  }
+  return c;
+}
+
+function showResult(){
+  const app=document.getElementById('app');
+  app.innerHTML='';
+  document.getElementById('progWrap').style.display='none';
+  const page=d('res-page');
+
+  const rhdr=d('res-hdr');
+  const hl=d('');
+  hl.appendChild(el('h2',{},'정신건강의학과 사전 평가 결과'));
+  hl.appendChild(p('res-date',`작성일: ${new Date().toLocaleDateString('ko-KR')}`));
+  rhdr.appendChild(hl);
+  rhdr.appendChild(p('res-id',`ID: ${gt('uid')||'—'}`));
+  page.appendChild(rhdr);
+
+  const grid=d('scores-grid');
+
+  // OCI-R-K
+  const{total:oT,h,c,o,n,w,ob}=scoreOCI();
+  const oB=oT>=21?['b-sev','임상적 수준 (≥21)','c-sev']:oT>=14?['b-mod','경계 수준 (14-20)','c-mod']:oT>=7?['b-mild','경미 (7-13)','c-mild']:['b-low','정상 범위 (0-6)','c-low'];
+  const oI=oT>=21?'OCD 임상 기준에 부합할 가능성이 높습니다. 정밀 평가가 권고됩니다.':oT>=14?'강박 증상이 상당히 나타나고 있습니다. 임상적 주의가 필요합니다.':oT>=7?'경미한 강박 증상이 관찰됩니다.':'뚜렷한 강박 증상은 관찰되지 않습니다.';
+  // find dominant subscale
+  const subs6=[{n:'수집',v:h,m:12},{n:'확인',v:c,m:12},{n:'정돈',v:o,m:12},{n:'숫자',v:n,m:12},{n:'세척',v:w,m:12},{n:'강박사고',v:ob,m:12}];
+  const dom=subs6.reduce((a,b)=>a.v>=b.v?a:b);
+  grid.appendChild(scCard('강박 척도 (OCI-R-K)',oT,72,oB[0],oB[1],oB[2],`${oI} 두드러진 영역: ${dom.n}`,subs6.map(({n,v})=>({n,v:`${v}/12`}))));
+
+  // PDSS-SR
+  const pdT=scorePDSS();
+  const pdB=pdT>=14?['b-sev','심각 (14-28)','c-sev']:pdT>=8?['b-mod','중등도 (8-13)','c-mod']:pdT>=3?['b-mild','경미 (3-7)','c-mild']:['b-low','정상/최소 (0-2)','c-low'];
+  const pdI=pdT>=14?'공황 증상이 심각한 수준으로, 즉각적인 임상적 평가가 권고됩니다.':pdT>=8?'중등도 수준의 공황 증상이 있습니다. 평가와 치료 계획이 필요합니다.':pdT>=3?'경미한 공황 증상이 관찰됩니다.':'공황 관련 증상이 거의 없습니다.';
+  const pdFreq=ga('pdss1')??0, pdDist=ga('pdss2')??0, pdAnx=ga('pdss3')??0;
+  const pdAvoid=(ga('pdss4')??0)+(ga('pdss5')??0), pdFunc=(ga('pdss6')??0)+(ga('pdss7')??0);
+  grid.appendChild(scCard('공황 척도 (PDSS-SR)',pdT,28,pdB[0],pdB[1],pdB[2],pdI,[{n:'발작 빈도',v:`${pdFreq}/4`},{n:'발작 고통',v:`${pdDist}/4`},{n:'예기 불안',v:`${pdAnx}/4`},{n:'회피',v:`${pdAvoid}/8`},{n:'기능 저하',v:`${pdFunc}/8`}]));
+
+  // SCOFF
+  const scT=scoreSCOFF();
+  const scPos=scT>=2;
+  const scB=scT>=4?['b-sev','고위험 (4-5)','c-sev']:scT>=2?['b-mod','양성 선별 (≥2)','c-mod']:['b-low','음성 (0-1)','c-low'];
+  const scI=scT>=4?'섭식 장애 고위험군입니다. 전문적 평가와 치료 연계가 시급합니다.':scT>=2?'SCOFF 기준 양성(≥2점)으로 섭식 장애 가능성이 있습니다. 정밀 평가가 권고됩니다.':'현재 섭식 장애 선별 기준에 해당하지 않습니다.';
+  const scCard2=d('sc'+(false?' full':''));
+  scCard2.appendChild(el('div',{class:'sc-name'},'식이 문제 (SCOFF)'));
+  const scTop=d('sc-top');
+  scTop.appendChild(el('span',{class:'sc-score'},String(scT)));
+  scTop.appendChild(el('span',{class:'sc-max'},'/ 5점'));
+  scTop.appendChild(el('span',{class:`sc-badge ${scB[0]}`},scB[1]));
+  scCard2.appendChild(scTop);
+  const scBar=d('sbar');scBar.appendChild(el('div',{class:`sfill ${scB[2]}`,style:{width:`${Math.round(scT/5*100)}%`}}));scCard2.appendChild(scBar);
+  const scIt=d('sc-interp');scIt.textContent=scI;scCard2.appendChild(scIt);
+  // Individual item dots
+  const scRows=d('scoff-rows');
+  const SCOFF_Q=['토함','조절 걱정','6kg 이상 감소','자신을 뚱뚱하다 인식','음식이 삶 지배'];
+  SCOFF_Q.forEach((lbl,i)=>{
+    const yes=ga(`scoff${i+1}`)==='yes';
+    const row=d('scoff-item');
+    const dot=d('scoff-dot '+(yes?'yes':'no'));
+    row.appendChild(dot);
+    row.appendChild(el('span',{},lbl));
+    row.appendChild(el('span',{style:{marginLeft:'auto',fontWeight:'600',color:yes?'var(--wn)':'var(--ac)'}},yes?'예':'아니오'));
+    scRows.appendChild(row);
+  });
+  scCard2.appendChild(scRows);
+  grid.appendChild(scCard2);
+
+  page.appendChild(grid);
+
+  // Alert
+  const flags=[];
+  if(oT>=14)flags.push(`강박 ${oT}점 (${oB[1]})`);
+  if(pdT>=3) flags.push(`공황 ${pdT}점 (${pdB[1]})`);
+  if(scPos)  flags.push(`식이 문제 ${scT}점 (양성 선별)`);
+  if(flags.length){const ab=d('alert-box');ab.innerHTML=`<strong style="display:block;margin-bottom:3px">📋 임상적 주의 항목</strong>${flags.join(' &nbsp;·&nbsp; ')}`;page.appendChild(ab);}
+
+  const disc=d('res-disc');disc.innerHTML='본 결과는 <strong>선별 목적의 참고 자료</strong>이며, 진단을 의미하지 않습니다. 정확한 평가와 진단은 담당 정신건강의학과 전문의의 면담을 통해 이루어집니다.';page.appendChild(disc);
+
+  // ── HUB: broadcast scores ──
+  (function(){
+    const{total:_oT}=scoreOCI();
+    const _pdT=scorePDSS();
+    const _scT=scoreSCOFF();
+    const oLvl=_oT>=21?'severe':_oT>=14?'mod':_oT>=7?'mild':'normal';
+    const pdLvl=_pdT>=14?'severe':_pdT>=8?'mod':_pdT>=3?'mild':'normal';
+    const payload={type:'SURVEY_SCORES',surveyId:'survey3',scores:[
+      {id:'ocir',name:'강박 (OCI-R-K)',score:_oT,max:72,level:oLvl,
+       badge:_oT>=21?'임상적 수준':_oT>=14?'경계 수준':_oT>=7?'경미':'정상 범위',sub:[]},
+      {id:'pdss',name:'공황 (PDSS-SR)',score:_pdT,max:28,level:pdLvl,
+       badge:_pdT>=14?'심각':_pdT>=8?'중등도':_pdT>=3?'경미':'정상',sub:[]},
+      {id:'scoff',name:'식이 (SCOFF)',score:_scT,max:5,level:_scT>=2?'warn':'normal',
+       badge:_scT>=2?'양성 (≥2)':'음성',sub:[]},
+    ]};
+    if(window.parent!==window) window.parent.postMessage(payload,'*');
+    try{ localStorage.setItem('hub_scores_survey3', JSON.stringify(payload)); }catch(e){}
+  })();
+  const pr=d('print-row');
+  pr.appendChild(el('button',{class:'pbtn prim',onclick:()=>window.print()},'🖨  결과 인쇄'));
+  pr.appendChild(el('button',{class:'pbtn',onclick:()=>{DATA.ans={};DATA.txt={};S.screen='intro';S.sec=0;startApp();}},'↩  처음으로'));
+  pr.appendChild(el('button',{class:'pbtn',style:'background:var(--al);border-color:var(--ac);color:var(--ah);font-weight:600',onclick:()=>{ if(window.parent!==window){window.parent.postMessage({type:'BACK_TO_HUB'},'*');}else{window.location.href='index.html';} }},'🏠  목록으로 돌아가기'));
+  page.appendChild(pr);
+  app.appendChild(page);
+}
+
+// ══════════════════════════════════════
+// APP ENTRY
+// ══════════════════════════════════════
+function startApp(){
+  const app=document.getElementById('app');
+  app.innerHTML='';
+  document.getElementById('progWrap').style.display='none';
+  const c=d('intro-card');
+  const intro=d('intro');
+  const ic=d('intro-ic');
+  ic.innerHTML=`<svg viewBox="0 0 24 24"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+  intro.appendChild(ic);
+  intro.appendChild(el('h1',{},'정신건강의학과\n사전 평가 설문'));
+  intro.appendChild(p('intro-sub','강박 증상, 공황 증상, 식이 문제에 관한 사전 평가 파트입니다. 솔직하게 답변해 주실수록 더 정확한 평가에 도움이 됩니다.'));
+  const chips=d('chips');
+  ['강박 증상 (OCI-R-K)','공황 증상 (PDSS-SR)','식이 문제 (SCOFF)'].forEach(t=>chips.appendChild(sp('chip',t)));
+  intro.appendChild(chips);
+  intro.appendChild(p('tnote','⏱ 예상 소요 시간: 약 10–15분'));
+  const idF=d('id-field');
+  idF.appendChild(el('label',{class:'id-label'},'고유 ID (이니셜+생년월일, 예: HGD070229)'));
+  const idI=el('input',{class:'ti',type:'text',placeholder:'예: HGD070229',maxlength:'20'});
+  idI.value=gt('uid'); idI.oninput=()=>st('uid',idI.value.trim()); idF.appendChild(idI);
+  const idE=p('id-err','ID를 입력해 주세요.'); idF.appendChild(idE); intro.appendChild(idF);
+  intro.appendChild(el('button',{class:'start-btn',onclick:()=>{
+    if(!gt('uid')){idE.style.display='block';idI.focus();return;}
+    idE.style.display='none';
+    S.screen='section';S.sec=0;initSection(SECS[0].id);repaint();window.scrollTo(0,0);
+  }},'설문 시작하기'));
+  c.appendChild(intro); app.appendChild(c);
+}
+
+startApp();
+</script>
+</body>
+</html>

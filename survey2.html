@@ -1,0 +1,1442 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>정신건강의학과 사전 설문 — 음주·신체·PMS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&family=Noto+Serif+KR:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F7F6F3;
+    --card: #FFFFFF;
+    --green: #3D6B58;
+    --green-light: #EAF2EE;
+    --green-mid: #c8ddd5;
+    --warn: #C45E2E;
+    --warn-light: #FAF0EB;
+    --text: #1A1A1A;
+    --muted: #6B7280;
+    --border: #E2DDD7;
+    --radius: 14px;
+    --shadow: 0 2px 16px rgba(61,107,88,0.08);
+    --answered-bg: #F0F4F2;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding-bottom: 80px;
+  }
+
+  /* ── Progress header ── */
+  #progress-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 20px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .progress-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .section-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--green);
+    letter-spacing: 0.03em;
+  }
+  .progress-count {
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .progress-bar-wrap {
+    height: 4px;
+    background: var(--border);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    background: var(--green);
+    border-radius: 99px;
+    transition: width 0.4s ease;
+  }
+
+  /* ── Main feed ── */
+  #feed {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 28px 16px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  /* ── Answered row ── */
+  .answered-row {
+    background: var(--answered-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--muted);
+    animation: fadeDim 0.22s ease forwards;
+  }
+  .answered-row .q-num {
+    font-weight: 700;
+    color: var(--green);
+    min-width: 22px;
+    font-size: 12px;
+  }
+  .answered-row .q-text {
+    flex: 1;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-size: 13px;
+  }
+  .answered-row .q-ans {
+    font-weight: 600;
+    color: var(--green);
+    white-space: nowrap;
+    font-size: 13px;
+    max-width: 120px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: right;
+  }
+  .answered-row .edit-btn {
+    background: none;
+    border: 1px solid var(--green-mid);
+    border-radius: 6px;
+    color: var(--green);
+    font-size: 11px;
+    padding: 3px 8px;
+    cursor: pointer;
+    white-space: nowrap;
+    font-family: inherit;
+    transition: background 0.15s;
+  }
+  .answered-row .edit-btn:hover { background: var(--green-light); }
+
+  /* ── Active card ── */
+  .q-card {
+    background: var(--card);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px 22px 20px;
+    box-shadow: var(--shadow);
+    animation: slideIn 0.28s cubic-bezier(0.22,0.68,0,1.15) forwards;
+  }
+  .q-card.warn-card { border-color: #e0c4b8; background: var(--warn-light); }
+  .q-card-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .q-badge {
+    background: var(--green);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 6px;
+    white-space: nowrap;
+    margin-top: 2px;
+    flex-shrink: 0;
+  }
+  .q-title {
+    font-size: 17px;
+    font-weight: 600;
+    line-height: 1.55;
+    color: var(--text);
+  }
+  .q-hint {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 14px;
+    line-height: 1.6;
+    padding: 10px 14px;
+    background: var(--bg);
+    border-radius: 8px;
+    border-left: 3px solid var(--green-mid);
+  }
+  .q-desc {
+    font-size: 13px;
+    color: var(--muted);
+    margin: -8px 0 14px;
+    line-height: 1.6;
+  }
+
+  /* Section intro card */
+  .section-intro {
+    background: var(--green);
+    color: #fff;
+    border-radius: var(--radius);
+    padding: 26px 24px;
+    margin-bottom: 4px;
+    animation: slideIn 0.28s cubic-bezier(0.22,0.68,0,1.15) forwards;
+  }
+  .section-intro h2 {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  .section-intro p {
+    font-size: 13px;
+    opacity: 0.85;
+    line-height: 1.65;
+  }
+  .section-intro .intro-next {
+    margin-top: 18px;
+    background: rgba(255,255,255,0.18);
+    border: 1.5px solid rgba(255,255,255,0.4);
+    color: #fff;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 10px 22px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .section-intro .intro-next:hover { background: rgba(255,255,255,0.28); }
+
+  /* ── Controls ── */
+  /* Radio / Binary */
+  .options-list { display: flex; flex-direction: column; gap: 8px; }
+  .opt-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    background: var(--bg);
+    cursor: pointer;
+    transition: border-color 0.14s, background 0.14s;
+    font-family: inherit;
+    font-size: 14px;
+    color: var(--text);
+    text-align: left;
+  }
+  .opt-btn:hover { border-color: var(--green-mid); background: var(--green-light); }
+  .opt-btn.selected { border-color: var(--green); background: var(--green-light); }
+  .opt-btn.warn-opt { border-color: #e0b0a0; background: var(--warn-light); }
+  .opt-btn.warn-opt:hover, .opt-btn.warn-opt.selected { border-color: var(--warn); background: #fbe5db; }
+  .opt-dot {
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    transition: border-color 0.14s, background 0.14s;
+  }
+  .opt-btn.selected .opt-dot { border-color: var(--green); background: var(--green); }
+  .opt-btn.selected .opt-dot::after {
+    content: ''; display: block;
+    width: 6px; height: 6px; border-radius: 50%; background: #fff;
+  }
+  .opt-btn.warn-opt.selected .opt-dot { border-color: var(--warn); background: var(--warn); }
+  .opt-label { flex: 1; line-height: 1.45; }
+
+  /* Likert 4 */
+  .likert-grid {
+    display: grid;
+    gap: 7px;
+  }
+  .likert-grid.l4 { grid-template-columns: repeat(2, 1fr); }
+  @media(min-width:520px) { .likert-grid.l4 { grid-template-columns: repeat(4, 1fr); } }
+  .lk-btn {
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    background: var(--bg);
+    padding: 11px 8px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 13px;
+    color: var(--text);
+    text-align: center;
+    line-height: 1.4;
+    transition: border-color 0.14s, background 0.14s;
+  }
+  .lk-btn:hover { border-color: var(--green-mid); background: var(--green-light); }
+  .lk-btn.selected { border-color: var(--green); background: var(--green-light); font-weight: 600; }
+  .lk-num { font-size: 18px; font-weight: 700; color: var(--green); margin-bottom: 4px; }
+  .lk-btn.selected .lk-num { color: var(--green); }
+
+  /* Likert 3 (PHQ-15) */
+  .likert-grid.l3 { grid-template-columns: repeat(3, 1fr); }
+
+  /* Scale labels */
+  .scale-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 6px;
+    padding: 0 2px;
+  }
+
+  /* Text input */
+  .text-input {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 15px;
+    color: var(--text);
+    background: var(--bg);
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .text-input:focus { border-color: var(--green); background: var(--card); }
+
+  /* "다음 →" button */
+  .cont-btn {
+    margin-top: 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--green);
+    color: #fff;
+    border: none;
+    border-radius: 9px;
+    padding: 11px 22px;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    animation: fadeUp 0.2s ease forwards;
+    transition: background 0.15s, transform 0.1s;
+  }
+  .cont-btn:hover { background: #2f5445; transform: translateY(-1px); }
+  .cont-btn:active { transform: translateY(0); }
+
+  /* Section advance button */
+  #section-btn-wrap {
+    max-width: 680px;
+    margin: 24px auto 0;
+    padding: 0 16px;
+    display: none;
+  }
+  #section-btn-wrap.visible { display: block; }
+  .section-advance-btn {
+    width: 100%;
+    padding: 15px;
+    background: var(--green);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius);
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    letter-spacing: 0.02em;
+    animation: slideIn 0.28s cubic-bezier(0.22,0.68,0,1.15) forwards;
+    transition: background 0.15s;
+  }
+  .section-advance-btn:hover { background: #2f5445; }
+
+  /* ID input screen */
+  #id-screen {
+    max-width: 480px;
+    margin: 60px auto 0;
+    padding: 0 16px;
+    text-align: center;
+  }
+  #id-screen h1 {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 26px;
+    font-weight: 600;
+    color: var(--green);
+    margin-bottom: 10px;
+  }
+  #id-screen p {
+    font-size: 14px;
+    color: var(--muted);
+    margin-bottom: 28px;
+    line-height: 1.65;
+  }
+  .id-card {
+    background: var(--card);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px 24px;
+    box-shadow: var(--shadow);
+    text-align: left;
+  }
+  .id-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+    margin-bottom: 8px;
+    display: block;
+  }
+  .id-example {
+    font-size: 12px;
+    color: var(--muted);
+    margin: 6px 0 20px;
+  }
+  .id-start-btn {
+    width: 100%;
+    padding: 14px;
+    background: var(--green);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background 0.15s;
+  }
+  .id-start-btn:hover { background: #2f5445; }
+  .id-error { color: var(--warn); font-size: 12px; margin-top: 6px; display: none; }
+
+  /* ── Result screen ── */
+  #result-screen { display: none; max-width: 760px; margin: 0 auto; padding: 32px 16px 60px; }
+  .result-header {
+    text-align: center;
+    margin-bottom: 32px;
+  }
+  .result-header h1 {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--green);
+    margin-bottom: 6px;
+  }
+  .result-meta { font-size: 13px; color: var(--muted); }
+
+  .result-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+  @media(max-width:540px) { .result-grid { grid-template-columns: 1fr; } }
+
+  .result-card {
+    background: var(--card);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    box-shadow: var(--shadow);
+  }
+  .result-card.full-width { grid-column: 1 / -1; }
+  .rc-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .rc-score-row {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  .rc-score {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1;
+  }
+  .rc-max { font-size: 14px; color: var(--muted); }
+  .badge {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 20px;
+    margin-bottom: 10px;
+  }
+  .badge-ok    { background: #D1EDDD; color: #1A6A39; }
+  .badge-mild  { background: #FEF3C7; color: #92400E; }
+  .badge-mod   { background: #FDE8D8; color: #92340E; }
+  .badge-sev   { background: #FEE2E2; color: #991B1B; }
+  .badge-pos   { background: #E0D7F5; color: #4C1D95; }
+  .rc-bar-wrap { height: 6px; background: var(--border); border-radius: 99px; overflow: hidden; margin-bottom: 10px; }
+  .rc-bar-fill { height: 100%; border-radius: 99px; transition: width 0.8s ease; }
+  .rc-interp { font-size: 13px; color: var(--text); line-height: 1.6; margin-bottom: 10px; }
+  .rc-sub-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+    gap: 6px;
+    margin-top: 10px;
+  }
+  .rc-sub-item {
+    background: var(--bg);
+    border-radius: 8px;
+    padding: 8px 10px;
+    font-size: 12px;
+  }
+  .rc-sub-name { color: var(--muted); margin-bottom: 2px; }
+  .rc-sub-val  { font-weight: 700; font-size: 14px; }
+
+  /* CSSRS ladder */
+  .cssrs-ladder {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin: 14px 0;
+  }
+  .cssrs-step {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1.5px solid var(--border);
+    font-size: 13px;
+    color: var(--muted);
+    background: var(--bg);
+  }
+  .cssrs-step.active {
+    border-color: var(--warn);
+    background: var(--warn-light);
+    color: var(--warn);
+    font-weight: 600;
+  }
+  .cssrs-step.passed {
+    border-color: var(--green-mid);
+    background: var(--green-light);
+    color: var(--green);
+  }
+  .step-dot {
+    width: 22px; height: 22px; border-radius: 50%;
+    border: 2px solid var(--border);
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700;
+  }
+  .cssrs-step.passed .step-dot { background: var(--green); border-color: var(--green); color: #fff; }
+  .cssrs-step.active .step-dot  { background: var(--warn); border-color: var(--warn); color: #fff; }
+
+  .crisis-box {
+    background: var(--warn-light);
+    border: 1.5px solid #e0b0a0;
+    border-radius: 10px;
+    padding: 14px 16px;
+    font-size: 13px;
+    color: var(--warn);
+    margin-top: 10px;
+    line-height: 1.65;
+  }
+
+  .result-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-top: 28px;
+    flex-wrap: wrap;
+  }
+  .action-btn {
+    padding: 12px 26px;
+    border-radius: 9px;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.1s;
+    border: none;
+  }
+  .action-btn:hover { transform: translateY(-1px); }
+  .action-btn.primary { background: var(--green); color: #fff; }
+  .action-btn.secondary { background: var(--bg); border: 1.5px solid var(--border); color: var(--text); }
+  .disclaimer {
+    font-size: 11px;
+    color: var(--muted);
+    text-align: center;
+    margin-top: 24px;
+    line-height: 1.7;
+    border-top: 1px solid var(--border);
+    padding-top: 16px;
+  }
+
+  /* ── Animations ── */
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeDim {
+    from { opacity: 0; transform: translateY(-4px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── Print ── */
+  @media print {
+    #progress-header, #id-screen, #feed, #section-btn-wrap, .result-actions, .section-intro { display: none !important; }
+    #result-screen { display: block !important; }
+    body { padding: 0; background: #fff; }
+  }
+
+  /* ── Mobile ── */
+  @media(max-width:480px) {
+    .q-title { font-size: 15px; }
+    .q-card { padding: 18px 16px 16px; }
+    .lk-btn { font-size: 12px; padding: 9px 6px; }
+  }
+
+  /* Consent boxes */
+  .consent-item {
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    background: var(--bg);
+  }
+  .consent-item.checked { border-color: var(--green); background: var(--green-light); }
+  .consent-detail {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.65;
+    margin-bottom: 10px;
+  }
+  .consent-check-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .consent-check-row input[type=checkbox] {
+    width: 16px; height: 16px;
+    accent-color: var(--green);
+    cursor: pointer;
+  }
+
+  /* ID field display in header */
+  #id-display {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+</style>
+</head>
+<body>
+
+<!-- Progress header -->
+<div id="progress-header">
+  <div class="progress-meta">
+    <span class="section-label" id="section-label">설문 준비</span>
+    <span class="progress-count" id="progress-count"></span>
+  </div>
+  <div id="id-display"></div>
+  <div class="progress-bar-wrap">
+    <div class="progress-bar-fill" id="progress-bar" style="width:0%"></div>
+  </div>
+</div>
+
+<!-- ID entry screen -->
+<div id="id-screen">
+  <h1>음주 · 신체 · 월경전 증상</h1>
+  <p>정신건강의학과 사전 설문의 두 번째 파트입니다.<br>
+     처음 설정한 고유 ID를 입력해 주세요.</p>
+  <div class="id-card">
+    <label class="id-label" for="id-input">고유 ID</label>
+    <input class="text-input" id="id-input" type="text" placeholder="예: HGD070229" maxlength="20" autocomplete="off">
+    <p class="id-example">이니셜 + 생년월일 6자리 (예: 2007년 2월 29일생 홍길동 → HGD070229)</p>
+    <p class="id-error" id="id-error">ID를 입력해 주세요.</p>
+    <button class="id-start-btn" id="id-start-btn">설문 시작하기 →</button>
+  </div>
+</div>
+
+<!-- Question feed -->
+<div id="feed" style="display:none;"></div>
+
+<!-- Section advance button -->
+<div id="section-btn-wrap">
+  <button class="section-advance-btn" id="section-advance-btn">다음 섹션으로 →</button>
+</div>
+
+<!-- Result screen -->
+<div id="result-screen"></div>
+
+<script>
+// ──────────────────────────────────────────────
+// STATE
+// ──────────────────────────────────────────────
+let USER_ID = '';
+let currentSection = 0;
+let answers = {};      // key -> value
+let QS = [];           // current section question list
+let DONE = new Set();  // completed keys this section
+
+// Section definitions
+const SECTIONS = [
+  { id: 'audit',  label: 'AUDIT — 음주 평가' },
+  { id: 'phq15', label: 'PHQ-15 — 신체 증상' },
+  { id: 'gender', label: '월경전 증상 — 성별 확인' },
+  { id: 'pms',   label: 'PSST — 월경전 증상' },
+];
+
+// ──────────────────────────────────────────────
+// QUESTION DEFINITIONS
+// ──────────────────────────────────────────────
+function buildAuditQuestions() {
+  return [
+    {
+      key: 'audit1',
+      num: '1',
+      title: '술을 얼마나 자주 마십니까?',
+      type: 'radio',
+      options: [
+        { val: 0, label: '전혀 마시지 않는다' },
+        { val: 1, label: '월 1회 미만' },
+        { val: 2, label: '월 2–4회' },
+        { val: 3, label: '주 2–3회' },
+        { val: 4, label: '주 4회 이상' },
+      ],
+    },
+    // 2~8번은 1번이 1 이상일 때만 표시
+    {
+      key: 'audit2',
+      num: '2',
+      title: '평소 술을 마시는 날은 몇 잔 정도나 마십니까?',
+      type: 'radio',
+      hint: '표준 1잔 기준 — 맥주 캔 1개(355ml) = 1잔 / 소주잔 2잔 = 1잔 / 와인 1잔(150ml) = 1잔 / 위스키 샷 1잔(45ml) = 1잔 / 막걸리 1컵(≈300ml) = 1잔',
+      visibleIf: () => answers['audit1'] !== undefined && answers['audit1'] > 0,
+      options: [
+        { val: 0, label: '1–2잔' },
+        { val: 1, label: '3–4잔' },
+        { val: 2, label: '5–6잔' },
+        { val: 3, label: '7–9잔' },
+        { val: 4, label: '10잔 이상' },
+      ],
+    },
+    {
+      key: 'audit3',
+      num: '3',
+      title: '한 번 술을 마실 때 6잔 이상 마시는 경우는 얼마나 자주 있습니까?',
+      type: 'radio',
+      visibleIf: () => answers['audit1'] > 0,
+      options: [
+        { val: 0, label: '전혀 없다' },
+        { val: 1, label: '월 1회 미만' },
+        { val: 2, label: '월 1회' },
+        { val: 3, label: '주 1회' },
+        { val: 4, label: '거의 매일' },
+      ],
+    },
+    {
+      key: 'audit4',
+      num: '4',
+      title: '지난 1년간 한 번 술을 마시기 시작하면 멈출 수 없었던 때가 얼마나 자주 있었습니까?',
+      type: 'radio',
+      visibleIf: () => answers['audit1'] > 0,
+      options: [
+        { val: 0, label: '전혀 없다' },
+        { val: 1, label: '월 1회 미만' },
+        { val: 2, label: '월 1회' },
+        { val: 3, label: '주 1회' },
+        { val: 4, label: '거의 매일' },
+      ],
+    },
+    {
+      key: 'audit5',
+      num: '5',
+      title: '지난 1년간 평소 같으면 할 수 있었던 일을 음주 때문에 실패한 적이 얼마나 자주 있었습니까?',
+      type: 'radio',
+      visibleIf: () => answers['audit1'] > 0,
+      options: [
+        { val: 0, label: '전혀 없다' },
+        { val: 1, label: '월 1회 미만' },
+        { val: 2, label: '월 1회' },
+        { val: 3, label: '주 1회' },
+        { val: 4, label: '거의 매일' },
+      ],
+    },
+    {
+      key: 'audit6',
+      num: '6',
+      title: '지난 1년간 술을 많이 마신 다음 날, 일을 나가기 위해서 해장술이 필요했던 적은 얼마나 자주 있었습니까?',
+      type: 'radio',
+      visibleIf: () => answers['audit1'] > 0,
+      options: [
+        { val: 0, label: '전혀 없다' },
+        { val: 1, label: '월 1회 미만' },
+        { val: 2, label: '월 1회' },
+        { val: 3, label: '주 1회' },
+        { val: 4, label: '거의 매일' },
+      ],
+    },
+    {
+      key: 'audit7',
+      num: '7',
+      title: '지난 1년간 음주 후에 죄책감이 들거나 후회를 한 적이 있습니까?',
+      type: 'radio',
+      visibleIf: () => answers['audit1'] > 0,
+      options: [
+        { val: 0, label: '전혀 없다' },
+        { val: 1, label: '월 1회 미만' },
+        { val: 2, label: '월 1회' },
+        { val: 3, label: '주 1회' },
+        { val: 4, label: '거의 매일' },
+      ],
+    },
+    {
+      key: 'audit8',
+      num: '8',
+      title: '지난 1년간 음주 때문에 전날 밤에 있었던 일이 기억나지 않았던 적이 얼마나 자주 있습니까?',
+      type: 'radio',
+      visibleIf: () => answers['audit1'] > 0,
+      options: [
+        { val: 0, label: '전혀 없다' },
+        { val: 1, label: '월 1회 미만' },
+        { val: 2, label: '월 1회' },
+        { val: 3, label: '주 1회' },
+        { val: 4, label: '거의 매일' },
+      ],
+    },
+    {
+      key: 'audit9',
+      num: '9',
+      title: '음주로 인해 자신이나 다른 사람이 다친 적이 있습니까?',
+      type: 'radio',
+      options: [
+        { val: 0, label: '없었다' },
+        { val: 2, label: '있지만 지난 1년간 없었다' },
+        { val: 4, label: '지난 1년간 있었다' },
+      ],
+    },
+    {
+      key: 'audit10',
+      num: '10',
+      title: '친척이나 친구, 의사가 당신이 술 마시는 것을 걱정하거나 술 끊기를 권유한 적이 있습니까?',
+      type: 'radio',
+      options: [
+        { val: 0, label: '없었다' },
+        { val: 2, label: '있지만 지난 1년간 없었다' },
+        { val: 4, label: '지난 1년간 있었다' },
+      ],
+    },
+  ];
+}
+
+function buildPHQ15Questions() {
+  const items = [
+    '위·배(복부) 통증 (속쓰림, 쥐어짜는 느낌 포함)',
+    '허리 통증',
+    '팔, 다리, 관절(무릎, 고관절 등)의 통증',
+    '월경 기간 월경통 등의 문제 (여성만 해당)',
+    '두통',
+    '가슴 통증, 흉통',
+    '어지러움',
+    '기절할 것 같은 느낌 / 눈앞이 아찔함',
+    '심장이 빨리 뛰거나 두근거림',
+    '숨이 차거나 숨쉬기 답답함',
+    '성교 통증 등의 문제',
+    '변비, 묽은 변이나 설사',
+    '속 불편감 (메스꺼움, 가스 참, 소화불량)',
+    '피로감, 기운 없음',
+    '수면 문제 (잠들기 어려움, 자주 깸 등)',
+  ];
+  return items.map((title, i) => ({
+    key: `phq${i+1}`,
+    num: `${i+1}`,
+    title,
+    type: 'likert3',
+    // Q4 (월경통): 남성이면 해당없음(0) 자동 처리
+    visibleIf: (i === 3) ? (() => answers['gender'] !== 'male') : undefined,
+    options: [
+      { val: 0, label: '전혀\n방해받지\n않았다' },
+      { val: 1, label: '조금\n방해 받았다' },
+      { val: 2, label: '많이\n방해 받았다' },
+    ],
+  }));
+}
+
+function buildGenderQuestion() {
+  return [{
+    key: 'gender',
+    num: '',
+    title: '다음 설문(월경전 증상)은 여성에게만 해당합니다. 성별을 선택해 주세요.',
+    type: 'radio',
+    options: [
+      { val: 'male',   label: '남성 — 설문을 완료합니다' },
+      { val: 'female', label: '여성 — 월경전 증상 설문을 계속합니다' },
+    ],
+  }];
+}
+
+function buildPMSQuestions() {
+  const part1 = [
+    '분노 / 과민한 기분',
+    '불안감 / 긴장감',
+    '자주 울게 됨 / 대인관계에서 쉽게 상처받음',
+    '우울한 기분 / 절망감',
+    '직업 활동에 대한 흥미 감소',
+    '집안 일에 대한 흥미 감소',
+    '사회적 활동에 대한 흥미 감소',
+    '집중하기 곤란함',
+    '피로감 / 무기력감',
+    '과식 / 특정 음식이 과도하게 먹고 싶음',
+    '불면',
+    '과도한 수면 / 수면 욕구의 증가',
+    '쉽게 당황하거나 자제력을 잃을 것 같은 느낌',
+    '신체적 증상들 (유방압통, 두통, 관절통, 근육통, 몸이 붓거나 체중이 증가된 느낌 등)',
+  ];
+  const part2 = [
+    '일의 효율성 혹은 생산성의 지장',
+    '동료들과의 관계에 지장',
+    '가족들과의 관계에 지장',
+    '사회적 활동의 지장',
+    '집안 일 / 가사 책임 수행에 지장',
+  ];
+  const opts = [
+    { val: 1, label: '전혀 경험하지\n않는다' },
+    { val: 2, label: '조금\n경험한다' },
+    { val: 3, label: '어느 정도\n경험한다' },
+    { val: 4, label: '심하게\n경험한다' },
+  ];
+  const qs = part1.map((title, i) => ({
+    key: `pms1_${i+1}`,
+    num: `1.${i+1}`,
+    title,
+    type: 'likert4pms',
+    options: opts,
+  }));
+  part2.forEach((title, i) => qs.push({
+    key: `pms2_${i+1}`,
+    num: `2.${i+1}`,
+    title,
+    type: 'likert4pms',
+    options: opts,
+  }));
+  return qs;
+}
+
+// ──────────────────────────────────────────────
+// INIT / SECTION MANAGEMENT
+// ──────────────────────────────────────────────
+function initSection(idx) {
+  currentSection = idx;
+  const feed = document.getElementById('feed');
+  feed.innerHTML = '';
+  DONE = new Set();
+
+  const sectionDefs = [
+    buildAuditQuestions,
+    buildPHQ15Questions,
+    buildGenderQuestion,
+    buildPMSQuestions,
+  ];
+
+  const sec = SECTIONS[idx];
+  document.getElementById('section-label').textContent = sec.label;
+  document.getElementById('section-btn-wrap').classList.remove('visible');
+
+  // Build intro card
+  const introDescs = [
+    { title: 'AUDIT — 음주 평가', body: '지난 1년 동안의 음주 상태를 평가하는 도구(AUDIT)입니다. 총 10문항으로 구성되어 있으며, 음주 여부에 따라 문항 수가 달라질 수 있습니다.' },
+    { title: 'PHQ-15 — 신체 증상', body: '원인과 무관하게, 지난 4주 동안 다음 신체 증상들로 얼마나 자주 방해받았는지 답해주십시오. 총 15문항입니다.' },
+    { title: '월경전 증상 — 성별 확인', body: '다음 섹션은 여성에게만 해당하는 월경전 증상 설문입니다.' },
+    { title: 'PSST — 월경전 증상', body: '생리 기간 전에 시작하여 생리 시작 후 며칠 이내에 사라지는 월경전 증상들을 어느 정도 경험하십니까? 총 19문항입니다.' },
+  ];
+
+  const intro = introDescs[idx];
+  const introEl = document.createElement('div');
+  introEl.className = 'section-intro';
+  introEl.innerHTML = `<h2>${intro.title}</h2><p>${intro.body}</p><button class="intro-next">시작하기 →</button>`;
+  introEl.querySelector('.intro-next').addEventListener('click', () => {
+    introEl.style.display = 'none';
+    QS = sectionDefs[idx]();
+    renderNext();
+    updateProgress();
+  });
+  feed.appendChild(introEl);
+  QS = [];
+  updateProgress();
+}
+
+function updateProgress() {
+  const total = SECTIONS.length;
+  const pct = Math.round(((currentSection) / total) * 100);
+  document.getElementById('progress-bar').style.width = pct + '%';
+  document.getElementById('progress-count').textContent = `${currentSection + 1} / ${total}`;
+  document.getElementById('id-display').textContent = USER_ID ? `ID: ${USER_ID}` : '';
+}
+
+// ──────────────────────────────────────────────
+// RENDER LOGIC
+// ──────────────────────────────────────────────
+function getVisibleQuestions() {
+  return QS.filter(q => !q.visibleIf || q.visibleIf());
+}
+
+function renderNext() {
+  const feed = document.getElementById('feed');
+  const visibleQS = getVisibleQuestions();
+  const nextQ = visibleQS.find(q => !DONE.has(q.key));
+  if (!nextQ) {
+    showSectionBtn();
+    return;
+  }
+
+  // Remove any existing active card
+  const existingCard = feed.querySelector('.q-card[data-key="' + nextQ.key + '"]');
+  if (existingCard) return;
+
+  const card = buildCard(nextQ);
+  feed.appendChild(card);
+  setTimeout(() => card.scrollIntoView({ behavior: 'smooth', block: 'center' }), 80);
+}
+
+function buildCard(q) {
+  const card = document.createElement('div');
+  card.className = 'q-card';
+  card.dataset.key = q.key;
+
+  const header = document.createElement('div');
+  header.className = 'q-card-header';
+
+  if (q.num !== '' && q.num != null) {
+    const badge = document.createElement('span');
+    badge.className = 'q-badge';
+    badge.textContent = q.num;
+    header.appendChild(badge);
+  }
+
+  const title = document.createElement('div');
+  title.className = 'q-title';
+  title.textContent = q.title;
+  header.appendChild(title);
+  card.appendChild(header);
+
+  if (q.hint) {
+    const hint = document.createElement('div');
+    hint.className = 'q-hint';
+    hint.textContent = q.hint;
+    card.appendChild(hint);
+  }
+
+  const ctrl = buildControl(q);
+  card.appendChild(ctrl);
+  return card;
+}
+
+function buildControl(q) {
+  const wrap = document.createElement('div');
+
+  if (q.type === 'radio') {
+    const list = document.createElement('div');
+    list.className = 'options-list';
+    q.options.forEach(opt => {
+      const btn = document.createElement('button');
+      btn.className = 'opt-btn';
+      btn.innerHTML = `<span class="opt-dot"></span><span class="opt-label">${opt.label}</span>`;
+      btn.addEventListener('click', () => {
+        selectAnswer(q.key, opt.val, opt.label, 'radio', list);
+      });
+      list.appendChild(btn);
+    });
+    wrap.appendChild(list);
+
+  } else if (q.type === 'likert3') {
+    const grid = document.createElement('div');
+    grid.className = 'likert-grid l3';
+    const labels0 = ['전혀\n방해받지\n않았다', '조금\n방해 받았다', '많이\n방해 받았다'];
+    [0,1,2].forEach(v => {
+      const btn = document.createElement('button');
+      btn.className = 'lk-btn';
+      btn.innerHTML = `<div class="lk-num">${v}</div><div>${labels0[v].replace(/\n/g,'<br>')}</div>`;
+      btn.addEventListener('click', () => {
+        selectAnswer(q.key, v, labels0[v].replace(/\n/g,' '), 'likert', grid);
+      });
+      grid.appendChild(btn);
+    });
+    wrap.appendChild(grid);
+
+  } else if (q.type === 'likert4pms') {
+    const grid = document.createElement('div');
+    grid.className = 'likert-grid l4';
+    q.options.forEach(opt => {
+      const btn = document.createElement('button');
+      btn.className = 'lk-btn';
+      btn.innerHTML = `<div class="lk-num">${opt.val}</div><div>${opt.label.replace(/\n/g,'<br>')}</div>`;
+      btn.addEventListener('click', () => {
+        selectAnswer(q.key, opt.val, opt.label.replace(/\n/g,' '), 'likert', grid);
+      });
+      grid.appendChild(btn);
+    });
+    wrap.appendChild(grid);
+  }
+
+  return wrap;
+}
+
+function selectAnswer(key, val, labelText, type, container) {
+  // Visual feedback
+  if (type === 'radio') {
+    container.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('selected'));
+    // find clicked button
+    container.querySelectorAll('.opt-btn').forEach(b => {
+      if (b.querySelector('.opt-label').textContent.trim() === labelText.trim()) b.classList.add('selected');
+    });
+  } else {
+    container.querySelectorAll('.lk-btn').forEach(b => b.classList.remove('selected'));
+    const btns = container.querySelectorAll('.lk-btn');
+    btns.forEach(b => {
+      const num = parseInt(b.querySelector('.lk-num').textContent);
+      if (num === val) b.classList.add('selected');
+    });
+  }
+
+  answers[key] = val;
+
+  // Special AUDIT logic: if audit1 == 0, mark 2-8 as skipped (answered with 0) and jump to 9
+  if (key === 'audit1' && val === 0) {
+    for (let i = 2; i <= 8; i++) {
+      answers[`audit${i}`] = 0;
+      DONE.add(`audit${i}`);
+    }
+  }
+
+  setTimeout(() => {
+    DONE.add(key);
+    collapseToAnswered(key, labelText);
+    reEvaluateVisibility();
+    renderNext();
+  }, 260);
+}
+
+function collapseToAnswered(key, labelText) {
+  const feed = document.getElementById('feed');
+  const card = feed.querySelector(`.q-card[data-key="${key}"]`);
+  if (!card) return;
+
+  const q = QS.find(qq => qq.key === key);
+  if (!q) { card.remove(); return; }
+
+  const row = document.createElement('div');
+  row.className = 'answered-row';
+  row.dataset.key = key;
+  row.innerHTML = `
+    <span class="q-num">${q.num !== '' && q.num != null ? q.num : '·'}</span>
+    <span class="q-text">${q.title}</span>
+    <span class="q-ans">${labelText}</span>
+    <button class="edit-btn">수정</button>
+  `;
+  row.querySelector('.edit-btn').addEventListener('click', () => editAnswer(key));
+  card.replaceWith(row);
+}
+
+function editAnswer(key) {
+  // Remove all answered rows and cards after this key
+  const feed = document.getElementById('feed');
+  const visibleQS = getVisibleQuestions();
+  const keyIdx = visibleQS.findIndex(q => q.key === key);
+  const keysToUndo = visibleQS.slice(keyIdx).map(q => q.key);
+
+  keysToUndo.forEach(k => {
+    DONE.delete(k);
+    delete answers[k];
+    // Also un-skip audit 2-8 if editing audit1
+    if (k === 'audit1') {
+      for (let i = 2; i <= 8; i++) {
+        DONE.delete(`audit${i}`);
+        delete answers[`audit${i}`];
+      }
+    }
+    const el = feed.querySelector(`[data-key="${k}"]`);
+    if (el) el.remove();
+  });
+
+  document.getElementById('section-btn-wrap').classList.remove('visible');
+
+  // Re-render the edited card
+  const q = QS.find(qq => qq.key === key);
+  if (q) {
+    const card = buildCard(q);
+    feed.appendChild(card);
+    setTimeout(() => card.scrollIntoView({ behavior: 'smooth', block: 'center' }), 80);
+  }
+}
+
+function reEvaluateVisibility() {
+  // If gender section completed with 'male', mark all PMS as skipped
+  // (handled in section advance logic)
+}
+
+function showSectionBtn() {
+  const wrap = document.getElementById('section-btn-wrap');
+  wrap.classList.add('visible');
+  const btn = document.getElementById('section-advance-btn');
+
+  // Determine next action
+  const isLast = (
+    currentSection === SECTIONS.length - 1 ||
+    (currentSection === 2 && answers['gender'] === 'male') || // skip PMS if male
+    (currentSection === 2 && answers['gender'] === 'female' && currentSection + 1 === 3) ||
+    false
+  );
+
+  // Check if gender = male → skip PMS
+  if (currentSection === 2 && answers['gender'] === 'male') {
+    btn.textContent = '설문 완료 → 결과 보기';
+    btn.onclick = () => showResult();
+    return;
+  }
+
+  if (currentSection < SECTIONS.length - 1) {
+    btn.textContent = '다음 섹션으로 →';
+    btn.onclick = () => {
+      wrap.classList.remove('visible');
+      document.getElementById('feed').innerHTML = '';
+      initSection(currentSection + 1);
+    };
+  } else {
+    btn.textContent = '설문 완료 → 결과 보기';
+    btn.onclick = () => showResult();
+  }
+}
+
+// ──────────────────────────────────────────────
+// SCORING
+// ──────────────────────────────────────────────
+function scoreAudit() {
+  let total = 0;
+  for (let i = 1; i <= 10; i++) {
+    total += (answers[`audit${i}`] || 0);
+  }
+  return total;
+}
+
+function auditLevel(score) {
+  if (score <= 7)  return { label: '정상/저위험', cls: 'badge-ok', color: '#3D6B58' };
+  if (score <= 15) return { label: '위험 음주', cls: 'badge-mild', color: '#D97706' };
+  if (score <= 19) return { label: '유해 음주', cls: 'badge-mod', color: '#C45E2E' };
+  return             { label: '알코올 의존 의심', cls: 'badge-sev', color: '#991B1B' };
+}
+
+function scorePHQ15() {
+  let total = 0;
+  for (let i = 1; i <= 15; i++) {
+    // Q4 (i=4): if male, auto 0
+    if (i === 4 && answers['gender'] === 'male') continue;
+    total += (answers[`phq${i}`] || 0);
+  }
+  return total;
+}
+
+function phqLevel(score) {
+  if (score <= 4)  return { label: '최소', cls: 'badge-ok', color: '#3D6B58' };
+  if (score <= 9)  return { label: '경증', cls: 'badge-mild', color: '#D97706' };
+  if (score <= 14) return { label: '중등도', cls: 'badge-mod', color: '#C45E2E' };
+  return             { label: '중증', cls: 'badge-sev', color: '#991B1B' };
+}
+
+function scorePMS() {
+  if (answers['gender'] !== 'female') return null;
+  let sym = 0, func = 0;
+  for (let i = 1; i <= 14; i++) sym  += (answers[`pms1_${i}`] || 1) - 1;
+  for (let i = 1; i <= 5;  i++) func += (answers[`pms2_${i}`] || 1) - 1;
+  return { sym, func, total: sym + func };
+}
+
+function pmsScreening() {
+  if (answers['gender'] !== 'female') return null;
+  // PSST criteria: ≥1 item in 1.1~1.4 scored ≥3 AND ≥1 functional item scored ≥3
+  const mood = ['pms1_1','pms1_2','pms1_3','pms1_4'];
+  const hasMoodSevere = mood.some(k => (answers[k]||1) >= 3);
+  const hasFuncSevere = [1,2,3,4,5].some(i => (answers[`pms2_${i}`]||1) >= 3);
+  if (hasMoodSevere && hasFuncSevere) return 'PMDD 가능성 있음';
+  const anySymptom = Array.from({length:14},(_,i)=>`pms1_${i+1}`).some(k=>(answers[k]||1)>=3);
+  const anyFunc    = [1,2,3,4,5].some(i=>(answers[`pms2_${i}`]||1)>=3);
+  if (anySymptom && anyFunc) return 'PMS 가능성 있음';
+  return '임상적으로 유의한 월경전 증상 없음';
+}
+
+// ──────────────────────────────────────────────
+// RESULT SCREEN
+// ──────────────────────────────────────────────
+function showResult() {
+  document.getElementById('feed').style.display = 'none';
+  document.getElementById('section-btn-wrap').style.display = 'none';
+  document.getElementById('progress-header').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'block';
+
+  const auditScore = scoreAudit();
+  const auditLv = auditLevel(auditScore);
+  const phqScore = scorePHQ15();
+  const phqLv = phqLevel(phqScore);
+  const pmsScore = scorePMS();
+  const pmsResult = pmsScreening();
+  const today = new Date().toLocaleDateString('ko-KR', { year:'numeric', month:'long', day:'numeric' });
+
+  const el = document.getElementById('result-screen');
+
+  // Build PHQ sub-domains
+  const phqSub = [
+    { name: '통증', keys: [1,2,3,5], max: 8 },
+    { name: '심폐·자율', keys: [6,7,8,9,10], max: 10 },
+    { name: '소화', keys: [11,12,13], max: 6 },
+    { name: '일반', keys: [14,15], max: 4 },
+  ];
+  const phqSubHTML = phqSub.map(s => {
+    const v = s.keys.reduce((a,k)=>a+(answers[`phq${k}`]||0),0);
+    return `<div class="rc-sub-item"><div class="rc-sub-name">${s.name}</div><div class="rc-sub-val">${v}/${s.max}</div></div>`;
+  }).join('');
+
+  // AUDIT sub (hazardous items)
+  const auditSubHTML = `
+    <div class="rc-sub-item"><div class="rc-sub-name">음주 빈도·양</div><div class="rc-sub-val">${(answers.audit1||0)+(answers.audit2||0)+(answers.audit3||0)}/12</div></div>
+    <div class="rc-sub-item"><div class="rc-sub-name">의존 증상</div><div class="rc-sub-val">${(answers.audit4||0)+(answers.audit5||0)+(answers.audit6||0)}/12</div></div>
+    <div class="rc-sub-item"><div class="rc-sub-name">문제 음주</div><div class="rc-sub-val">${(answers.audit7||0)+(answers.audit8||0)+(answers.audit9||0)+(answers.audit10||0)}/16</div></div>
+  `;
+
+  let pmsCardHTML = '';
+  if (answers['gender'] === 'female' && pmsScore) {
+    const pmsBadge = pmsResult.includes('PMDD') ? 'badge-sev' :
+                     pmsResult.includes('PMS')  ? 'badge-mild' : 'badge-ok';
+    const pmsSubHTML = `
+      <div class="rc-sub-item"><div class="rc-sub-name">정서·행동 증상</div><div class="rc-sub-val">${pmsScore.sym}/42</div></div>
+      <div class="rc-sub-item"><div class="rc-sub-name">기능 저하</div><div class="rc-sub-val">${pmsScore.func}/20</div></div>
+    `;
+    pmsCardHTML = `
+    <div class="result-card">
+      <div class="rc-label">PSST — 월경전 증상</div>
+      <div class="rc-score-row">
+        <div class="rc-score">${pmsScore.total}</div>
+        <div class="rc-max">/ 62점</div>
+      </div>
+      <span class="badge ${pmsBadge}">${pmsResult}</span>
+      <div class="rc-bar-wrap"><div class="rc-bar-fill" style="width:${Math.min(pmsScore.total/62*100,100).toFixed(0)}%;background:${pmsBadge==='badge-sev'?'#991B1B':pmsBadge==='badge-mild'?'#D97706':'#3D6B58'}"></div></div>
+      <div class="rc-interp">${
+        pmsResult.includes('PMDD') ? '월경 전 정서·신체 증상이 일상 기능에 심각한 지장을 주고 있습니다. PMDD(월경전불쾌장애) 진단 기준을 충족할 가능성이 있어 임상적 평가가 권고됩니다.' :
+        pmsResult.includes('PMS')  ? '월경 전 증상으로 인한 기능 저하가 관찰됩니다. PMS(월경전증후군)에 해당할 수 있습니다.' :
+                                      '현재 임상적으로 유의한 수준의 월경전 증상은 확인되지 않았습니다.'
+      }</div>
+      <div class="rc-sub-grid">${pmsSubHTML}</div>
+    </div>`;
+  } else if (answers['gender'] === 'male') {
+    pmsCardHTML = `<div class="result-card"><div class="rc-label">PSST — 월경전 증상</div><div class="rc-interp" style="color:var(--muted)">해당 없음 (남성)</div></div>`;
+  }
+
+  // ── HUB: broadcast scores ──
+  (function(){
+    const aLvl = auditScore>=20?'severe':auditScore>=16?'mod':auditScore>=8?'mild':'normal';
+    const pLvl = phqScore>=15?'severe':phqScore>=10?'mod':phqScore>=5?'mild':'normal';
+    const scores = [
+      {id:'audit', name:'음주 (AUDIT)', score:auditScore, max:40, level:aLvl,
+       badge:auditLv.label, sub:[]},
+      {id:'phq15', name:'신체증상 (PHQ-15)', score:phqScore, max:30, level:pLvl,
+       badge:phqLv.label, sub:[]},
+    ];
+    if(pmsScore){
+      const pl = pmsResult.includes('PMDD')?'severe':pmsResult.includes('PMS')?'mild':'normal';
+      scores.push({id:'pms', name:'월경전증상 (PSST)', score:pmsScore.total, max:62, level:pl,
+        badge:pmsResult, sub:[{n:'정서·행동',v:pmsScore.sym},{n:'기능저하',v:pmsScore.func}]});
+    }
+    const payload = {type:'SURVEY_SCORES', surveyId:'survey2', scores};
+    if(window.parent!==window) window.parent.postMessage(payload,'*');
+    try{ localStorage.setItem('hub_scores_survey2', JSON.stringify(payload)); }catch(e){}
+  })();
+
+  el.innerHTML = `
+    <div class="result-header">
+      <h1>정신건강의학과 사전 평가 결과</h1>
+      <div class="result-meta">${today} &nbsp;·&nbsp; ID: ${USER_ID}</div>
+    </div>
+
+    <div class="result-grid">
+      <!-- AUDIT -->
+      <div class="result-card">
+        <div class="rc-label">AUDIT — 음주 평가</div>
+        <div class="rc-score-row">
+          <div class="rc-score">${auditScore}</div>
+          <div class="rc-max">/ 40점</div>
+        </div>
+        <span class="badge ${auditLv.cls}">${auditLv.label}</span>
+        <div class="rc-bar-wrap"><div class="rc-bar-fill" style="width:${Math.min(auditScore/40*100,100).toFixed(0)}%;background:${auditLv.color}"></div></div>
+        <div class="rc-interp">${
+          auditScore <= 7  ? '음주와 관련된 문제가 거의 없습니다.' :
+          auditScore <= 15 ? '음주량 또는 빈도가 건강에 영향을 줄 수 있는 수준입니다. 절주를 권고합니다.' :
+          auditScore <= 19 ? '음주로 인한 신체·사회적 피해가 나타나고 있습니다. 전문적 도움이 필요합니다.' :
+                              '알코올 의존 가능성이 높습니다. 즉각적인 전문 치료가 권고됩니다.'
+        }</div>
+        <div class="rc-sub-grid">${auditSubHTML}</div>
+      </div>
+
+      <!-- PHQ-15 -->
+      <div class="result-card">
+        <div class="rc-label">PHQ-15 — 신체 증상</div>
+        <div class="rc-score-row">
+          <div class="rc-score">${phqScore}</div>
+          <div class="rc-max">/ ${answers['gender']==='male'?'28':'30'}점</div>
+        </div>
+        <span class="badge ${phqLv.cls}">${phqLv.label}</span>
+        <div class="rc-bar-wrap"><div class="rc-bar-fill" style="width:${Math.min(phqScore/30*100,100).toFixed(0)}%;background:${phqLv.color}"></div></div>
+        <div class="rc-interp">${
+          phqScore <= 4  ? '신체 증상으로 인한 불편감이 최소 수준입니다.' :
+          phqScore <= 9  ? '경미한 신체 증상이 보고되었습니다.' :
+          phqScore <= 14 ? '중등도의 신체 증상이 있습니다. 추가 평가가 필요합니다.' :
+                            '다수의 신체 증상이 심하게 경험되고 있습니다. 신체화 또는 기능성 증상에 대한 평가를 권고합니다.'
+        }</div>
+        <div class="rc-sub-grid">${phqSubHTML}</div>
+      </div>
+
+      ${pmsCardHTML}
+    </div>
+
+    <div class="disclaimer">
+      본 결과는 선별 목적의 참고 자료이며, 진단을 대체하지 않습니다.<br>
+      임상 판단은 반드시 담당 의사와 함께 이루어져야 합니다.
+    </div>
+    <div class="result-actions">
+      <button class="action-btn secondary" onclick="window.print()">🖨 인쇄</button>
+      <button class="action-btn primary" onclick="location.reload()">처음으로</button>
+      <button class="action-btn" onclick="if(window.parent!==window){window.parent.postMessage({type:'BACK_TO_HUB'},'*');}else{window.location.href='index.html';}" style="background:#EAF2EE;border-color:#2E6B42;color:#1A3E0B;font-weight:600;">🏠  목록으로 돌아가기</button>
+    </div>
+  `;
+}
+
+// ──────────────────────────────────────────────
+// BOOTSTRAP
+// ──────────────────────────────────────────────
+document.getElementById('id-start-btn').addEventListener('click', () => {
+  const val = document.getElementById('id-input').value.trim();
+  if (!val) {
+    document.getElementById('id-error').style.display = 'block';
+    return;
+  }
+  document.getElementById('id-error').style.display = 'none';
+  USER_ID = val;
+  document.getElementById('id-screen').style.display = 'none';
+  document.getElementById('feed').style.display = 'flex';
+  initSection(0);
+});
+
+document.getElementById('id-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') document.getElementById('id-start-btn').click();
+});
+</script>
+</body>
+</html>

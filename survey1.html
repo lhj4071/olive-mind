@@ -1,0 +1,1331 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>정신건강 사전 설문</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@400;700&display=swap');
+:root{
+  --bg:#F7F6F3;--sf:#fff;--s2:#F0EEE9;--bd:#DDD9D0;
+  --t1:#1A1916;--t2:#6B6860;--tm:#9E9B94;
+  --ac:#3D6B58;--al:#EAF2EE;--ah:#2D5244;
+  --wn:#C45E2E;--wl:#FBF0EB;
+  --r:12px;--rs:8px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--t1);min-height:100vh;line-height:1.7;font-size:15px}
+.shell{max-width:620px;margin:0 auto;padding:0 16px 100px}
+
+/* header */
+.hdr{padding:18px 0 14px;border-bottom:1px solid var(--bd);margin-bottom:18px;display:flex;align-items:center;gap:10px;position:sticky;top:0;background:var(--bg);z-index:50}
+.hdr-mk{width:30px;height:30px;background:var(--ac);border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.hdr-mk svg{width:16px;height:16px;fill:none;stroke:#fff;stroke-width:2}
+.hdr h1{font-family:'Noto Serif KR',serif;font-size:14px;font-weight:700}
+.hdr p{font-size:11px;color:var(--tm)}
+
+/* progress */
+.prog{margin-bottom:18px}
+.prog-row{display:flex;justify-content:space-between;margin-bottom:5px}
+.prog-lbl{font-size:11.5px;color:var(--t2);font-weight:500}
+.prog-fr{font-size:11.5px;color:var(--tm)}
+.prog-tr{height:3px;background:#E0DDD6;border-radius:2px;overflow:hidden}
+.prog-fi{height:100%;background:var(--ac);border-radius:2px;transition:width .45s cubic-bezier(.4,0,.2,1)}
+
+/* section header */
+.sec-hdr{background:var(--sf);border-radius:var(--r);border:1px solid var(--bd);padding:18px 18px 16px;margin-bottom:14px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.eyebrow{font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ac);margin-bottom:3px}
+.sec-title{font-family:'Noto Serif KR',serif;font-size:17px;font-weight:700;line-height:1.4;margin-bottom:4px;letter-spacing:-.4px}
+.sec-desc{font-size:12.5px;color:var(--t2);line-height:1.7;border-left:3px solid var(--bd);padding-left:9px}
+.guide-box{background:var(--s2);border-radius:var(--rs);padding:9px 12px;margin-top:10px;font-size:12px;color:var(--t2);line-height:1.85}
+.guide-box strong{color:var(--t1)}
+
+/* ─── QUESTION CARD ─── */
+.q-card{
+  background:var(--sf);border-radius:var(--r);border:1px solid var(--bd);
+  padding:20px 18px 16px;margin-bottom:10px;
+  box-shadow:0 1px 3px rgba(0,0,0,.04);
+  transition:all .22s ease;
+}
+/* Active card: full display */
+.q-card.active{animation:qIn .28s cubic-bezier(.22,.68,0,1.15) forwards}
+@keyframes qIn{
+  from{opacity:0;transform:translateY(16px)}
+  to{opacity:1;transform:translateY(0)}
+}
+/* Answered card: collapsed summary */
+.q-card.done{
+  padding:9px 14px;
+  background:var(--s2);
+  border-color:transparent;
+  box-shadow:none;
+  cursor:default;
+}
+/* Future card: hidden */
+.q-card.future{
+  display:none;
+}
+
+/* answered summary row */
+.done-row{display:flex;align-items:center;gap:8px;min-width:0}
+.done-num{font-size:11px;color:var(--tm);flex-shrink:0;min-width:22px}
+.done-q{font-size:12.5px;color:var(--t2);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.done-a{font-size:12.5px;font-weight:600;color:var(--ac);flex-shrink:0;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.edit-btn{font-size:11px;color:var(--tm);cursor:pointer;padding:2px 7px;border-radius:4px;border:1px solid var(--bd);background:var(--sf);flex-shrink:0;transition:all .12s}
+.edit-btn:hover{color:var(--ac);border-color:var(--ac)}
+
+/* question label */
+.q-lbl{font-size:14px;font-weight:500;line-height:1.65;margin-bottom:11px;color:var(--t1)}
+.q-num{display:inline;font-size:11.5px;font-weight:700;color:var(--tm);margin-right:4px}
+.q-hint{font-size:11.5px;color:var(--tm);margin-top:5px;line-height:1.5;margin-bottom:8px}
+
+/* radio */
+.rg{display:flex;flex-direction:column;gap:6px}
+.ro{display:flex;align-items:center;gap:9px;padding:10px 12px;border:1.5px solid var(--bd);border-radius:var(--rs);cursor:pointer;font-size:13px;color:var(--t2);user-select:none;transition:all .13s}
+.ro:hover{border-color:var(--ac);background:var(--al)}
+.ro.sel{border-color:var(--ac);background:var(--al);color:var(--ac);font-weight:500}
+.rdot{width:15px;height:15px;border-radius:50%;border:2px solid var(--bd);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ro.sel .rdot{border-color:var(--ac)}
+.rdi{width:7px;height:7px;border-radius:50%;background:var(--ac);opacity:0}
+.ro.sel .rdi{opacity:1}
+
+/* likert 4 col */
+.lg{display:grid;grid-template-columns:repeat(4,1fr);gap:5px}
+.lo{display:flex;flex-direction:column;align-items:center;gap:3px;padding:9px 4px 7px;border:1.5px solid var(--bd);border-radius:var(--rs);cursor:pointer;text-align:center;font-size:11.5px;color:var(--t2);line-height:1.35;user-select:none;transition:all .13s}
+.lo:hover{border-color:var(--ac);background:var(--al)}
+.lo.sel{border-color:var(--ac);background:var(--al);color:var(--ac);font-weight:500}
+.lo-n{font-size:15px;font-weight:700;font-family:'Noto Serif KR',serif;color:var(--tm);line-height:1}
+.lo.sel .lo-n{color:var(--ac)}
+
+/* binary */
+.bg2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.bo{padding:11px;border:1.5px solid var(--bd);border-radius:var(--rs);cursor:pointer;text-align:center;font-size:14px;font-weight:500;color:var(--t2);transition:all .13s;user-select:none}
+.bo:hover{border-color:var(--ac);background:var(--al)}
+.bo.sel{border-color:var(--ac);background:var(--al);color:var(--ac)}
+.bo.w.sel{border-color:var(--wn);background:var(--wl);color:var(--wn)}
+
+/* checkbox */
+.cg{display:flex;flex-direction:column;gap:5px}
+.cg2{display:grid;grid-template-columns:repeat(2,1fr);gap:5px}
+.co{display:flex;align-items:center;gap:8px;padding:8px 11px;border:1.5px solid var(--bd);border-radius:var(--rs);cursor:pointer;font-size:13px;color:var(--t2);transition:all .13s;user-select:none}
+.co:hover{border-color:var(--ac);background:var(--al)}
+.co.sel{border-color:var(--ac);background:var(--al);color:var(--ac);font-weight:500}
+.cbx{width:15px;height:15px;border:2px solid var(--bd);border-radius:3px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.co.sel .cbx{border-color:var(--ac);background:var(--ac)}
+.cbx svg{display:none}.co.sel .cbx svg{display:block}
+
+/* scroll select */
+.s-sel{border:1.5px solid var(--bd);border-radius:var(--rs);overflow:hidden}
+.s-sel select{width:100%;padding:10px 32px 10px 12px;font-family:'Noto Sans KR',sans-serif;font-size:13.5px;color:var(--t1);background:var(--sf) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%239E9B94' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat right 12px center;border:none;outline:none;cursor:pointer;-webkit-appearance:none;appearance:none}
+
+/* text input */
+.ti{width:100%;border:1.5px solid var(--bd);border-radius:var(--rs);padding:10px 11px;font-family:'Noto Sans KR',sans-serif;font-size:13.5px;color:var(--t1);background:var(--sf);outline:none;transition:border-color .13s}
+.ti:focus{border-color:var(--ac)}
+textarea.ti{resize:vertical;min-height:64px;line-height:1.6}
+
+/* 2-col row */
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.col-lbl{font-size:12px;color:var(--t2);font-weight:500;margin-bottom:5px}
+
+/* stepper */
+.nw{display:flex;align-items:center;border:1.5px solid var(--bd);border-radius:var(--rs);overflow:hidden;width:fit-content}
+.nsb{width:36px;height:36px;border:none;background:var(--s2);cursor:pointer;font-size:17px;color:var(--t2);display:flex;align-items:center;justify-content:center;transition:background .12s}
+.nsb:hover{background:var(--bd)}
+.ni{width:74px;height:36px;border:none;border-left:1.5px solid var(--bd);border-right:1.5px solid var(--bd);text-align:center;font-family:'Noto Sans KR',sans-serif;font-size:14px;font-weight:600;color:var(--t1);background:var(--sf);outline:none}
+
+/* time select */
+.tsel-row{display:flex;gap:5px;align-items:center}
+.tsel{border:1.5px solid var(--bd);border-radius:var(--rs);padding:8px 26px 8px 10px;font-family:'Noto Sans KR',sans-serif;font-size:13.5px;color:var(--t1);background:var(--sf) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='7' viewBox='0 0 10 7'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%239E9B94' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat right 8px center;outline:none;cursor:pointer;-webkit-appearance:none;appearance:none;transition:border-color .13s}
+.tsel:focus{border-color:var(--ac)}
+
+/* sleep summary */
+.sleep-sum{background:var(--al);border:1px solid #C0DDD0;border-radius:var(--rs);padding:9px 12px;margin-top:9px;font-size:12px;line-height:1.9;color:var(--t2)}
+.sleep-sum strong{color:var(--ac)}
+
+/* matrix */
+.cmat{width:100%;border-collapse:collapse;font-size:11.5px;margin-top:4px}
+.cmat th{font-size:10.5px;font-weight:600;color:var(--t2);padding:5px 3px;border-bottom:1px solid var(--bd);text-align:center;white-space:nowrap}
+.cmat th:first-child{text-align:left;padding-left:0;min-width:100px}
+.cmat td{padding:6px 3px;text-align:center;border-bottom:1px solid var(--s2)}
+.cmat td:first-child{text-align:left;padding-left:0;font-size:11.5px;color:var(--t2)}
+.cmat tr:last-child td{border-bottom:none}
+.mrb{width:16px;height:16px;border-radius:50%;border:2px solid var(--bd);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;margin:0 auto;transition:border-color .13s}
+.mrb.sel{border-color:var(--ac)}
+.mrb-i{width:7px;height:7px;border-radius:50%;background:var(--ac);opacity:0}
+.mrb.sel .mrb-i{opacity:1}
+
+/* consent */
+.cons-item{background:var(--s2);border-radius:var(--rs);padding:10px 12px;margin-bottom:7px;font-size:12px;color:var(--t2);line-height:1.7;border-left:3px solid var(--bd)}
+.cons-item h4{font-size:12.5px;font-weight:700;color:var(--t1);margin-bottom:3px}
+
+/* continue / next buttons */
+.cont-btn{margin-top:12px;width:100%;padding:11px;background:var(--ac);color:#fff;border:none;border-radius:var(--rs);font-family:'Noto Sans KR',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:background .13s;animation:qIn .2s ease forwards}
+.cont-btn:hover{background:var(--ah)}
+.next-sec-btn{margin-top:14px;width:100%;padding:13px;background:var(--ac);color:#fff;border:none;border-radius:var(--rs);font-family:'Noto Sans KR',sans-serif;font-size:14.5px;font-weight:600;cursor:pointer;transition:background .13s}
+.next-sec-btn:hover{background:var(--ah)}
+.back-btn{margin-top:8px;width:100%;padding:10px;background:var(--s2);color:var(--t2);border:1px solid var(--bd);border-radius:var(--rs);font-family:'Noto Sans KR',sans-serif;font-size:13px;cursor:pointer;transition:background .13s}
+.back-btn:hover{background:var(--bd)}
+
+/* divider */
+hr.qdiv{border:none;border-top:1px solid var(--s2);margin:12px 0}
+
+/* intro */
+.intro-card{background:var(--sf);border-radius:var(--r);border:1px solid var(--bd);padding:28px 20px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.intro{text-align:center;padding:8px 0 4px}
+.intro-ic{width:52px;height:52px;background:var(--ac);border-radius:13px;display:inline-flex;align-items:center;justify-content:center;margin-bottom:16px}
+.intro-ic svg{width:28px;height:28px;fill:none;stroke:#fff;stroke-width:1.8}
+.intro h1{font-family:'Noto Serif KR',serif;font-size:21px;font-weight:700;margin-bottom:8px;letter-spacing:-.5px;line-height:1.4}
+.intro-sub{font-size:13.5px;color:var(--t2);line-height:1.8;max-width:380px;margin:0 auto 20px}
+.chips{display:flex;flex-wrap:wrap;gap:5px;justify-content:center;margin-bottom:16px}
+.chip{padding:3px 10px;background:var(--s2);border:1px solid var(--bd);border-radius:20px;font-size:11.5px;color:var(--t2)}
+.tnote{font-size:12.5px;color:var(--tm);margin-bottom:18px}
+.start-btn{background:var(--ac);color:#fff;border:none;border-radius:var(--rs);padding:13px 30px;font-family:'Noto Sans KR',sans-serif;font-size:15px;font-weight:600;cursor:pointer;transition:background .13s}
+.start-btn:hover{background:var(--ah)}
+
+/* result */
+.res-page{background:var(--sf);border-radius:var(--r);border:1px solid var(--bd);padding:22px 18px;box-shadow:0 1px 4px rgba(0,0,0,.05)}
+.res-hdr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;padding-bottom:12px;border-bottom:2px solid var(--t1)}
+.res-hdr h2{font-family:'Noto Serif KR',serif;font-size:17px;font-weight:700;letter-spacing:-.4px}
+.res-date{font-size:11px;color:var(--tm);margin-top:2px}
+.res-id{font-size:12px;color:var(--t2)}
+.scores-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:10px}
+.sc{background:var(--s2);border-radius:var(--rs);padding:11px 12px;border:1px solid var(--bd)}
+.sc.warn{background:var(--wl);border-color:#E8BBA8}
+.sc-name{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--t2);margin-bottom:3px}
+.sc-top{display:flex;align-items:baseline;gap:5px;margin-bottom:3px}
+.sc-score{font-family:'Noto Serif KR',serif;font-size:22px;font-weight:700;color:var(--t1);line-height:1}
+.sc-max{font-size:10.5px;color:var(--tm)}
+.sc-badge{font-size:10px;font-weight:600;padding:2px 7px;border-radius:10px;margin-left:auto}
+.b-low{background:#EAF4EE;color:#2E7D4A}.b-mild{background:#FBF5E6;color:#8A6300}
+.b-mod{background:#FBF0E6;color:#A0470A}.b-sev{background:#FCEAEA;color:#A02020}
+.b-neg{background:#EAF4EE;color:#2E7D4A}.b-pos{background:#FBF5E6;color:#8A6300}.b-warn{background:var(--wl);color:var(--wn)}
+.sbar{height:4px;background:rgba(0,0,0,.08);border-radius:2px;overflow:hidden;margin-bottom:5px}
+.sfill{height:100%;border-radius:2px;transition:width .7s cubic-bezier(.4,0,.2,1) .1s}
+.c-low{background:#5A9E6F}.c-mild{background:#D4A843}.c-mod{background:#D47343}.c-sev{background:#C4432E}
+.c-neg{background:#5A9E6F}.c-pos{background:#D4A843}
+.sc-interp{font-size:11px;color:var(--t1);background:rgba(255,255,255,.75);border-radius:4px;padding:4px 7px;margin-bottom:4px;line-height:1.55}
+.norm-txt{font-size:10.5px;color:var(--t2);margin-top:3px;line-height:1.5}
+.sub-row{display:grid;grid-template-columns:repeat(4,1fr);gap:3px;margin-top:5px}
+.sub2{grid-template-columns:repeat(2,1fr)}.sub7{grid-template-columns:repeat(7,1fr)}
+.si{background:var(--sf);border-radius:4px;padding:4px 4px;text-align:center}
+.si-n{font-size:9px;color:var(--tm);line-height:1.2;margin-bottom:1px}
+.si-v{font-size:11.5px;font-weight:700;color:var(--t1)}
+.si-p{font-size:9px;color:var(--tm)}
+.ss-levels{display:grid;grid-template-columns:repeat(6,1fr);gap:3px;margin-top:5px}
+.ssl{padding:5px 2px;border-radius:4px;text-align:center;border:1.5px solid transparent;background:var(--sf)}
+.ss-desc{font-size:11.5px;color:var(--t2);margin-top:5px;line-height:1.6;padding:7px 10px;background:var(--sf);border-radius:4px}
+.crisis{font-size:11px;color:var(--wn);margin-top:5px;padding:6px 10px;background:var(--wl);border-radius:4px}
+.res-disc{margin-top:11px;padding:9px 12px;background:var(--s2);border-radius:var(--rs);font-size:11.5px;color:var(--t2);line-height:1.7;border-left:3px solid var(--bd)}
+.res-disc strong{color:var(--t1)}
+.alert-box{background:#FFFBF0;border:1px solid #E8D9A0;border-radius:var(--rs);padding:9px 12px;margin-bottom:9px;font-size:12px;color:#7A6200;line-height:1.8}
+.print-row{display:flex;gap:8px;margin-top:10px}
+.pbtn{flex:1;padding:10px;border:1px solid var(--bd);border-radius:var(--rs);font-family:'Noto Sans KR',sans-serif;font-size:13px;cursor:pointer;background:var(--s2);color:var(--t2);font-weight:500}
+.pbtn:hover{background:var(--bd)}
+.pbtn.prim{background:var(--ac);color:#fff;border-color:var(--ac)}
+.pbtn.prim:hover{background:var(--ah)}
+
+@media(max-width:480px){
+  .lg{grid-template-columns:repeat(2,1fr)}
+  .cg2{grid-template-columns:1fr}
+  .row2{grid-template-columns:1fr}
+  .scores-grid{grid-template-columns:1fr}
+  .sub-row{grid-template-columns:repeat(2,1fr)}
+  .sub7{grid-template-columns:repeat(4,1fr)}
+  .ss-levels{grid-template-columns:repeat(3,1fr)}
+}
+@media print{
+  body{background:white}.shell{padding:0 8px}
+  .hdr,.prog,.back-btn,.next-sec-btn,.print-row{display:none!important}
+  .res-page{box-shadow:none;border:1px solid #ccc}
+}
+</style>
+</head>
+<body>
+<div class="shell">
+<header class="hdr">
+  <div class="hdr-mk"><svg viewBox="0 0 24 24"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+  <div><h1>정신건강 사전 설문</h1><p>정신건강의학과 진료 사전 평가</p></div>
+</header>
+<div id="progWrap" style="display:none" class="prog">
+  <div class="prog-row"><span class="prog-lbl" id="progLbl"></span><span class="prog-fr" id="progFr"></span></div>
+  <div class="prog-tr"><div class="prog-fi" id="progFi" style="width:0%"></div></div>
+</div>
+<div id="app"></div>
+</div>
+
+<script>
+// ══════════════════════════════════════
+// STATE  (never reset answeredSet inside buildQuestions)
+// ══════════════════════════════════════
+const S = { screen:'intro', sec:0 };
+const DATA = { ans:{}, txt:{}, mat:{}, chk:{} };
+
+// Section list
+const SECS = [
+  {id:'identity', lbl:'개인 식별'},
+  {id:'demo',     lbl:'기초 정보'},
+  {id:'dep',      lbl:'우울 증상'},
+  {id:'anx',      lbl:'불안 증상'},
+  {id:'hcl',      lbl:'기분 고양 평가'},
+  {id:'sleep',    lbl:'수면 증상'},
+  {id:'ss',       lbl:'자살 사고 평가'},
+];
+
+// Per-section question list (rebuilt each section change)
+let QS = [];
+// Which question keys have been "answered & collapsed"
+// Persists across re-renders within same section
+let DONE = new Set();
+
+// ── Accessors ──
+const ga = k => DATA.ans[k];
+const gt = k => DATA.txt[k] || '';
+const gm = (k,r) => (DATA.mat[k]||{})[r] ?? null;
+const gc = k => DATA.chk[k] || new Set();
+const sa = (k,v) => { DATA.ans[k]=v; };
+const st = (k,v) => { DATA.txt[k]=v; };
+const sm = (k,r,v) => { if(!DATA.mat[k]) DATA.mat[k]={}; DATA.mat[k][r]=v; };
+const tc = (k,v) => {
+  if(!DATA.chk[k]) DATA.chk[k]=new Set();
+  DATA.chk[k].has(v) ? DATA.chk[k].delete(v) : DATA.chk[k].add(v);
+};
+
+// ══════════════════════════════════════
+// DOM HELPERS
+// ══════════════════════════════════════
+function el(tag, props={}, ...ch){
+  const e = document.createElement(tag);
+  for(const [k,v] of Object.entries(props)){
+    if(k==='class') e.className=v;
+    else if(k==='style') Object.assign(e.style,v);
+    else if(k.startsWith('on')) e.addEventListener(k.slice(2),v);
+    else e.setAttribute(k,v);
+  }
+  for(const c of ch){
+    if(c==null) continue;
+    e.appendChild(typeof c==='string' ? document.createTextNode(c) : c);
+  }
+  return e;
+}
+const d = (cls,...ch) => el('div',{class:cls},...ch);
+const p = (cls,txt) => el('p',{class:cls},txt);
+const sp = (cls,txt) => el('span',{class:cls},txt);
+function chkSVG(){
+  const s=document.createElementNS('http://www.w3.org/2000/svg','svg');
+  s.setAttribute('viewBox','0 0 12 12');s.setAttribute('width','11');s.setAttribute('height','11');s.setAttribute('fill','none');
+  const pt=document.createElementNS('http://www.w3.org/2000/svg','path');
+  pt.setAttribute('d','M2 6l3 3 5-5');pt.setAttribute('stroke','white');
+  pt.setAttribute('stroke-width','2');pt.setAttribute('stroke-linecap','round');pt.setAttribute('stroke-linejoin','round');
+  s.appendChild(pt); return s;
+}
+
+// ══════════════════════════════════════
+// QUESTION ENGINE
+// ══════════════════════════════════════
+
+/*
+  A question object:
+  {
+    key: string,          // unique key
+    num: string|number,   // display number (can be '' )
+    text: string,
+    hint: string,         // optional sub-text
+    required: bool,       // default true
+    visibleIf: ()=>bool,  // conditional display
+    type: string,         // for auto-advance logic
+    buildControl: ()=>HTMLElement,  // returns the input widget
+    answerLabel: ()=>string,        // collapsed summary text
+  }
+*/
+
+// Called once per section CHANGE (not per re-render)
+function initSection(secId){
+  QS = [];
+  DONE = new Set();
+  if(secId==='identity') buildIdentity();
+  else if(secId==='demo')    buildDemo();
+  else if(secId==='dep')     buildDep();
+  else if(secId==='anx')     buildAnx();
+  else if(secId==='hcl')     buildHcl();
+  else if(secId==='sleep')   buildSleep();
+  else if(secId==='ss')      buildSS();
+}
+
+function addQ(q){ QS.push({ required:true, ...q }); }
+
+function visibleQs(){ return QS.filter(q => !q.visibleIf || q.visibleIf()); }
+
+// ── Called when a question is answered ──
+// autoAdvance: true = collapse immediately after short delay (radio/binary/likert/select)
+//              false = show "다음 →" button
+function answered(key, autoAdvance){
+  DONE.add(key);
+  if(autoAdvance){
+    setTimeout(()=>{ repaint(); scrollToFirst(); }, 260);
+  } else {
+    // show continue button on the current active card
+    repaint();   // re-render so cont-btn appears
+  }
+}
+
+// ── Repaint: re-render all cards without reinitialising QS/DONE ──
+function repaint(){
+  const app = document.getElementById('app');
+  const scrollY = window.scrollY;
+  app.innerHTML = '';
+
+  // Section header
+  const hdr = buildSecHdr(SECS[S.sec].id);
+  if(hdr) app.appendChild(hdr);
+
+  const visible = visibleQs();
+  let firstActive = true;
+
+  for(const q of visible){
+    const isDone = DONE.has(q.key);
+    const card = buildCard(q, isDone, firstActive && !isDone);
+    if(!isDone && firstActive) firstActive = false;  // only first unanswered is 'active'
+    app.appendChild(card);
+  }
+
+  // Nav
+  const nav = d('');
+  const required = visible.filter(q => q.required !== false);
+  const allDone = required.every(q => DONE.has(q.key));
+
+  if(allDone){
+    const isLast = S.sec === SECS.length-1;
+    nav.appendChild(el('button',{class:'next-sec-btn',onclick:()=>{
+      if(isLast){ showResult(); }
+      else { S.sec++; initSection(SECS[S.sec].id); repaint(); window.scrollTo(0,0); }
+    }}, isLast ? '결과 보기 →' : '다음 섹션으로 →'));
+  }
+  if(S.sec > 0){
+    nav.appendChild(el('button',{class:'back-btn',onclick:()=>{
+      S.sec--; initSection(SECS[S.sec].id); repaint(); window.scrollTo(0,0);
+    }}, '← 이전 섹션'));
+  }
+  app.appendChild(nav);
+
+  // Progress bar
+  document.getElementById('progWrap').style.display = 'block';
+  document.getElementById('progFi').style.width = Math.round(S.sec/SECS.length*100)+'%';
+  document.getElementById('progLbl').textContent = SECS[S.sec].lbl;
+  document.getElementById('progFr').textContent = `${S.sec+1} / ${SECS.length}`;
+
+  window.scrollTo(0, scrollY);
+}
+
+function scrollToFirst(){
+  const first = document.querySelector('.q-card.active');
+  if(first) first.scrollIntoView({behavior:'smooth', block:'center'});
+}
+
+// ── Build a single card ──
+function buildCard(q, isDone, isActive){
+  const card = d('q-card');
+
+  if(isDone){
+    card.classList.add('done');
+    const row = d('done-row');
+    row.appendChild(sp('done-num', q.num !== '' ? String(q.num)+'.' : ''));
+    row.appendChild(sp('done-q', q.text));
+    row.appendChild(sp('done-a', q.answerLabel ? q.answerLabel() : '✓'));
+    const btn = el('button',{class:'edit-btn', onclick: e=>{ e.stopPropagation(); editQ(q.key); }}, '수정');
+    row.appendChild(btn);
+    card.appendChild(row);
+    return card;
+  }
+
+  if(!isActive){
+    card.classList.add('future');
+    return card;
+  }
+
+  // Active card
+  card.classList.add('active');
+  card.dataset.qkey = q.key;
+
+  // Label
+  const lbl = d('q-lbl');
+  if(q.num !== '' && q.num != null) lbl.appendChild(sp('q-num', String(q.num)+'.'));
+  lbl.appendChild(document.createTextNode(q.text));
+  card.appendChild(lbl);
+  if(q.hint) card.appendChild(p('q-hint', q.hint));
+
+  // Control
+  const ctrl = q.buildControl();
+  card.appendChild(ctrl);
+
+  // For non-auto types, cont-btn is added by buildControl via showContBtn()
+  return card;
+}
+
+function showContBtn(key){
+  // After repaint(), add cont button to active card
+  setTimeout(()=>{
+    const card = document.querySelector(`.q-card.active[data-qkey="${key}"]`);
+    if(!card) return;
+    if(card.querySelector('.cont-btn')) return;
+    const btn = el('button',{class:'cont-btn', onclick:()=>answered(key, true)}, '다음 →');
+    card.appendChild(btn);
+  }, 0);
+}
+
+function editQ(key){
+  DONE.delete(key);
+  // un-done everything after this question too
+  const idx = QS.findIndex(q => q.key===key);
+  QS.slice(idx+1).forEach(q => DONE.delete(q.key));
+  repaint();
+  setTimeout(()=>{
+    const card = document.querySelector(`.q-card.active[data-qkey="${key}"]`);
+    if(card) card.scrollIntoView({behavior:'smooth', block:'center'});
+  }, 50);
+}
+
+// ══════════════════════════════════════
+// CONTROL BUILDERS
+// ══════════════════════════════════════
+
+function mkRadio(key, opts){
+  const g = d('rg');
+  opts.forEach(([val,lbl])=>{
+    const o = d('ro' + (String(ga(key))===String(val)?' sel':''));
+    o.onclick = ()=>{
+      sa(key, val);
+      g.querySelectorAll('.ro').forEach(x=>x.classList.remove('sel'));
+      o.classList.add('sel');
+      answered(key, true);
+    };
+    const dot = d('rdot'); dot.appendChild(d('rdi'));
+    o.appendChild(dot); o.appendChild(el('span',{},lbl));
+    g.appendChild(o);
+  });
+  return g;
+}
+
+function mkLikert4(key, lbls){
+  const g = d('lg');
+  lbls.forEach((lbl,i)=>{
+    const o = d('lo' + (ga(key)===i?' sel':''));
+    o.onclick = ()=>{
+      sa(key, i);
+      g.querySelectorAll('.lo').forEach(x=>x.classList.remove('sel'));
+      o.classList.add('sel');
+      answered(key, true);
+    };
+    o.appendChild(el('span',{class:'lo-n'}, String(i)));
+    o.appendChild(el('span',{}, lbl));
+    g.appendChild(o);
+  });
+  return g;
+}
+
+function mkBinary(key, warnY=false){
+  const g = d('bg2');
+  const yo = d('bo'+(ga(key)==='yes'?' sel':'')+(warnY?' w':''));
+  const no = d('bo'+(ga(key)==='no'?' sel':''));
+  yo.textContent='예'; no.textContent='아니오';
+  yo.onclick=()=>{ sa(key,'yes'); yo.classList.add('sel'); no.classList.remove('sel'); answered(key,true); };
+  no.onclick=()=>{ sa(key,'no'); no.classList.add('sel'); yo.classList.remove('sel'); answered(key,true); };
+  g.appendChild(yo); g.appendChild(no);
+  return g;
+}
+
+function mkScrollSel(key, opts, ph){
+  const wrap = d('s-sel');
+  const sel = el('select', {onchange: e=>{
+    sa(key, e.target.value);
+    answered(key, true);
+  }});
+  sel.appendChild(el('option',{value:'',disabled:'',selected:!ga(key)}, ph||'선택하세요'));
+  opts.forEach(([val,lbl])=>{
+    const opt = el('option',{value:val},lbl);
+    if(ga(key)===val) opt.selected=true;
+    sel.appendChild(opt);
+  });
+  wrap.appendChild(sel);
+  return wrap;
+}
+
+function mkText(key, ph, multi=false){
+  const inp = multi
+    ? el('textarea',{class:'ti', placeholder:ph})
+    : el('input',{class:'ti', type:'text', placeholder:ph});
+  inp.value = gt(key);
+  inp.oninput = ()=> st(key, inp.value);
+  return inp;
+}
+
+function mkStepper(key, min, max, step, unit, def){
+  if(DATA.ans[key]===undefined) DATA.ans[key]=def;
+  const wrap = d('');
+  const nw = d('nw');
+  const inp = el('input',{class:'ni',type:'number',min:String(min),max:String(max),step:String(step)});
+  inp.value = ga(key)??def;
+  inp.onchange = ()=>{
+    let v=parseFloat(inp.value); if(isNaN(v))v=def;
+    v=Math.max(min,Math.min(max,v)); sa(key,v); inp.value=v;
+  };
+  const mi = el('button',{class:'nsb',onclick:()=>{ const v=Math.max(min,(parseFloat(ga(key)||def)-step)); sa(key,v); inp.value=v; }},'-');
+  const pl = el('button',{class:'nsb',onclick:()=>{ const v=Math.min(max,(parseFloat(ga(key)||def)+step)); sa(key,v); inp.value=v; }},'+');
+  nw.appendChild(mi); nw.appendChild(inp); nw.appendChild(pl);
+  wrap.appendChild(nw);
+  if(unit) wrap.appendChild(p('q-hint',unit));
+  return wrap;
+}
+
+function mkTimeSel(key, def){
+  const stored = gt(key) || def || '22:00';
+  const [hh,mm] = stored.split(':');
+  const row = d('tsel-row');
+  const hs = el('select',{class:'tsel'});
+  for(let i=0;i<24;i++){
+    const v=String(i).padStart(2,'0');
+    const opt=el('option',{value:v},v+'시');
+    if(v===hh) opt.selected=true;
+    hs.appendChild(opt);
+  }
+  const ms = el('select',{class:'tsel'});
+  [0,10,20,30,40,50].forEach(m=>{
+    const v=String(m).padStart(2,'0');
+    const opt=el('option',{value:v},v+'분');
+    if(v===mm) opt.selected=true;
+    ms.appendChild(opt);
+  });
+  const upd=()=>{ st(key, hs.value+':'+ms.value); };
+  hs.onchange=upd; ms.onchange=upd; st(key, hh+':'+mm);
+  row.appendChild(hs);
+  row.appendChild(el('span',{style:{fontSize:'12px',color:'var(--tm)'}},':'));
+  row.appendChild(ms);
+  return row;
+}
+
+function mkMatrix(matKey, rows, cols, shortCols){
+  const tbl = el('table',{class:'cmat'});
+  const thead=el('thead'); const htr=el('tr');
+  htr.appendChild(el('th',{},''));
+  (shortCols||cols).forEach(c=>htr.appendChild(el('th',{},c)));
+  thead.appendChild(htr); tbl.appendChild(thead);
+  const tbody=el('tbody');
+  rows.forEach(([rk,rl])=>{
+    const tr=el('tr');
+    tr.appendChild(el('td',{},rl));
+    cols.forEach((_,ci)=>{
+      const td=el('td');
+      const rb=d('mrb'+(gm(matKey,rk)===ci?' sel':''));
+      rb.onclick=()=>{
+        sm(matKey,rk,ci);
+        tr.querySelectorAll('.mrb').forEach(x=>x.classList.remove('sel'));
+        rb.classList.add('sel');
+      };
+      rb.appendChild(d('mrb-i'));
+      td.appendChild(rb); tr.appendChild(td);
+    });
+    tbody.appendChild(tr);
+  });
+  tbl.appendChild(tbody);
+  return tbl;
+}
+
+// ══════════════════════════════════════
+// SECTION BUILDERS
+// ══════════════════════════════════════
+
+function buildSecHdr(id){
+  const C = {
+    identity:{ ey:'01 / 식별 정보',   ti:'개인 식별 정보 입력',
+               desc:'이후 설문 연결 및 결과 확인을 위해 사용됩니다. 이니셜과 생년월일을 기억해 두세요.' },
+    demo:    { ey:'02 / 기초 정보',   ti:'기본 정보',
+               desc:'현재 상황에 대해 가장 정확한 항목을 선택해 주세요.' },
+    dep:     { ey:'03 / 우울 증상',   ti:'우울증 선별검사 (총 20문항)',
+               desc:'\'지난 일주일 동안\'의 상태에 대한 질문입니다.',
+               guide:'<strong>0.</strong> 극히 드물었다. (1일 이하) &nbsp; <strong>1.</strong> 가끔 있었다. (1~2일)<br><strong>2.</strong> 종종 있었다. (3~4일) &nbsp; <strong>3.</strong> 대부분 그랬다. (5일 이상)' },
+    anx:     { ey:'04 / 불안 증상',   ti:'불안 증상 검사 (총 21 문항)',
+               desc:'"오늘을 포함해서 지난 한 주 동안, 당신이 경험한 정도"를 표시해 주십시오.',
+               guide:'<strong>0</strong> 전혀 느끼지 않았다. &nbsp; <strong>1</strong> 조금 느꼈다. 별 문제가 되지 않았다.<br><strong>2</strong> 상당히 느꼈다. 견딜 수 있었다. &nbsp; <strong>3</strong> 심하게 느꼈다. 견디기가 힘들었다.' },
+    hcl:     { ey:'05 / 기분 고양 평가', ti:'기분 고양감 평가 설문지',
+               desc:'에너지, 활동량과 기분 등에서 \'넘치는, 많은 혹은 좋은\' 상태의 특성을 평가하기 위한 설문입니다.' },
+    sleep:   { ey:'06 / 수면 증상',   ti:'수면 증상 설문지 (한국판 피츠버그 수면의 질 지수)',
+               desc:'지난 1달(4주) 동안 당신의 일상적인 수면습관에 관한 질문입니다.' },
+    ss:      { ey:'07 / 자살 사고 평가 (C-SSRS)', ti:'자살 사고에 대한 평가',
+               desc:'최근 몇 달 동안의 생각과 느낌에 대해 답해주세요.' },
+  };
+  const cfg = C[id];
+  if(!cfg) return null;
+  const hdr = d('sec-hdr');
+  hdr.appendChild(p('eyebrow', cfg.ey));
+  hdr.appendChild(el('h2',{class:'sec-title'}, cfg.ti));
+  if(cfg.desc) hdr.appendChild(p('sec-desc', cfg.desc));
+  if(cfg.guide){ const g=d('guide-box'); g.innerHTML=cfg.guide; hdr.appendChild(g); }
+  return hdr;
+}
+
+// ── IDENTITY ──
+function buildIdentity(){
+  addQ({
+    key:'consent', num:'', text:'개인정보 수집·이용 동의', required:true,
+    answerLabel: ()=>`${gc('consent').size}/3 항목 동의`,
+    type:'consent',
+    buildControl: ()=>{
+      const w = d('');
+      const pairs = [
+        ['c1','1. 개인정보 수집·이용 동의 (진료 목적)',
+          '진단·치료·상담(예약·내원 관리 포함)을 위해 생년월일, 설문 중 비민감정보를 수집·이용하며, 진료기록 보존 기간 후 파기합니다. 동의하지 않아도 진료는 가능하나 온라인 사전 설문은 이용할 수 없고 내원 시 대체 절차를 제공합니다.',
+          '개인정보 수집·이용에 동의합니다'],
+        ['c2','2. 민감정보(건강정보) 수집·이용 동의',
+          '증상·병력·복용약·자살위험 등 건강정보를 진단·치료·상담 목적으로 수집·이용하며, 보유·이용 기간은 위와 같습니다. 미동의 시 온라인 사전 설문은 이용할 수 없고 내원 시 대체 절차를 제공합니다.',
+          '민감정보 수집·이용에 동의합니다'],
+        ['c3','3. 국외 이전 동의 (Google 서버)',
+          '본 설문 응답은 Google LLC의 서버(미국 등)로 전송·저장·관리될 수 있습니다. 미동의 시 대체 절차(내원 작성 등)를 제공합니다. [고지] 처리위탁: 설문 시스템의 운영·보관을 Google LLC에 위탁합니다.',
+          '해외 서버 저장·처리에 동의합니다'],
+      ];
+      pairs.forEach(([val,title,body,lbl])=>{
+        const ci = d('cons-item');
+        ci.innerHTML = `<h4>${title}</h4>${body}`;
+        w.appendChild(ci);
+        const o = d('co'+(gc('consent').has(val)?' sel':''));
+        o.style.marginBottom='7px';
+        o.onclick = ()=>{
+          tc('consent',val);
+          o.classList.toggle('sel', gc('consent').has(val));
+          if(gc('consent').size===3){
+            sa('consent','done');
+            showContBtn('consent');
+          }
+        };
+        const box = d('cbx'); box.appendChild(chkSVG());
+        o.appendChild(box); o.appendChild(el('span',{},lbl));
+        w.appendChild(o);
+      });
+      return w;
+    }
+  });
+
+  addQ({
+    key:'id_code', num:'', text:'이니셜 + 생년월일을 입력해주세요.',
+    hint:'이름 이니셜(영문) + 생년월일 6자리 (YYMMDD) — 예: HGD070229',
+    required:true, type:'text',
+    answerLabel: ()=>gt('id_code'),
+    buildControl: ()=>{
+      const inp = mkText('id_code','예: HGD070229');
+      inp.oninput = ()=>{ st('id_code', inp.value); };
+      showContBtn('id_code');
+      return inp;
+    }
+  });
+
+  addQ({
+    key:'id_pw', num:'', text:'비밀번호 (숫자 4자리)를 설정해주세요.',
+    hint:'설문 결과 확인 시 사용됩니다.',
+    required:true, type:'text',
+    answerLabel: ()=>'****',
+    buildControl: ()=>{
+      const inp = el('input',{class:'ti', type:'password', placeholder:'예: 1234', maxlength:'4'});
+      inp.value = gt('id_pw');
+      inp.oninput = ()=>{
+        st('id_pw', inp.value);
+        if(inp.value.length===4){ sa('id_pw','done'); answered('id_pw', true); }
+      };
+      return inp;
+    }
+  });
+}
+
+// ── DEMO ──
+function buildDemo(){
+  addQ({ key:'d_gender', num:1, text:'성별은 무엇입니까?', type:'radio',
+    answerLabel:()=> ga('d_gender')==='M'?'남':'여',
+    buildControl:()=> mkRadio('d_gender',[['M','남'],['F','여']])
+  });
+
+  addQ({ key:'d_birth', num:2,
+    text:'몇년도에 태어났습니까? (예를 들어 양력으로 1999년에 태어나셨으면 1999라고 적어주세요)',
+    hint:'양력 출생연도를 숫자로 입력해 주세요.', type:'text',
+    answerLabel:()=> gt('d_birth'),
+    buildControl:()=>{
+      const inp=mkText('d_birth','예: 1999');
+      showContBtn('d_birth'); return inp;
+    }
+  });
+
+  addQ({ key:'d_location', num:3,
+    text:'출생지와 현재 거주지를 적어주세요. (예: 대전/동탄)', type:'text',
+    answerLabel:()=> `${gt('d_bplace')} / ${gt('d_loc')}`,
+    buildControl:()=>{
+      const r=d('row2');
+      const b1=d(''); b1.appendChild(p('col-lbl','출생지')); b1.appendChild(mkText('d_bplace','예: 대전'));
+      const b2=d(''); b2.appendChild(p('col-lbl','현재 거주지')); b2.appendChild(mkText('d_loc','예: 동탄'));
+      r.appendChild(b1); r.appendChild(b2);
+      showContBtn('d_location'); return r;
+    }
+  });
+
+  addQ({ key:'d_edu', num:4, text:'최종 학력 혹은 현재 재학 상황을 선택해주세요.', type:'scroll-select',
+    answerLabel:()=>{
+      const opts=[['elem','초등학교 졸업'],['mid1','중1 재학'],['mid2','중2 재학'],['mid3','중3 재학'],['mid_g','중학교 졸업'],['hi1','고1 재학'],['hi2','고2 재학'],['hi3','고3 재학'],['hi_g','고등학교 졸업'],['univ','대학교 재학중'],['univ_g','대학교 졸업'],['grad','대학원 재학중'],['grad_g','대학원 졸업']];
+      return opts.find(([v])=>ga('d_edu')===v)?.[1]||'';
+    },
+    buildControl:()=> mkScrollSel('d_edu',[
+      ['elem','초등학교 졸업'],['mid1','중학교 1학년 재학'],['mid2','중학교 2학년 재학'],['mid3','중학교 3학년 재학'],['mid_g','중학교 졸업'],
+      ['hi1','고등학교 1학년 재학중'],['hi2','고등학교 2학년 재학중'],['hi3','고등학교 3학년 재학중'],['hi_g','고등학교 졸업'],
+      ['univ','대학교 재학중'],['univ_g','대학교 졸업'],['grad','대학원 재학중'],['grad_g','대학원 졸업'],
+    ],'학력 또는 재학 상황을 선택하세요')
+  });
+
+  addQ({ key:'d_marry', num:5, text:'결혼 유무를 선택해주세요.', type:'radio',
+    answerLabel:()=> ga('d_marry')==='married'?'기혼':'미혼',
+    buildControl:()=> mkRadio('d_marry',[['married','기혼'],['single','미혼']])
+  });
+
+  addQ({ key:'d_cohabit', num:6, text:'현재 동반 거주자를 모두 선택해주세요.', type:'checkbox',
+    answerLabel:()=>{ const s=gc('d_cohabit'); const arr=[...s]; return arr.length ? arr.slice(0,3).join(', ')+(arr.length>3?` 외 ${arr.length-3}개`:'') : '선택 없음'; },
+    buildControl:()=>{
+      const g=d('cg2');
+      const opts=[['alone','혼자 거주'],['mother','어머니'],['father','아버지'],['grandma','할머니'],['grandpa','할아버지'],['mgrandma','외할머니'],['mgrandpa','외할아버지'],['bro','형/오빠'],['sis','누나/언니'],['sibling','여동생/남동생'],['husband','남편'],['wife','부인'],['son','아들'],['daughter','딸']];
+      opts.forEach(([val,lbl])=>{
+        const o=d('co'+(gc('d_cohabit').has(val)?' sel':''));
+        o.onclick=()=>{ tc('d_cohabit',val); o.classList.toggle('sel',gc('d_cohabit').has(val)); };
+        const box=d('cbx'); box.appendChild(chkSVG()); o.appendChild(box); o.appendChild(el('span',{},lbl)); g.appendChild(o);
+      });
+      showContBtn('d_cohabit'); return g;
+    }
+  });
+
+  addQ({ key:'d_rel', num:7, text:'종교를 선택해주세요.', type:'radio',
+    answerLabel:()=>({'none':'무교','christian':'기독교','catholic':'천주교','buddhist':'불교'})[ga('d_rel')]||'',
+    buildControl:()=> mkRadio('d_rel',[['none','무교'],['christian','기독교'],['catholic','천주교'],['buddhist','불교']])
+  });
+
+  addQ({ key:'d_job', num:8, text:'현재 직업과 현재 직업의 근속연수를 적어주세요.', type:'text',
+    answerLabel:()=> `${gt('d_job_v')} / ${gt('d_dur')}`,
+    buildControl:()=>{
+      const r=d('row2');
+      const j1=d(''); j1.appendChild(p('col-lbl','직업')); j1.appendChild(mkText('d_job_v','예: 교사, 대학생'));
+      const j2=d(''); j2.appendChild(p('col-lbl','근속 연수')); j2.appendChild(mkText('d_dur','예: 10년, 3개월'));
+      r.appendChild(j1); r.appendChild(j2);
+      showContBtn('d_job'); return r;
+    }
+  });
+
+  addQ({ key:'d_med', num:9,
+    text:'병원에서 진단을 받아 현재 치료 중인 1)질병이 있거나 드시는 2)약물 혹은 3)수술받았던 적이 있다면 적어주세요.',
+    type:'text',
+    answerLabel:()=> gc('d_med_none').has('none') ? '해당 없음' : (gt('d_med')||'입력됨'),
+    buildControl:()=>{
+      const w=d('');
+      const none=d('co'+(gc('d_med_none').has('none')?' sel':''));
+      none.style.marginBottom='8px'; none.style.width='fit-content';
+      none.onclick=()=>{ tc('d_med_none','none'); none.classList.toggle('sel',gc('d_med_none').has('none')); taWrap.style.display=gc('d_med_none').has('none')?'none':'block'; };
+      const nb=d('cbx'); nb.appendChild(chkSVG()); none.appendChild(nb); none.appendChild(el('span',{},'해당 없음'));
+      w.appendChild(none);
+      const taWrap=d(''); taWrap.style.display=gc('d_med_none').has('none')?'none':'block';
+      taWrap.appendChild(mkText('d_med','질병명 / 약물명 / 수술 이력',true));
+      w.appendChild(taWrap);
+      showContBtn('d_med'); return w;
+    }
+  });
+
+  addQ({ key:'d_phx', num:10, text:'지금까지 살아오면서 정신건강의학과 진료를 본 적이 있나요?', type:'radio',
+    answerLabel:()=> ga('d_phx')==='yes'?'예':'아니오',
+    buildControl:()=> mkRadio('d_phx',[['yes','예'],['no','아니오']])
+  });
+
+  addQ({ key:'d_phx_det', num:'10-1',
+    text:'몇 년도경에 어떤 증상으로 정신건강의학과에 내원하여 어떤 치료를 얼마간 받으셨는지 적어주세요.',
+    hint:'예: 21년도경 우울증상으로 약물 치료를 6개월간 받음',
+    type:'textarea', visibleIf:()=> ga('d_phx')==='yes',
+    answerLabel:()=> gt('d_phx_det'),
+    buildControl:()=>{
+      const ta=mkText('d_phx_det','예: 21년도경 우울증상으로 약물 치료를 6개월간 받음',true);
+      showContBtn('d_phx_det'); return ta;
+    }
+  });
+
+  addQ({ key:'d_substance', num:11, text:'현재 음주/흡연을 하시는지 체크해주세요.', type:'binary-pair',
+    answerLabel:()=> `음주:${ga('d_alc')==='yes'?'예':'아니오'} / 흡연:${ga('d_smk')==='yes'?'예':'아니오'}`,
+    buildControl:()=>{
+      const w=d('');
+      const alcWrap=d(''); alcWrap.style.marginBottom='10px';
+      alcWrap.appendChild(p('col-lbl','음주')); alcWrap.appendChild(mkBinary('d_alc'));
+      const smkWrap=d('');
+      smkWrap.appendChild(p('col-lbl','흡연')); smkWrap.appendChild(mkBinary('d_smk'));
+      w.appendChild(alcWrap); w.appendChild(smkWrap);
+      showContBtn('d_substance'); return w;
+    }
+  });
+}
+
+// ── DEP (CES-D) ──
+function buildDep(){
+  const LBLS = ['극히 드물었다.','가끔 있었다.','종종 있었다.','대부분 그랬다.'];
+  const ITEMS = ['평소에는 아무렇지도 않던 일들이 귀찮게 느껴졌다','먹고 싶지 않았다; 입맛이 없었다','가족이나 친구가 도와주더라도 울적한 기분을 떨쳐버릴 수 없었다','무슨 일을 하든 정신을 집중하기가 힘들었다.','비교적 잘 지냈다.','상당히 우울했다.','하는 일마다 힘들게 느껴졌다','미래에 대하여 희망적으로 느꼈다.','지금까지의 내 인생은 실패작이라는 생각이 들었다.','적어도 보통 사람들만큼의 능력은 있었다고 생각한다.','잠을 설쳤다 (잠을 잘 이루지 못 했다).','두려움을 느꼈다.','평소보다 말을 적게 했다; 말수가 줄었다','세상에 홀로 있는 듯한 외로움을 느꼈다.','큰 불만 없이 생활했다.','사람들이 나에게 차갑게 대하는 것 같았다.','갑자기 울음이 나왔다.','마음이 슬펐다.','사람들이 나를 싫어하는 것 같았다.','도무지 무엇을 시작할 기운이 나지 않았다'];
+  ITEMS.forEach((txt,i)=>{
+    const key=`dep_${i+1}`;
+    addQ({ key, num:i+1, text:txt, type:'likert4',
+      answerLabel:()=>{ const v=ga(key); return v!==undefined?`${v} — ${LBLS[v]}`:''; },
+      buildControl:()=> mkLikert4(key, LBLS)
+    });
+  });
+}
+
+// ── ANX (BAI) ──
+function buildAnx(){
+  const LBLS = ['전혀 느끼지 않았다.','조금 느꼈다.\n별 문제 없었다.','상당히 느꼈다.\n견딜 수 있었다.','심하게 느꼈다.\n견디기 힘들었다.'];
+  const ITEMS = ['가끔씩 몸이 저리고 쑤시며 감각이 마비된 느낌을 받는다.','흥분된 느낌을 받는다','가끔씩 다리가 떨리곤 한다.','편안하게 쉴 수가 없다.','매우 나쁜 일이 일어날 것 같은 두려움을 느낀다.','어지러움(현기증)을 느낀다.','가끔씩 심장이 두근거리고 빨리 뛴다.','침착하지 못하다.','자주 겁을 먹고 무서움을 느낀다.','신경이 과민 되어 있다.','가끔씩 숨이 막히고 질식할 것 같다.','자주 손이 떨린다.','안절부절 못 한다.','미칠 것 같은 두려움을 느낀다.','가끔씩 숨쉬기 곤란할 때가 있다.','죽을 것 같은 두려움을 느낀다.','불안한 상태에 있다.','자주 소화가 잘 안되고 뱃속이 불편하다.','가끔씩 기절할 것 같다.','자주 얼굴이 붉어지곤 한다.','땀을 많이 흘린다. (더위로 인한 경우는 제외).'];
+  ITEMS.forEach((txt,i)=>{
+    const key=`anx_${i+1}`;
+    addQ({ key, num:i+1, text:txt, type:'likert4',
+      answerLabel:()=>{ const v=ga(key); return v!==undefined?`${v} — ${LBLS[v].split('\n')[0]}`:''; },
+      buildControl:()=> mkLikert4(key, LBLS)
+    });
+  });
+}
+
+// ── HCL ──
+function buildHcl(){
+  addQ({ key:'hcl_q1', num:1, text:'먼저, 평소와 비교해 오늘은 기분이 어떻습니까?', type:'radio',
+    answerLabel:()=> ['매우 안 좋다','안 좋다','조금 안 좋다','평소와 비슷하다','조금 좋다','좋다','매우 좋다'][ga('hcl_q1')]||'',
+    buildControl:()=> mkRadio('hcl_q1',[[0,'0. 평소보다 매우 안 좋다'],[1,'1. 평소보다 안 좋다'],[2,'2. 평소보다 조금 안 좋다'],[3,'3. 평소와 비슷하다'],[4,'4. 평소보다 조금 좋다'],[5,'5. 평소보다 좋다'],[6,'6. 평소보다 매우 좋다']])
+  });
+  addQ({ key:'hcl_q2', num:2,
+    text:'오늘 기분과는 별도로, 평소에는 다른 사람들과 비교해서 어떤지 표시해 주세요. 다른 사람들에 비해 평소 나의 에너지, 활동량, 그리고 기분은___',
+    type:'radio',
+    answerLabel:()=>(['두드러진 차이 없음','일반적으로 더 높다','일반적으로 더 낮다','높고 낮음을 반복한다'])[ga('hcl_q2')]||'',
+    buildControl:()=> mkRadio('hcl_q2',[[0,'0. 두드러진 차이가 없다'],[1,'1. 일반적으로 더 높다'],[2,'2. 일반적으로 더 낮다'],[3,'3. 높고 낮음을 반복한다']])
+  });
+
+  const HCL_ITEMS=['잠자고 싶은 욕구가 줄었다.','전보다 기운이 나고 활동적이다.','더욱 자신감이 넘친다.','전보다 일하는 게 더 즐겁다.','전보다 사람들을 많이 만난다(전화를 더 자주 하거나 외출이 더 늘었다).','평소보다 여행을 떠나고 싶은 마음이 많아졌고, 실제로 더 많이 여행을 다닌다.','전보다 더 빨리, 더 위험하게 운전한다.','돈 씀씀이가 헤퍼졌다.','전보다 위험한 일을 더 많이 한다(직장에서 혹은 다른 활동에서).','전보다 운동을 더 많이 한다.','이런 저런 계획을 더 많이 세운다.','자꾸 새로운 아이디어가 떠오른다.','부끄러움이 없어지고 할 말을 하게 되었다.','옷차림이나 화장이 전보다 화려해졌다.','더 많은 사람들과 만나고 싶고, 실제로도 만나고 있다.','섹스에 대한 관심이 늘고, 성욕도 증가했다.','전보다 성관계를 많이 한다.','말이 많아졌다.','머리 회전이 빨라졌다.','대화 중 농담을 하거나 장난을 치는 경우가 많아졌다.','전보다 산만해졌다.','새로운 것에 대한 관심이 늘었다.','이 생각, 저 생각으로 생각이 자주 바뀐다.','전보다 더 빨리, 더 쉽게 일을 한다.','참을성이 줄고 더 쉽게 짜증을 낸다.','나는 다른 사람들을 짜증나고 진빠지게 한다.','싸움에 말려드는 일이 늘었다.','전보다 기분이 좋고 낙천적이다.','커피를 더 많이 마신다.','담배를 더 많이 피운다.','술을 더 많이 마신다.','약을 더 많이 먹는다(신경안정제, 항불안제, 각성제 등).'];
+  HCL_ITEMS.forEach((txt,i)=>{
+    const key=`hcl_${i+1}`;
+    addQ({ key, num:i+1, text:txt, type:'binary',
+      answerLabel:()=> ga(key)==='yes'?'예':'아니오',
+      buildControl:()=> mkBinary(key)
+    });
+  });
+
+  const anyYes=()=> Array.from({length:32},(_,i)=>ga(`hcl_${i+1}`)==='yes').some(Boolean);
+  addQ({ key:'hcl_impact', num:5, required:false,
+    text:'당신의 삶에서 \'넘쳤던(많았던/좋았던) 시기\'로 인하여;',
+    visibleIf:anyYes, type:'matrix',
+    answerLabel:()=>'입력됨',
+    buildControl:()=>{ const m=mkMatrix('hcl_impact',[['fam','가족 생활'],['soc','사회 생활'],['work','직업'],['leis','여가']],[0,1,2,3],['양면적','긍정적','부정적','영향없음']); showContBtn('hcl_impact'); return m; }
+  });
+  addQ({ key:'hcl_react', num:6, required:false,
+    text:'당신의 \'넘쳤던(많았던/좋았던) 시기\'에 대한 다른 사람들의 반응.',
+    visibleIf:anyYes, type:'radio',
+    answerLabel:()=>({'pos':'긍정','neu':'중립','neg':'부정','mix':'엇갈림','none':'반응없음'})[ga('hcl_react')]||'',
+    buildControl:()=> mkRadio('hcl_react',[['pos','긍정적으로 (격려 혹은 지지)'],['neu','중립적'],['neg','부정적(걱정하거나, 화내거나, 짜증내거나, 비판함)'],['mix','긍정적이기도 하고 부정적이기도 함'],['none','반응 없음']])
+  });
+  addQ({ key:'hcl_dur', num:7, required:false,
+    text:'대개(평균적으로) 당신의 \'넘쳤던(많았던/좋았던)\' 기간은;',
+    visibleIf:anyYes, type:'radio',
+    answerLabel:()=>({'d1':'1일','d23':'2-3일','d47':'4-7일','w1':'1주 이상','m1':'1개월 이상','unk':'모름'})[ga('hcl_dur')]||'',
+    buildControl:()=> mkRadio('hcl_dur',[['d1','1일'],['d23','2-3일'],['d47','4-7일'],['w1','1주일 이상'],['m1','1개월 이상'],['unk','판단할 수 없음/모름']])
+  });
+  addQ({ key:'hcl_recent', num:8, required:false,
+    text:'당신은 지난 12개월 동안 \'넘쳤던(많았던/좋았던) 시기\'를 경험했던 적이 있습니까?',
+    visibleIf:anyYes, type:'binary',
+    answerLabel:()=> ga('hcl_recent')==='yes'?'예':'아니오',
+    buildControl:()=> mkBinary('hcl_recent')
+  });
+  addQ({ key:'hcl_days', num:9, required:false,
+    text:'있다면, 지난 12개월 동안 며칠 정도 \'넘쳤던(많았던/좋았던)\' 상태로 보내셨습니까? 모두 합쳐서, 약 _____ 일',
+    visibleIf:()=> ga('hcl_recent')==='yes', type:'stepper',
+    answerLabel:()=>`약 ${ga('hcl_days')||0}일`,
+    buildControl:()=>{ const s=mkStepper('hcl_days',0,365,1,'일',0); showContBtn('hcl_days'); return s; }
+  });
+}
+
+// ── SLEEP ──
+function buildSleep(){
+  addQ({ key:'psqi_times', num:'1–4',
+    text:'취침/기상 시각과 수면 시간을 입력해주세요.', type:'sleep-group',
+    answerLabel:()=> `취침 ${gt('psqi_bed')||'?'} · 기상 ${gt('psqi_wake')||'?'} · ${ga('psqi_sleep')||'?'}시간`,
+    buildControl:()=>{
+      const w=d('');
+      // Q1
+      const b1=d(''); b1.style.marginBottom='12px';
+      b1.appendChild(el('div',{class:'col-lbl'},'1. 지난 한달 동안, 당신은 평소 몇 시에 잠자리(침대)에 들었습니까?'));
+      b1.appendChild(mkTimeSel('psqi_bed','22:00'));
+      w.appendChild(b1);
+      // Q2
+      const b2=d(''); b2.style.marginBottom='12px';
+      b2.appendChild(el('div',{class:'col-lbl'},'2. 침대에 들어서 잠이 들기까지 보통 얼마나 오래 걸렸습니까?'));
+      b2.appendChild(mkStepper('psqi_lat',0,300,5,'분',20));
+      w.appendChild(b2);
+      // Q3
+      const b3=d(''); b3.style.marginBottom='12px';
+      b3.appendChild(el('div',{class:'col-lbl'},'3. 지난 한달 동안, 당신은 평소 아침 몇 시에 일어났습니까?'));
+      b3.appendChild(mkTimeSel('psqi_wake','07:00'));
+      w.appendChild(b3);
+      // Q4
+      const b4=d(''); b4.style.marginBottom='8px';
+      b4.appendChild(el('div',{class:'col-lbl'},'4. 지난 한달 동안, 밤에 실제로 잠잔 시간은 얼마나 됩니까?'));
+      b4.appendChild(mkStepper('psqi_sleep',0,16,0.5,'시간',7));
+      w.appendChild(b4);
+      // Live summary
+      const sum=d('sleep-sum');
+      function updSum(){
+        const bed=gt('psqi_bed')||'22:00', wake=gt('psqi_wake')||'07:00';
+        const lat=parseFloat(ga('psqi_lat'))||20, sl=parseFloat(ga('psqi_sleep'))||7;
+        const[bh,bm]=bed.split(':').map(Number),[wh,wm]=wake.split(':').map(Number);
+        let wm2=wh*60+wm, bm2=bh*60+bm; if(wm2<=bm2) wm2+=1440;
+        const tbp=(wm2-bm2)/60, eff=tbp>0?Math.round(sl/tbp*100):0;
+        sum.innerHTML=`<strong>침대 체류:</strong> ${tbp.toFixed(1)}h &nbsp;|&nbsp; <strong>수면:</strong> ${sl}h &nbsp;|&nbsp; <strong>효율:</strong> ${eff}% &nbsp;|&nbsp; <strong>입면:</strong> ${lat}분`;
+      }
+      updSum();
+      w.appendChild(sum);
+      showContBtn('psqi_times');
+      return w;
+    }
+  });
+
+  addQ({ key:'psqi_5', num:5, text:'지난 한달 동안, 당신은 아래의 이유로 잠자는 데 얼마나 자주 문제가 있었습니까?', type:'matrix',
+    answerLabel:()=>'입력됨',
+    buildControl:()=>{
+      const m=mkMatrix('psqi_5',[['a','취침 후 30분 이내 잠 못 듦'],['b','한밤중/새벽에 깸'],['c','화장실 때문에 깸'],['d','숨쉬기 불편'],['e','코골기/기침'],['f','너무 추움'],['g','너무 더움'],['h','나쁜 꿈'],['i','통증'],['j','기타']],[0,1,2,3],['없었다','주1회 미만','주1~2회','주3회↑']);
+      showContBtn('psqi_5'); return m;
+    }
+  });
+
+  addQ({ key:'psqi_6', num:6, text:'지난 한달 동안, 당신은 전반적으로 수면의 질이 어느 정도라고 평가하십니까?', type:'radio',
+    answerLabel:()=>({'very_good':'매우 좋음','fairly_good':'상당히 좋음','fairly_bad':'상당히 나쁨','very_bad':'매우 나쁨'})[ga('psqi_6')]||'',
+    buildControl:()=> mkRadio('psqi_6',[['very_good','매우 좋음'],['fairly_good','상당히 좋음'],['fairly_bad','상당히 나쁨'],['very_bad','매우 나쁨']])
+  });
+  addQ({ key:'psqi_7', num:7, text:'지난 한달 동안, 당신은 잠이 들기 위해 얼마나 자주 약을 복용했습니까? (처방약 또는 약국에서 구입한 약)', type:'radio',
+    answerLabel:()=>([' 없었다','주1회 미만','주1~2회','주3회↑'])[ga('psqi_7')]||'',
+    buildControl:()=> mkRadio('psqi_7',[[0,'지난 한달 동안 없었다'],[1,'한 주에 1번보다 적게'],[2,'한 주에 1~2번 정도'],[3,'한 주에 3번 이상']])
+  });
+  addQ({ key:'psqi_8', num:8, text:'지난 한달 동안, 당신은 운전하거나, 식사 때 혹은 사회활동을 하는 동안 얼마나 자주 졸음을 느꼈습니까?', type:'radio',
+    answerLabel:()=>(['없었다','주1회 미만','주1~2회','주3회↑'])[ga('psqi_8')]||'',
+    buildControl:()=> mkRadio('psqi_8',[[0,'지난 한달 동안 없었다'],[1,'한 주에 1번보다 적게'],[2,'한 주에 1~2번 정도'],[3,'한 주에 3번 이상']])
+  });
+  addQ({ key:'psqi_9', num:9, text:'지난 한달 동안, 당신은 일에 열중하는데 얼마나 많은 문제가 있었습니까?', type:'radio',
+    answerLabel:()=>(['전혀 없음','매우 조금','다소 있음','매우 많음'])[ga('psqi_9')]||'',
+    buildControl:()=> mkRadio('psqi_9',[[0,'전혀 없었다'],[1,'매우 조금 있었다'],[2,'다소 있었다'],[3,'매우 많이 있었다']])
+  });
+  addQ({ key:'psqi_10', num:10, text:'당신은 다른 사람과 같은 잠자리에 자거나 집을 같이 쓰는 사람이 있습니까?', type:'radio',
+    answerLabel:()=>({'alone':'없다','diff_room':'다른 방','same_room':'같은 방','same_bed':'같은 침대'})[ga('psqi_10')]||'',
+    buildControl:()=> mkRadio('psqi_10',[['alone','같은 잠자리에 자거나 집을 같이 쓰는 사람이 없다'],['diff_room','집에 다른 방을 쓰는 사람이 있다'],['same_room','방을 같이 쓰지만 같은 잠자리에서 자지 않는다'],['same_bed','같은 잠자리에 자는 사람이 있다']])
+  });
+  addQ({ key:'psqi_11', num:11, required:false,
+    text:'만일 같은 방을 쓰거나 같은 잠자리에서 자는 사람이 있다면, 그 사람에게 지난 한 달간, 당신이 다음과 같은 행동을 얼마나 자주 했는지 물어보십시오.',
+    visibleIf:()=> ga('psqi_10')==='same_room'||ga('psqi_10')==='same_bed', type:'matrix',
+    answerLabel:()=>'입력됨',
+    buildControl:()=>{
+      const m=mkMatrix('psqi_11',[['a','심하게 코골기'],['b','숨 잠시 멈추기'],['c','다리 떨기'],['d','혼란스러워함'],['e','기타']],[0,1,2,3],['없었다','주1회 미만','주1~2회','주3회↑']);
+      showContBtn('psqi_11'); return m;
+    }
+  });
+}
+
+// ── SS (C-SSRS) ──
+function buildSS(){
+  addQ({ key:'ss_1', num:1, text:'최근 몇 달 동안 죽고 싶다거나 잠든 뒤 깨어나지 않았으면 좋겠다고 바란 적이 있습니까?', type:'binary',
+    answerLabel:()=> ga('ss_1')==='yes'?'예':'아니오',
+    buildControl:()=> mkBinary('ss_1')
+  });
+  addQ({ key:'ss_2', num:2, text:'최근 몇 달 동안 실제로 자살을 생각해 본 적이 있습니까?', type:'binary',
+    answerLabel:()=> ga('ss_2')==='yes'?'예':'아니오',
+    buildControl:()=> mkBinary('ss_2', true)
+  });
+  addQ({ key:'ss_3', num:3,
+    text:'최근 몇 달 동안 자살에 대해서 어떻게 실행에 옮길지 생각해 본 적이 있습니까?',
+    visibleIf:()=> ga('ss_2')==='yes', type:'binary',
+    answerLabel:()=> ga('ss_3')==='yes'?'예':'아니오',
+    buildControl:()=> mkBinary('ss_3', true)
+  });
+  addQ({ key:'ss_4', num:4,
+    text:'최근 몇 달 동안 이런 생각을 해 본 적이 있으며 실행할 의도가 어느 정도 있었습니까?',
+    visibleIf:()=> ga('ss_2')==='yes', type:'binary',
+    answerLabel:()=> ga('ss_4')==='yes'?'예':'아니오',
+    buildControl:()=> mkBinary('ss_4', true)
+  });
+  addQ({ key:'ss_5', num:5,
+    text:'최근 몇 달 동안 자살 방법에 대해 자세하게 궁리하기 시작했거나 궁리한 적이 있습니까? 이 계획을 실행에 옮길 의도가 있습니까?',
+    visibleIf:()=> ga('ss_2')==='yes', type:'binary',
+    answerLabel:()=> ga('ss_5')==='yes'?'예':'아니오',
+    buildControl:()=> mkBinary('ss_5', true)
+  });
+  addQ({ key:'ss_6', num:6,
+    text:'당신은 평생동안 본인의 인생을 끝내기 위해 무엇이든 하거나, 시작했거나, 무엇이든 할 준비가 된 적이 있습니까?',
+    hint:'예: 알약 수집, 총 획득, 귀중품 나눠주기, 유언장 또는 유서 쓰기, 알약을 꺼냈지만 삼키지 않았음, 총을 들었지만 스스로의 마음이 바뀌었거나 스스로의 손에서 뺏겼거나 지붕에 갔으나 점프를 하지 않거나 실제로 약을 먹거나, 스스로에게 총을 쏘거나, 스스로를 베거나, 스스로의 목을 매려고 하는 등.',
+    required:false, type:'binary',
+    answerLabel:()=> ga('ss_6')==='yes'?'예':'아니오',
+    buildControl:()=> mkBinary('ss_6', true)
+  });
+  addQ({ key:'ss_7', num:7, text:'6번에 문항이 "예"인 경우 이것이 최근 3개월 이내였습니까?',
+    visibleIf:()=> ga('ss_6')==='yes', required:false, type:'binary',
+    answerLabel:()=> ga('ss_7')==='yes'?'예':'아니오',
+    buildControl:()=> mkBinary('ss_7', true)
+  });
+}
+
+// ══════════════════════════════════════
+// SCORING
+// ══════════════════════════════════════
+function scoreDep(){
+  const rev=[5,8,10,15];
+  const daI=[3,6,9,10,14,17,18], paI=[5,8,15], soI=[1,2,7,11,13,20], ipI=[16,19];
+  let total=0,da=0,pa=0,so=0,ip=0;
+  for(let i=1;i<=20;i++){
+    const v=ga(`dep_${i}`); if(v===undefined) continue;
+    const sc=rev.includes(i)?3-parseInt(v):parseInt(v); total+=sc;
+    if(daI.includes(i))da+=sc; else if(paI.includes(i))pa+=sc; else if(soI.includes(i))so+=sc; else if(ipI.includes(i))ip+=sc;
+  }
+  return{total,da,pa,so,ip};
+}
+function scoreAnx(){
+  const npI=[1,3,6,12,19], sbjI=[2,4,5,8,9,10,13,17], panI=[7,11,14,15,16], autI=[18,20,21];
+  let total=0,np=0,sbj=0,pan=0,aut=0;
+  for(let i=1;i<=21;i++){
+    const v=ga(`anx_${i}`); if(v===undefined) continue;
+    const sc=parseInt(v); total+=sc;
+    if(npI.includes(i))np+=sc; else if(sbjI.includes(i))sbj+=sc; else if(panI.includes(i))pan+=sc; else if(autI.includes(i))aut+=sc;
+  }
+  return{total,np,sbj,pan,aut};
+}
+function scoreHcl(){
+  const ae=[1,2,3,4,5,6,10,11,12,13,14,15,16,18,19,20,22,24,28], ir=[7,8,9,17,21,23,25,26,27,29,30,31,32];
+  let total=0,active=0,irr=0;
+  for(let i=1;i<=32;i++){ if(ga(`hcl_${i}`)==='yes'){ total++; if(ae.includes(i))active++; if(ir.includes(i))irr++; } }
+  return{total,active,irr};
+}
+function scorePSQI(){
+  const bed=gt('psqi_bed')||'22:00', wake=gt('psqi_wake')||'07:00';
+  const lat=parseFloat(ga('psqi_lat'))||20, sl=parseFloat(ga('psqi_sleep'))||7;
+  const[bh,bm]=bed.split(':').map(Number),[wh,wm]=wake.split(':').map(Number);
+  let wm2=wh*60+wm, bm2=bh*60+bm; if(wm2<=bm2) wm2+=1440;
+  const tbp=(wm2-bm2)/60, eff=tbp>0?Math.round(sl/tbp*100):0;
+  const c1={'very_good':0,'fairly_good':1,'fairly_bad':2,'very_bad':3}[ga('psqi_6')]??0;
+  const latSc=lat<=15?0:lat<=30?1:lat<=60?2:3, p5a=gm('psqi_5','a')??0;
+  const c2r=latSc+p5a; const c2=c2r===0?0:c2r<=2?1:c2r<=4?2:3;
+  const c3=sl>7?0:sl>6?1:sl>5?2:3;
+  const c4=eff>=85?0:eff>=75?1:eff>=65?2:3;
+  const dK=['b','c','d','e','f','g','h','i','j'];
+  const dSum=dK.reduce((s,k)=>s+(gm('psqi_5',k)??0),0);
+  const c5=dSum===0?0:dSum<=9?1:dSum<=18?2:3;
+  const c6=parseInt(ga('psqi_7')??0);
+  const c7r=parseInt(ga('psqi_8')??0)+parseInt(ga('psqi_9')??0);
+  const c7=c7r===0?0:c7r<=2?1:c7r<=4?2:3;
+  return{total:c1+c2+c3+c4+c5+c6+c7,c1,c2,c3,c4,c5,c6,c7,tbp,sl,eff,lat};
+}
+function scoreSS(){
+  const s1=ga('ss_1')==='yes',s2=ga('ss_2')==='yes',s3=ga('ss_3')==='yes',s4=ga('ss_4')==='yes',s5=ga('ss_5')==='yes',s6=ga('ss_6')==='yes',s7=ga('ss_7')==='yes';
+  let lv=0; if(s5)lv=5; else if(s4)lv=4; else if(s3)lv=3; else if(s2)lv=2; else if(s1)lv=1;
+  const descs=['최근 몇 달 동안 자살 또는 죽고 싶다는 생각이 없었습니다.','죽거나 잠들어 깨어나지 않기를 바란 적은 있으나 적극적 자살 사고는 없었습니다.','자살에 대한 생각이 있었으나 구체적인 방법이나 의도는 없었습니다.','자살 방법을 떠올렸으나 실행 의도가 불명확합니다.','자살에 대한 생각과 함께 실행 의도가 일부 있습니다.','구체적 자살 계획과 실행 의도가 있습니다. 즉각적 임상 평가가 필요합니다.'];
+  const labels=['음성','죽고 싶은 생각','자살을 생각함','방법을 생각함','실행 의도 있음','구체적 계획·의도'];
+  return{lv,label:labels[lv],desc:descs[lv],s6,s7};
+}
+function nCDF(x,mu,s){const z=(x-mu)/s;return 0.5*(1+erf(z/Math.SQRT2));}
+function erf(x){const a=[0.254829592,-0.284496736,1.421413741,-1.453152027,1.061405429],p=0.3275911,sg=x<0?-1:1;x=Math.abs(x);const t=1/(1+p*x);return sg*(1-((((a[4]*t+a[3])*t+a[2])*t+a[1])*t+a[0])*t*Math.exp(-x*x));}
+
+// ══════════════════════════════════════
+// RESULT
+// ══════════════════════════════════════
+function scCard(name,score,max,bCls,bTxt,fCls,interp,normTxt,subs){
+  const c=d('sc');
+  c.appendChild(el('div',{class:'sc-name'},name));
+  const top=d('sc-top');
+  top.appendChild(el('span',{class:'sc-score'},String(score)));
+  top.appendChild(el('span',{class:'sc-max'},`/ ${max}점`));
+  top.appendChild(el('span',{class:`sc-badge ${bCls}`,style:{marginLeft:'auto'}},bTxt));
+  c.appendChild(top);
+  const bar=d('sbar'); const fill=el('div',{class:`sfill ${fCls}`,style:{width:`${Math.min(100,Math.round(score/max*100))}%`}}); bar.appendChild(fill); c.appendChild(bar);
+  if(interp){const it=d('sc-interp');it.textContent=interp;c.appendChild(it);}
+  if(normTxt){const nt=p('norm-txt','');nt.innerHTML=normTxt;c.appendChild(nt);}
+  if(subs&&subs.length){
+    const sr=d(`sub-row${subs.length===2?' sub2':subs.length>=6?' sub7':''}`);
+    subs.forEach(({n,v,pt})=>{const si=d('si');si.appendChild(el('div',{class:'si-n'},n));si.appendChild(el('div',{class:'si-v'},v));if(pt)si.appendChild(el('div',{class:'si-p'},pt));sr.appendChild(si);});
+    c.appendChild(sr);
+  }
+  return c;
+}
+
+function showResult(){
+  const app=document.getElementById('app');
+  app.innerHTML='';
+  document.getElementById('progWrap').style.display='none';
+
+  const page=d('res-page');
+
+  // header
+  const rhdr=d('res-hdr');
+  const hl=d('');
+  hl.appendChild(el('h2',{},'정신건강의학과 사전 평가 결과'));
+  hl.appendChild(p('res-date',`작성일: ${new Date().toLocaleDateString('ko-KR')}`));
+  rhdr.appendChild(hl); rhdr.appendChild(p('res-id',`ID: ${gt('id_code')||'—'}`));
+  page.appendChild(rhdr);
+
+  const grid=d('scores-grid');
+
+  // CES-D
+  const{total:dT,da,pa,so,ip}=scoreDep();
+  const dB=dT>=27?['b-sev','높은 위험 (≥27)','c-sev','우울 증상이 뚜렷하게 높습니다. 적극적 평가와 치료가 필요합니다.']:dT>=20?['b-mod','중등도 위험 (20–26)','c-mod','중등도 수준의 우울 증상이 관찰됩니다.']:dT>=16?['b-mild','경증 위험 (16–19)','c-mild','가벼운 우울 증상이 있을 수 있습니다.']:['b-low','정상 범위 (0–15)','c-low','뚜렷한 우울 증상은 관찰되지 않습니다.'];
+  const dMu=6.3,dSd=7.9,dDiff=dT-dMu,dPct=Math.round((1-nCDF(dT,dMu,dSd))*100);
+  const dGl=dDiff>=2*dSd?'매우 높은 수준':dDiff>=dSd?'높은 수준':dDiff>=0.5*dSd?'약간 높은 수준':dDiff<=-2*dSd?'매우 낮은 수준':dDiff<=-dSd?'낮은 수준':dDiff<=-0.5*dSd?'약간 낮은 수준':'비슷한 수준';
+  const dDoms=[{n:'우울·슬픔',v:da,m:21},{n:'긍정감 저하',v:pa,m:9},{n:'신체·활동',v:so,m:21},{n:'대인 민감성',v:ip,m:6}];
+  const dTop=dDoms.reduce((a,b)=>a.v/a.m>=b.v/b.m?a:b);
+  grid.appendChild(scCard('우울 척도 (CES-D)',dT,60,dB[0],dB[1],dB[2],dB[3],
+    `일반 성인보다 ${dDiff>=0?'+':''}${Math.round(Math.abs(dDiff))}점 ${dDiff>=0?'높음':'낮음'} (${dGl}, 상위 ${dPct<1?'1% 미만':dPct+'%'}) · 두드러진 영역: ${dTop.n}`,
+    dDoms.map(({n,v,m})=>({n,v:`${v}점`,pt:`${Math.round(v/m*100)}%`}))));
+
+  // BAI
+  const{total:aT,np,sbj,pan,aut}=scoreAnx();
+  const aB=aT>=26?['b-sev','중증 (26–63)','c-sev','심한 불안 증상이 관찰됩니다.']:aT>=16?['b-mod','중등도 (16–25)','c-mod','중등도 수준의 불안 증상이 있습니다.']:aT>=8?['b-mild','경증 (8–15)','c-mild','가벼운 불안 증상이 있을 수 있습니다.']:['b-low','최소/정상 (0–7)','c-low','뚜렷한 불안 증상은 관찰되지 않습니다.'];
+  const aMu=4.28,aSd=5.049,aDiff=aT-aMu,aZ=aDiff/aSd;
+  const aGl=aZ>=2.5?'매우 높은 수준':aZ>=1.5?'높은 수준':aZ>=0.5?'조금 높은 수준':aZ>-0.5?'비슷한 수준':'낮은 수준';
+  const aSubs=[{n:'몸 감각',v:np,m:15},{n:'걱정·긴장',v:sbj,m:24},{n:'공황 증상',v:pan,m:15},{n:'자율신경',v:aut,m:9}];
+  const aTop=aSubs.reduce((a,b)=>a.v/a.m>=b.v/b.m?a:b);
+  grid.appendChild(scCard('불안 척도 (BAI)',aT,63,aB[0],aB[1],aB[2],aB[3],
+    `일반 성인보다 ${aDiff>=0?'+':''}${Math.round(Math.abs(aDiff))}점 ${aDiff>=0?'높음':'낮음'} (${aGl}) · 두드러진 영역: ${aTop.n}`,
+    aSubs.map(({n,v,m})=>({n,v:`${v}점`,pt:`${Math.round(v/m*100)}%`}))));
+
+  // HCL-32
+  const{total:hT,active:hA,irr:hI}=scoreHcl();
+  const hPos=hT>=14;
+  let hPat='특정 방향의 쏠림 없음';
+  if(hA>=12&&hI>=3)hPat='들뜸+짜증·충동 동반'; else if(hA>=12)hPat='활동성·고양감 증가 위주'; else if(hI>=3)hPat='과민·충동·위험 행동 위주';
+  const hB=hPos?['b-pos','양성 (≥14)','c-pos','들뜬 에너지 시기가 반복될 가능성이 있습니다. 면밀한 병력 확인이 필요합니다.']:['b-neg','음성 (<14)','c-neg','뚜렷한 기분 고양 경향은 관찰되지 않습니다.'];
+  grid.appendChild(scCard('기분 고양 척도 (HCL-32)',hT,32,hB[0],hB[1],hB[2],hB[3],
+    `${hPos?'양극성 스펙트럼 가능성 — 임상 면담 권고':'기분 고양 경향 뚜렷하지 않음'} · 주된 양상: ${hPat}`,
+    [{n:'활동·고양',v:`${hA}점`,pt:`${Math.round(hA/19*100)}%`},{n:'과민·위험',v:`${hI}점`,pt:`${Math.round(hI/13*100)}%`}]));
+
+  // PSQI
+  const{total:pT,c1,c2,c3,c4,c5,c6,c7,tbp,sl,eff,lat}=scorePSQI();
+  const pB=pT>=8?['b-sev','수면장애 의심 (≥8)','c-sev','수면 문제가 뚜렷합니다. 수면 전문 평가가 권장됩니다.']:pT>5?['b-mild','수면의 질 저하 (>5)','c-mod','수면의 질에 문제가 있습니다.']:['b-low','정상 범위 (≤5)','c-low','전반적인 수면의 질이 양호합니다.'];
+  const eL=eff>=85?'양호':eff>=75?'경계':'낮음', lL=lat<=15?'양호':lat<=30?'다소 길다':'지연', sL=sl>=7?'충분':sl>=6?'경계':'부족';
+  grid.appendChild(scCard('수면 질 지수 (PSQI)',pT,21,pB[0],pB[1],pB[2],pB[3],
+    `침대 체류 ${tbp.toFixed(1)}h | 실제 수면 ${sl}h(${sL}) | 수면 효율 ${eff}%(${eL}) | 잠들기까지 ${lat}분(${lL})`,
+    [{n:'수면의 질',v:`${c1}/3`},{n:'잠들기',v:`${c2}/3`},{n:'수면 시간',v:`${c3}/3`},{n:'수면 효율',v:`${c4}/3`},{n:'수면 방해',v:`${c5}/3`},{n:'수면제',v:`${c6}/3`},{n:'낮 기능',v:`${c7}/3`}]));
+
+  page.appendChild(grid);
+
+  // C-SSRS
+  const{lv,label:ssLbl,desc:ssDesc,s6,s7}=scoreSS();
+  const isH=lv>=2;
+  const ssc=d('sc'+(isH?' warn':''));ssc.style.marginBottom='10px';
+  const ssTop=d('');ssTop.style.cssText='display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;flex-wrap:wrap;gap:5px';
+  ssTop.appendChild(el('span',{class:'sc-name'},`자살 사고 평가 (C-SSRS)${isH?' ⚠':''}`));
+  ssTop.appendChild(el('span',{class:`sc-badge ${isH?'b-warn':'b-neg'}`},`${lv}단계 — ${ssLbl}`));
+  ssc.appendChild(ssTop);
+  const ladder=d('ss-levels');
+  [['0단계','해당 없음'],['1단계','죽고 싶은 생각'],['2단계','자살을 생각함'],['3단계','방법을 생각함'],['4단계','실행 의도'],['5단계','구체적 계획']].forEach(([step,lbl],i)=>{
+    const b=d('ssl'+(i===lv?' active':''));
+    if(i===lv) b.style.cssText=`background:${i>=4?'var(--wl)':i>=2?'#FBF5E6':'var(--al)'};border-color:${i>=4?'var(--wn)':i>=2?'#D4A843':'var(--ac)'}`;
+    b.innerHTML=`<div style="font-weight:700;font-size:10px;color:var(--t1)">${step}</div><div style="font-size:9px;margin-top:1px;color:var(--t2)">${lbl}</div>`;
+    ladder.appendChild(b);
+  });
+  ssc.appendChild(ladder);
+  const sdesc=d('ss-desc');
+  sdesc.textContent=ssDesc+(s6?(s7?' 평생 자살 관련 행동력이 있으며, 최근 3개월 이내의 일입니다.':' 평생 자살 관련 행동력이 있습니다.'):'');
+  ssc.appendChild(sdesc);
+  if(lv>=2){const cr=d('crisis');cr.innerHTML=`정신건강 위기상담 <strong>1577-0199</strong> &nbsp;|&nbsp; 자살예방상담전화 <strong>1393</strong> (24시간)`;ssc.appendChild(cr);}
+  page.appendChild(ssc);
+
+  // Alert summary
+  const flags=[];
+  if(dT>=16) flags.push(`우울 ${dT}점 (${dB[1]})`);
+  if(aT>=8)  flags.push(`불안 ${aT}점 (${aB[1]})`);
+  if(hT>=14) flags.push(`기분 고양 ${hT}점 (양성)`);
+  if(pT>5)   flags.push(`수면 ${pT}점 (${pB[1]})`);
+  if(lv>=2)  flags.push(`자살 사고 ${lv}단계`);
+  if(flags.length){ const ab=d('alert-box'); ab.innerHTML=`<strong style="display:block;margin-bottom:3px">📋 임상적 주의 항목</strong>${flags.join(' &nbsp;·&nbsp; ')}`; page.appendChild(ab); }
+
+  const disc=d('res-disc'); disc.innerHTML=`본 결과는 <strong>선별 목적의 참고 자료</strong>이며, 진단을 의미하지 않습니다. 정확한 평가와 진단은 담당 정신건강의학과 전문의의 면담을 통해 이루어집니다.`; page.appendChild(disc);
+
+  // ── HUB: broadcast scores ──
+  (function(){
+    // Profile data
+    const eduMap={'elem':'초졸','mid1':'중1','mid2':'중2','mid3':'중3','mid_g':'중졸',
+      'hi1':'고1','hi2':'고2','hi3':'고3','hi_g':'고졸','univ':'대학 재학',
+      'univ_g':'대졸','grad':'대학원 재학','grad_g':'대학원 졸업'};
+    const profile={
+      uid: gt('id_code')||'',
+      gender: ga('d_gender')==='M'?'남':'여',
+      birth: gt('d_birth')||'',
+      age: gt('d_birth') ? new Date().getFullYear()-parseInt(gt('d_birth'))+1 : '',
+      location: (gt('d_bplace')||'')+(gt('d_loc')?'/'+gt('d_loc'):''),
+      edu: eduMap[ga('d_edu')]||ga('d_edu')||'',
+      marry: ga('d_marry')==='married'?'기혼':'미혼',
+      job: gt('d_job_v')||'',
+      jobDur: gt('d_dur')||'',
+      med: gc('d_med_none').has('none')?'해당 없음':(gt('d_med')||''),
+      psyHx: ga('d_phx')==='yes'?('예 - '+(gt('d_phx_det')||'')):'아니오',
+      alc: ga('d_alc')==='yes'?'예':'아니오',
+      smk: ga('d_smk')==='yes'?'예':'아니오',
+      rel: {'none':'무교','christian':'기독교','catholic':'천주교','buddhist':'불교'}[ga('d_rel')]||'',
+    };
+    try{ localStorage.setItem('hub_profile', JSON.stringify(profile)); }catch(e){}
+    if(window.parent!==window) window.parent.postMessage({type:'PATIENT_PROFILE', profile},'*');
+    const dLvl = dT>=25?'severe':dT>=21?'mod':dT>=16?'mild':'normal';
+    const aLvl = aT>=30?'severe':aT>=16?'mod':aT>=8?'mild':'normal';
+    const pLvl = pT>=8?'severe':pT>5?'mild':'normal';
+    const hLvl = hT>=14?'pos':'neg';
+    const payload = {
+      type:'SURVEY_SCORES', surveyId:'survey1',
+      scores:[
+        {id:'cesd', name:'우울 (CES-D)', score:dT, max:60, level:dLvl,
+         badge: dT>=25?'심각':dT>=21?'중등도':dT>=16?'경도':'정상 범위',
+         sub:[{n:'신체증상',v:da},{n:'긍정결여',v:pa},{n:'대인관계',v:so},{n:'우울정서',v:ip}]},
+        {id:'bai', name:'불안 (BAI)', score:aT, max:63, level:aLvl,
+         badge: aT>=30?'심각':aT>=16?'중등도':aT>=8?'경도':'정상 범위',
+         sub:[{n:'신체감각',v:np},{n:'주관적 불안',v:sbj},{n:'공황',v:pan},{n:'자율신경',v:aut}]},
+        {id:'hcl', name:'기분 고양 (HCL-32)', score:hT, max:32, level:hLvl,
+         badge: hT>=14?'양성':'음성',
+         sub:[{n:'활동·고양',v:hA},{n:'과민·위험',v:hI}]},
+        {id:'psqi', name:'수면 (PSQI)', score:pT, max:21, level:pLvl,
+         badge: pT>=8?'수면장애 의심':pT>5?'수면질 저하':'정상',
+         sub:[{n:'수면시간',v:sl+'h'},{n:'수면효율',v:eff+'%'}]},
+        {id:'cssrs', name:'자살사고 (C-SSRS)', score:lv, max:5, level:lv>=2?'warn':lv>=1?'mild':'normal',
+         badge: ssLbl,
+         sub:[]}
+      ]
+    };
+    if(window.parent!==window) window.parent.postMessage(payload,'*');
+    try{ localStorage.setItem('hub_scores_survey1', JSON.stringify(payload)); }catch(e){}
+  })();
+  const pr=d('print-row');
+  pr.appendChild(el('button',{class:'pbtn prim',onclick:()=>window.print()},'🖨  결과 인쇄'));
+  pr.appendChild(el('button',{class:'pbtn',onclick:()=>{ DATA.ans={}; DATA.txt={}; DATA.mat={}; DATA.chk={}; S.screen='intro'; S.sec=0; startApp(); }},'↩  처음으로'));
+  pr.appendChild(el('button',{class:'pbtn',style:'background:var(--al);border-color:var(--ac);color:var(--ah);font-weight:600',onclick:()=>{ if(window.parent!==window){window.parent.postMessage({type:'BACK_TO_HUB'},'*');}else{window.location.href='index.html';} }},'🏠  목록으로 돌아가기'));
+  page.appendChild(pr);
+  app.appendChild(page);
+}
+
+// ══════════════════════════════════════
+// APP ENTRY
+// ══════════════════════════════════════
+function startApp(){
+  const app = document.getElementById('app');
+  app.innerHTML = '';
+  document.getElementById('progWrap').style.display='none';
+
+  const c=d('intro-card');
+  const intro=d('intro');
+  const ic=d('intro-ic');
+  ic.innerHTML=`<svg viewBox="0 0 24 24"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+  intro.appendChild(ic);
+  intro.appendChild(el('h1',{},'정신건강의학과\n사전 평가 설문'));
+  intro.appendChild(p('intro-sub','본 설문은 정신건강의학과 진료를 위한 사전 평가입니다. 솔직하게 답변해 주실수록 더 정확한 평가에 도움이 됩니다.'));
+  const chips=d('chips');
+  ['우울 증상','불안 증상','기분 기복','수면 평가','자살 사고'].forEach(t=>chips.appendChild(sp('chip',t)));
+  intro.appendChild(chips);
+  intro.appendChild(p('tnote','⏱ 예상 소요 시간: 약 20–30분'));
+  intro.appendChild(el('button',{class:'start-btn', onclick:()=>{
+    S.screen='section';
+    S.sec=0;
+    initSection(SECS[0].id);
+    repaint();
+    window.scrollTo(0,0);
+  }}, '설문 시작하기'));
+  c.appendChild(intro);
+  app.appendChild(c);
+}
+
+startApp();
+</script>
+</body>
+</html>

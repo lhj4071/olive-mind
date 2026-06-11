@@ -163,6 +163,17 @@
         .test-card-diva { border-left: 4px solid #6D5BA3; cursor: pointer; transition: transform 0.15s ease, box-shadow 0.15s ease; }
         .test-card-diva:active { transform: scale(0.98); box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
 
+        /* ── 종합 검사 Hero Card ──────────────────────── */
+        .test-card-comprehensive {
+            cursor: pointer;
+            transition: transform 0.22s ease, box-shadow 0.22s ease;
+        }
+        .test-card-comprehensive:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 14px 40px rgba(107,142,35,0.45) !important;
+        }
+        .test-card-comprehensive:active { transform: scale(0.98); }
+
         /* ── 헤더 로그아웃 버튼 ─────────────────────── */
         .btn-logout {
             display: flex; align-items: center; gap: 5px;
@@ -843,6 +854,86 @@
                 </p>
             </div>
 
+            <!-- ★ 종합 심리검사 Hero Card ★ -->
+            <div class="test-card-comprehensive rounded-2xl overflow-hidden mb-5"
+                 style="background: linear-gradient(135deg, #1e2e0e 0%, #3a5c12 38%, #6B8E23 68%, #c8912a 100%);
+                        box-shadow: 0 8px 28px rgba(107,142,35,0.32);"
+                 onclick="window.location.href='./Qmain.html'"
+                 role="button" tabindex="0"
+                 aria-label="올리브 종합 마음 검진 시작하기">
+
+                <!-- 상단 장식 줄 (골드 shimmer) -->
+                <div style="height: 3px; background: linear-gradient(90deg, rgba(255,255,255,0.1), rgba(232,185,74,0.7), rgba(255,255,255,0.1));"></div>
+
+                <div class="p-6">
+                    <!-- 아이콘 + 배지 행 -->
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="w-16 h-16 rounded-2xl flex items-center justify-center flex-shrink-0"
+                             style="background: rgba(255,255,255,0.14); border: 1px solid rgba(255,255,255,0.22);">
+                            <i class="fas fa-layer-group text-3xl" style="color: #e8d08a;"></i>
+                        </div>
+                        <div class="flex flex-col items-end gap-1.5">
+                            <span class="text-xs font-bold px-2.5 py-1 rounded-full"
+                                  style="background: rgba(232,185,74,0.28); color: #f5e09a;
+                                         border: 1px solid rgba(232,185,74,0.45);">
+                                ✦ 프리미엄
+                            </span>
+                            <span class="text-xs font-semibold px-2.5 py-1 rounded-full"
+                                  style="background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.82);
+                                         border: 1px solid rgba(255,255,255,0.18);">
+                                8가지 척도 통합
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- 제목 -->
+                    <h3 class="font-bold text-white leading-snug mb-2"
+                        style="font-size: 20px; text-shadow: 0 1px 4px rgba(0,0,0,0.25);">
+                        올리브 종합 마음 검진
+                    </h3>
+
+                    <!-- 설명 -->
+                    <p class="text-sm leading-relaxed mb-5" style="color: rgba(255,255,255,0.8);">
+                        우울, 불안, 스트레스 등 8가지 주요 심리 척도를 한 번에 진행하고,
+                        나의 마음 상태를 다각도로 분석한 통합 결과 리포트를 확인해 보세요.
+                    </p>
+
+                    <!-- 정보 뱃지 행 -->
+                    <div class="flex flex-wrap gap-2 mb-5">
+                        <span class="flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-full"
+                              style="background: rgba(255,255,255,0.13); color: rgba(255,255,255,0.88);
+                                     border: 1px solid rgba(255,255,255,0.18);">
+                            <i class="fas fa-clipboard-list text-xs"></i> 8가지 척도
+                        </span>
+                        <span class="flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-full"
+                              style="background: rgba(255,255,255,0.13); color: rgba(255,255,255,0.88);
+                                     border: 1px solid rgba(255,255,255,0.18);">
+                            <i class="fas fa-clock text-xs"></i> 약 60~90분
+                        </span>
+                        <span class="flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-full"
+                              style="background: rgba(255,255,255,0.13); color: rgba(255,255,255,0.88);
+                                     border: 1px solid rgba(255,255,255,0.18);">
+                            <i class="fas fa-chart-bar text-xs"></i> 통합 리포트
+                        </span>
+                    </div>
+
+                    <!-- CTA 버튼 -->
+                    <div class="flex items-center justify-between gap-3">
+                        <button class="flex-1 py-3.5 rounded-xl font-bold text-sm flex items-center justify-center gap-2"
+                                style="background: rgba(255,255,255,0.95); color: #2c3818;
+                                       box-shadow: 0 3px 12px rgba(0,0,0,0.18); pointer-events: none;">
+                            통합 검사 시작하기
+                            <i class="fas fa-arrow-right text-xs"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 개별 검사 섹션 구분 -->
+            <h3 class="font-bold text-xs mb-3 tracking-wide uppercase" style="color: #b0b0a0;">
+                <i class="fas fa-list-check mr-1.5"></i>개별 검사
+            </h3>
+
             <!-- 검사 카드 (모바일 1열 / 데스크톱 2열) -->
             <div class="space-y-4" id="tests-cards">
 
@@ -952,7 +1043,7 @@
                 <!-- 추가 예정 안내 (데스크톱: 2열 전체 너비) -->
                 <div class="card text-center py-6 test-more-card" style="border: 1.5px dashed #d0d0c5;">
                     <i class="fas fa-hourglass-half text-2xl mb-2" style="color: #d0d0c5;"></i>
-                    <p class="text-sm font-semibold" style="color: #b0b0a0;">더 많은 검사가 준비 중입니다</p>
+                    <p class="text-sm font-semibold" style="color: #b0b0a0;">더 많은 개별 검사가 준비 중입니다</p>
                     <p class="text-xs mt-1" style="color: #d0d0c5;">PSS-10 (스트레스 척도) 등 업데이트 예정</p>
                 </div>
 

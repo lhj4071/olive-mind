@@ -1,0 +1,1598 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>정신건강의학과 심리검사</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&family=Noto+Serif+KR:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+:root {
+  --bg:      #F5F4F0;
+  --surface: #FFFFFF;
+  --s2:      #F0EEE9;
+  --border:  #E0DDD6;
+  --ink:     #1A1917;
+  --ink2:    #5F5E5A;
+  --ink3:    #9B9A95;
+  --accent:  #2B5FA8;
+  --acc-l:   #EBF2FC;
+  --acc-d:   #1A3C6B;
+  --green:   #2E6B42;
+  --green-l: #EAF4EE;
+  --amber:   #B87014;
+  --amber-l: #FBF0E1;
+  --red:     #A33020;
+  --red-l:   #FBEAE7;
+  --purple:  #6B50C2;
+  --purple-l:#EEEAFC;
+  --r:       12px;
+  --r-sm:    8px;
+  --sh:      0 2px 8px rgba(0,0,0,.07), 0 1px 2px rgba(0,0,0,.04);
+  --sh-lg:   0 8px 30px rgba(0,0,0,.10), 0 2px 8px rgba(0,0,0,.06);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Noto Sans KR', -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  min-height: 100vh;
+  line-height: 1.6;
+}
+
+/* ── SCREENS ── */
+#screen-intro, #screen-hub, #screen-viewer, #screen-summary { display: none; }
+#screen-intro.active, #screen-hub.active, #screen-viewer.active, #screen-summary.active { display: flex; }
+
+/* ══════════════════════════════════
+   INTRO SCREEN
+══════════════════════════════════ */
+#screen-intro {
+  min-height: 100vh;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  background: linear-gradient(160deg, #EDF3FB 0%, #F5F4F0 55%, #F0EEE9 100%);
+}
+.intro-wrap {
+  max-width: 480px;
+  width: 100%;
+  text-align: center;
+}
+.intro-logo {
+  width: 72px;
+  height: 72px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, var(--accent) 0%, var(--purple) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 28px;
+  box-shadow: 0 8px 24px rgba(43,95,168,.30);
+}
+.intro-logo i { color: #fff; font-size: 32px; }
+.intro-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: var(--acc-l);
+  color: var(--acc-d);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  padding: 4px 12px;
+  border-radius: 20px;
+  margin-bottom: 14px;
+  border: 1px solid #C5D9F4;
+}
+.intro-title {
+  font-family: 'Noto Serif KR', serif;
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: -.5px;
+  color: var(--ink);
+  margin-bottom: 12px;
+}
+.intro-sub {
+  font-size: 14px;
+  color: var(--ink2);
+  line-height: 1.75;
+  margin-bottom: 32px;
+}
+.intro-info {
+  background: var(--surface);
+  border-radius: var(--r);
+  border: 1px solid var(--border);
+  padding: 16px 20px;
+  margin-bottom: 28px;
+  text-align: left;
+  box-shadow: var(--sh);
+  display: grid;
+  gap: 10px;
+}
+.intro-info-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--ink2);
+}
+.intro-info-row i {
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  background: var(--s2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent);
+  font-size: 14px;
+  flex-shrink: 0;
+}
+.intro-info-row span strong { color: var(--ink); font-weight: 600; }
+.btn-start {
+  width: 100%;
+  padding: 16px 24px;
+  background: linear-gradient(135deg, var(--accent) 0%, var(--purple) 100%);
+  color: #fff;
+  border: none;
+  border-radius: var(--r);
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(43,95,168,.35);
+  transition: transform .15s, box-shadow .15s;
+  letter-spacing: -.2px;
+}
+.btn-start:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(43,95,168,.40);
+}
+.btn-start:active { transform: translateY(0); }
+
+/* ══════════════════════════════════
+   HUB SCREEN
+══════════════════════════════════ */
+#screen-hub {
+  min-height: 100vh;
+  flex-direction: column;
+  align-items: center;
+  background: var(--bg);
+  padding: 0 16px 80px;
+}
+.hub-topbar {
+  width: 100%;
+  max-width: 680px;
+  padding: 18px 0 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 24px;
+  position: sticky;
+  top: 0;
+  background: var(--bg);
+  z-index: 50;
+}
+.hub-logo-sm {
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  background: linear-gradient(135deg, var(--accent) 0%, var(--purple) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.hub-logo-sm i { color: #fff; font-size: 16px; }
+.hub-topbar-text h1 {
+  font-family: 'Noto Serif KR', serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink);
+}
+.hub-topbar-text p { font-size: 11px; color: var(--ink3); }
+
+/* progress bar */
+.hub-progress {
+  width: 100%;
+  max-width: 680px;
+  background: var(--surface);
+  border-radius: var(--r);
+  border: 1px solid var(--border);
+  padding: 16px 20px;
+  margin-bottom: 20px;
+  box-shadow: var(--sh);
+}
+.hub-progress-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.hub-progress-label {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--ink2);
+}
+.hub-progress-count {
+  font-size: 12px;
+  color: var(--ink3);
+}
+.hub-progress-count span {
+  font-weight: 700;
+  color: var(--accent);
+}
+.hub-bar-track {
+  height: 6px;
+  background: var(--s2);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.hub-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--purple));
+  border-radius: 3px;
+  transition: width .5s cubic-bezier(.4,0,.2,1);
+}
+
+/* section label */
+.hub-section-label {
+  width: 100%;
+  max-width: 680px;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--ink3);
+  margin-bottom: 10px;
+  padding-left: 2px;
+}
+
+/* survey cards */
+.hub-cards {
+  width: 100%;
+  max-width: 680px;
+  display: grid;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.survey-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 0;
+  box-shadow: var(--sh);
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform .15s, box-shadow .15s, border-color .15s;
+  text-align: left;
+  width: 100%;
+  font-family: 'Noto Sans KR', sans-serif;
+}
+.survey-card:hover:not(.done) {
+  transform: translateY(-2px);
+  box-shadow: var(--sh-lg);
+  border-color: var(--accent);
+}
+.survey-card.done {
+  opacity: .72;
+  cursor: default;
+}
+.survey-card-inner {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 18px;
+}
+.card-icon-wrap {
+  width: 44px;
+  height: 44px;
+  border-radius: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 20px;
+  transition: all .15s;
+}
+.card-body { flex: 1; min-width: 0; }
+.card-eyebrow {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+  opacity: .75;
+}
+.card-title {
+  font-family: 'Noto Serif KR', serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 3px;
+  letter-spacing: -.3px;
+  line-height: 1.3;
+}
+.card-desc {
+  font-size: 11.5px;
+  color: var(--ink3);
+  line-height: 1.5;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.card-status {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+.status-badge {
+  font-size: 10.5px;
+  font-weight: 600;
+  padding: 3px 9px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+.status-pending {
+  background: var(--s2);
+  color: var(--ink3);
+}
+.status-done {
+  background: var(--green-l);
+  color: var(--green);
+}
+.status-icon {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+}
+.si-done { background: var(--green-l); color: var(--green); }
+.si-pending { background: var(--s2); color: var(--ink3); }
+
+/* color themes per card */
+.theme-blue  .card-icon-wrap { background: var(--acc-l); color: var(--accent); }
+.theme-blue  .card-eyebrow   { color: var(--accent); }
+.theme-green .card-icon-wrap { background: var(--green-l); color: var(--green); }
+.theme-green .card-eyebrow   { color: var(--green); }
+.theme-amber .card-icon-wrap { background: var(--amber-l); color: var(--amber); }
+.theme-amber .card-eyebrow   { color: var(--amber); }
+.theme-red   .card-icon-wrap { background: var(--red-l); color: var(--red); }
+.theme-red   .card-eyebrow   { color: var(--red); }
+.theme-purple .card-icon-wrap { background: transparent; color: inherit; }
+.theme-purple .card-eyebrow  { color: var(--purple); }
+
+.card-done-bar {
+  height: 3px;
+  background: linear-gradient(90deg, var(--green), #52C77A);
+  width: 100%;
+}
+
+/* info note */
+.hub-note {
+  width: 100%;
+  max-width: 680px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 14px 18px;
+  font-size: 12px;
+  color: var(--ink3);
+  line-height: 1.7;
+  box-shadow: var(--sh);
+}
+.hub-note strong { color: var(--ink2); }
+
+/* ══════════════════════════════════
+   VIEWER SCREEN
+══════════════════════════════════ */
+#screen-viewer {
+  flex-direction: column;
+  min-height: 100vh;
+}
+.viewer-topbar {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  z-index: 100;
+  flex-shrink: 0;
+  box-shadow: 0 1px 4px rgba(0,0,0,.06);
+}
+.viewer-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+  flex: 1;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#survey-frame {
+  flex: 1;
+  border: none;
+  width: 100%;
+  min-height: calc(100vh - 53px);
+}
+
+/* ══════════════════════════════════
+   SUMMARY SCREEN
+══════════════════════════════════ */
+#screen-summary {
+  min-height: 100vh;
+  flex-direction: column;
+  align-items: center;
+  background: var(--bg);
+  padding: 0 16px 100px;
+}
+.sum-topbar {
+  width: 100%;
+  max-width: 760px;
+  padding: 18px 0 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 24px;
+  position: sticky;
+  top: 0;
+  background: var(--bg);
+  z-index: 50;
+}
+.sum-back-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 13px;
+  background: var(--s2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink2);
+  cursor: pointer;
+  transition: all .13s;
+}
+.sum-back-btn:hover { background: var(--border); color: var(--ink); }
+.sum-topbar-title {
+  font-family: 'Noto Serif KR', serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink);
+  flex: 1;
+}
+.sum-print-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  background: var(--accent);
+  border: none;
+  border-radius: var(--r-sm);
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: #fff;
+  cursor: pointer;
+  transition: all .13s;
+}
+.sum-print-btn:hover { background: var(--acc-d); }
+
+/* header banner */
+.sum-header {
+  width: 100%;
+  max-width: 760px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 20px 24px;
+  margin-bottom: 20px;
+  box-shadow: var(--sh);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.sum-header-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--accent) 0%, var(--purple) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.sum-header-icon i { color: #fff; font-size: 22px; }
+.sum-header h2 {
+  font-family: 'Noto Serif KR', serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 4px;
+}
+.sum-header p { font-size: 12px; color: var(--ink3); line-height: 1.5; }
+
+/* alert bar */
+.sum-alert-bar {
+  width: 100%;
+  max-width: 760px;
+  background: #FEF3C7;
+  border: 1px solid #F59E0B;
+  border-radius: var(--r);
+  padding: 12px 18px;
+  margin-bottom: 16px;
+  font-size: 13px;
+  color: #78350F;
+  line-height: 1.6;
+  display: none;
+}
+.sum-alert-bar.show { display: flex; gap: 10px; align-items: flex-start; }
+.sum-alert-bar i { font-size: 18px; color: #D97706; flex-shrink: 0; margin-top: 1px; }
+
+/* crisis bar */
+.sum-crisis-bar {
+  width: 100%;
+  max-width: 760px;
+  background: var(--red-l);
+  border: 1.5px solid var(--red);
+  border-radius: var(--r);
+  padding: 14px 18px;
+  margin-bottom: 16px;
+  font-size: 13px;
+  color: var(--red);
+  line-height: 1.65;
+  display: none;
+}
+.sum-crisis-bar.show { display: flex; gap: 10px; align-items: flex-start; }
+.sum-crisis-bar i { font-size: 20px; flex-shrink: 0; }
+
+/* section label */
+.sum-sec-label {
+  width: 100%;
+  max-width: 760px;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--ink3);
+  margin-bottom: 10px;
+  padding-left: 2px;
+}
+
+/* score grid */
+.sum-grid {
+  width: 100%;
+  max-width: 760px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-bottom: 16px;
+}
+@media (max-width: 520px) { .sum-grid { grid-template-columns: 1fr; } }
+
+.sum-score-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 16px;
+  box-shadow: var(--sh);
+  position: relative;
+  overflow: hidden;
+}
+.sum-score-card.level-severe { border-left: 4px solid var(--red); }
+.sum-score-card.level-mod    { border-left: 4px solid var(--amber); }
+.sum-score-card.level-mild   { border-left: 4px solid #F59E0B; }
+.sum-score-card.level-warn   { border-left: 4px solid var(--amber); }
+.sum-score-card.level-normal { border-left: 4px solid var(--green); }
+.sum-score-card.level-info   { border-left: 4px solid var(--accent); }
+.sum-score-card.level-pos    { border-left: 4px solid var(--amber); }
+.sum-score-card.level-neg    { border-left: 4px solid var(--green); }
+
+.ssc-name {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ink3);
+  margin-bottom: 8px;
+  letter-spacing: .02em;
+}
+.ssc-row {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+.ssc-score {
+  font-family: 'Noto Serif KR', serif;
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1;
+}
+.ssc-max { font-size: 12px; color: var(--ink3); }
+.ssc-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+.badge-severe { background: var(--red-l); color: var(--red); }
+.badge-mod    { background: var(--amber-l); color: #92400E; }
+.badge-mild   { background: #FEF3C7; color: #92400E; }
+.badge-warn   { background: var(--amber-l); color: #92400E; }
+.badge-normal { background: var(--green-l); color: var(--green); }
+.badge-info   { background: var(--acc-l); color: var(--acc-d); }
+.badge-pos    { background: var(--amber-l); color: #92400E; }
+.badge-neg    { background: var(--green-l); color: var(--green); }
+
+.ssc-bar-track { height: 5px; background: var(--s2); border-radius: 3px; overflow: hidden; margin-bottom: 6px; }
+.ssc-bar-fill  { height: 100%; border-radius: 3px; transition: width .6s ease; }
+.fill-severe { background: var(--red); }
+.fill-mod    { background: var(--amber); }
+.fill-mild   { background: #FBBF24; }
+.fill-warn   { background: var(--amber); }
+.fill-normal { background: var(--green); }
+.fill-info   { background: var(--accent); }
+.fill-pos    { background: var(--amber); }
+.fill-neg    { background: var(--green); }
+
+.ssc-sub {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+.ssc-sub-item {
+  font-size: 10px;
+  color: var(--ink3);
+  background: var(--s2);
+  padding: 2px 7px;
+  border-radius: 4px;
+}
+
+/* pending placeholder */
+.sum-pending-card {
+  background: var(--bg);
+  border: 1.5px dashed var(--border);
+  border-radius: var(--r);
+  padding: 20px;
+  text-align: center;
+  font-size: 12px;
+  color: var(--ink3);
+  grid-column: 1 / -1;
+}
+.sum-pending-card i { font-size: 20px; display: block; margin-bottom: 6px; }
+
+/* no-data placeholder */
+.sum-nodata {
+  width: 100%;
+  max-width: 760px;
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--ink3);
+}
+.sum-nodata i { font-size: 40px; display: block; margin-bottom: 12px; opacity: .4; }
+.sum-nodata p { font-size: 14px; }
+
+/* disclaimer */
+.sum-disclaimer {
+  width: 100%;
+  max-width: 760px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 14px 18px;
+  font-size: 11.5px;
+  color: var(--ink3);
+  line-height: 1.7;
+  margin-top: 4px;
+}
+
+@media print {
+  .sum-topbar, .sum-back-btn, .sum-print-btn { display: none !important; }
+  #screen-summary { padding-top: 0; }
+  .sum-score-card { break-inside: avoid; }
+}
+
+/* ── Profile Card ── */
+.sum-profile-card {
+  width: 100%;
+  max-width: 760px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  margin-bottom: 20px;
+  box-shadow: var(--sh);
+  overflow: hidden;
+}
+.sum-profile-head {
+  background: linear-gradient(135deg, #1A3C6B 0%, #3C356E 100%);
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.sum-profile-head i { color: rgba(255,255,255,.8); font-size: 18px; }
+.sum-profile-head h3 {
+  font-family: 'Noto Serif KR', serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 1px;
+}
+.sum-profile-head p { font-size: 11px; color: rgba(255,255,255,.6); }
+.sum-profile-body {
+  padding: 16px 20px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px 16px;
+}
+@media (max-width: 520px) { .sum-profile-body { grid-template-columns: repeat(2, 1fr); } }
+.sum-pf-item {}
+.sum-pf-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  color: var(--ink3);
+  margin-bottom: 3px;
+}
+.sum-pf-value {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink);
+  line-height: 1.4;
+}
+.sum-pf-value.empty { color: var(--ink3); font-style: italic; font-weight: 400; }
+.sum-profile-footer {
+  border-top: 1px solid var(--border);
+  padding: 10px 20px;
+  font-size: 11px;
+  color: var(--ink3);
+  background: var(--s2);
+}
+.sum-profile-footer strong { color: var(--ink2); }
+
+/* Viewer topbar bigger buttons */
+.viewer-back-btn {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 10px 18px;
+  background: var(--s2);
+  border: 1.5px solid var(--border);
+  border-radius: var(--r-sm);
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink2);
+  cursor: pointer;
+  transition: all .13s;
+  flex-shrink: 0;
+}
+.viewer-back-btn:hover { background: var(--border); color: var(--ink); }
+.viewer-back-btn i { font-size: 17px; }
+.viewer-done-btn {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 10px 20px;
+  background: var(--green-l);
+  border: 1.5px solid #A8D9B8;
+  border-radius: var(--r-sm);
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--green);
+  cursor: pointer;
+  transition: all .13s;
+  flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(46,107,66,.15);
+}
+.viewer-done-btn:hover { background: #d3edda; box-shadow: 0 3px 10px rgba(46,107,66,.22); }
+.viewer-done-btn i { font-size: 17px; }
+
+/* ── Toast ── */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: #1A1917;
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 30px;
+  font-size: 13px;
+  font-weight: 500;
+  opacity: 0;
+  transition: opacity .3s, transform .3s;
+  pointer-events: none;
+  z-index: 9999;
+  white-space: nowrap;
+}
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* ── Confirm Modal ── */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.45);
+  z-index: 200;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.modal-overlay.show { display: flex; }
+.modal-box {
+  background: var(--surface);
+  border-radius: 16px;
+  padding: 28px 24px 20px;
+  max-width: 360px;
+  width: 100%;
+  box-shadow: var(--sh-lg);
+  text-align: center;
+}
+.modal-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 13px;
+  background: var(--amber-l);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 14px;
+  font-size: 24px;
+  color: var(--amber);
+}
+.modal-box h3 {
+  font-family: 'Noto Serif KR', serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 8px;
+}
+.modal-box p {
+  font-size: 13px;
+  color: var(--ink2);
+  line-height: 1.65;
+  margin-bottom: 20px;
+}
+.modal-btns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.modal-btn-cancel {
+  padding: 11px;
+  background: var(--s2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink2);
+  cursor: pointer;
+}
+.modal-btn-confirm {
+  padding: 11px;
+  background: var(--accent);
+  border: none;
+  border-radius: var(--r-sm);
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+  cursor: pointer;
+}
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════
+     INTRO SCREEN
+════════════════════════════ -->
+<div id="screen-intro" class="active">
+  <div class="intro-wrap">
+    <div class="intro-logo"><i class="ti ti-stethoscope"></i></div>
+    <div class="intro-badge"><i class="ti ti-building-hospital"></i> 정신건강의학과</div>
+    <h1 class="intro-title">심리검사<br>통합 평가 시스템</h1>
+    <p class="intro-sub">
+      진료 전 사전 평가 설문입니다.<br>
+      총 8가지 검사를 원하는 순서로 진행하실 수 있으며,<br>
+      각 검사는 결과 확인 후 허브로 돌아옵니다.
+    </p>
+    <div class="intro-info">
+      <div class="intro-info-row">
+        <i class="ti ti-clock"></i>
+        <span><strong>총 소요 시간:</strong> 약 60–90분 (검사에 따라 다름)</span>
+      </div>
+      <div class="intro-info-row">
+        <i class="ti ti-list-check"></i>
+        <span><strong>검사 수:</strong> 8가지 (원하는 순서로 진행)</span>
+      </div>
+      <div class="intro-info-row">
+        <i class="ti ti-device-floppy"></i>
+        <span><strong>저장:</strong> 각 검사 완료 시 자동 체크 표시</span>
+      </div>
+      <div class="intro-info-row">
+        <i class="ti ti-info-circle"></i>
+        <span><strong>참고:</strong> 이 검사는 진단이 아닌 <strong>선별 목적</strong>입니다</span>
+      </div>
+    </div>
+    <button class="btn-start" onclick="goHub()">
+      <i class="ti ti-player-play" style="margin-right:6px"></i>검사 시작하기
+    </button>
+  </div>
+</div>
+
+<!-- ════════════════════════════
+     HUB SCREEN
+════════════════════════════ -->
+<div id="screen-hub">
+  <div class="hub-topbar">
+    <div class="hub-logo-sm"><i class="ti ti-stethoscope"></i></div>
+    <div class="hub-topbar-text">
+      <h1>정신건강의학과 심리검사</h1>
+      <p id="hub-sub-text">검사를 선택하여 진행하세요</p>
+    </div>
+  </div>
+
+  <div class="hub-progress">
+    <div class="hub-progress-row">
+      <span class="hub-progress-label">전체 진행률</span>
+      <span class="hub-progress-count"><span id="done-count">0</span> / 8 완료</span>
+    </div>
+    <div class="hub-bar-track">
+      <div class="hub-bar-fill" id="progress-fill" style="width:0%"></div>
+    </div>
+    <div style="margin-top:12px;display:flex;justify-content:flex-end;">
+      <button id="summary-btn" onclick="goSummary()" style="
+        display:flex;align-items:center;gap:6px;padding:8px 16px;
+        background:linear-gradient(135deg,var(--accent) 0%,var(--purple) 100%);
+        color:#fff;border:none;border-radius:var(--r-sm);
+        font-family:'Noto Sans KR',sans-serif;font-size:12px;font-weight:600;
+        cursor:pointer;transition:all .15s;opacity:.5;pointer-events:none;
+      ">
+        <i class="ti ti-chart-bar"></i> 통합 결과 보기
+      </button>
+    </div>
+  </div>
+
+  <div class="hub-section-label">사전 설문 (Survey 1–8)</div>
+  <div class="hub-cards" id="survey-cards"></div>
+
+  <div class="hub-note">
+    <strong>안내</strong> — 완료한 검사는 다시 열어볼 수 있지만 이미 입력한 내용은 초기화됩니다.
+    결과 페이지에서 <strong>인쇄 / PDF 저장</strong>을 이용해 주세요.
+  </div>
+</div>
+
+<!-- ════════════════════════════
+     VIEWER SCREEN
+════════════════════════════ -->
+<div id="screen-viewer">
+  <div class="viewer-topbar">
+    <button class="viewer-back-btn" onclick="confirmBack()">
+      <i class="ti ti-arrow-left"></i> 목록으로
+    </button>
+    <span class="viewer-title" id="viewer-title">검사 진행 중</span>
+    <button class="viewer-done-btn" onclick="markDoneAndBack()" id="done-btn">
+      <i class="ti ti-check"></i> 완료
+    </button>
+  </div>
+  <iframe id="survey-frame" src="about:blank" title="심리검사"></iframe>
+</div>
+
+<!-- ════════════════════════════
+     SUMMARY SCREEN
+════════════════════════════ -->
+<div id="screen-summary">
+  <div class="sum-topbar">
+    <button class="sum-back-btn" onclick="showScreen('hub'); renderCards();">
+      <i class="ti ti-arrow-left"></i> 목록
+    </button>
+    <span class="sum-topbar-title">통합 결과 요약</span>
+    <button class="sum-print-btn" onclick="window.print()">
+      <i class="ti ti-printer"></i> 인쇄
+    </button>
+  </div>
+
+  <div class="sum-header">
+    <div class="sum-header-icon"><i class="ti ti-chart-bar"></i></div>
+    <div>
+      <h2>정신건강의학과 사전 평가 — 통합 결과</h2>
+      <p id="sum-meta-text">검사 완료 후 결과가 여기에 표시됩니다 · 작성일: <span id="sum-date"></span></p>
+    </div>
+  </div>
+
+  <div class="sum-crisis-bar" id="sum-crisis">
+    <i class="ti ti-alert-triangle"></i>
+    <div><strong>⚠ 자살 사고 주의</strong><br>
+    C-SSRS 2단계 이상이 확인되었습니다. 즉각적인 임상 평가가 필요합니다.<br>
+    정신건강 위기상담 <strong>1577-0199</strong> &nbsp;|&nbsp; 자살예방상담전화 <strong>1393</strong> (24시간)
+    </div>
+  </div>
+
+  <div class="sum-alert-bar" id="sum-alert">
+    <i class="ti ti-alert-circle"></i>
+    <div id="sum-alert-text"></div>
+  </div>
+
+  <div id="sum-body"></div>
+
+  <div class="sum-disclaimer">
+    본 결과는 <strong>선별 목적의 참고 자료</strong>이며, 진단을 의미하지 않습니다.
+    정확한 평가와 진단은 담당 정신건강의학과 전문의의 면담을 통해 이루어집니다.
+    각 검사의 세부 결과는 개별 검사 결과 페이지에서 확인하세요.
+  </div>
+</div>
+
+<!-- Back Confirm Modal -->
+<div class="modal-overlay" id="back-modal">
+  <div class="modal-box">
+    <div class="modal-icon"><i class="ti ti-alert-triangle"></i></div>
+    <h3>검사 중단</h3>
+    <p>검사가 완료되지 않았습니다.<br>목록으로 돌아가시겠어요?<br>입력한 내용은 유지됩니다.</p>
+    <div class="modal-btns">
+      <button class="modal-btn-cancel" onclick="closeBackModal()">계속하기</button>
+      <button class="modal-btn-confirm" onclick="forceBack()">돌아가기</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ════════════════════════════
+// DATA
+// ════════════════════════════
+const SURVEYS = [
+  {
+    id: 'survey1',
+    file: 'survey1.html',
+    title: '기분·불안·수면 평가',
+    eyebrow: 'Survey 1',
+    desc: '우울(CES-D) · 불안(BAI) · 기분고양(HCL-32) · 수면(PSQI) · 자살사고(C-SSRS)',
+    icon: 'ti-mood-sad',
+    theme: 'theme-blue',
+    time: '20–30분'
+  },
+  {
+    id: 'survey2',
+    file: 'survey2.html',
+    title: '음주·신체·PMS 평가',
+    eyebrow: 'Survey 2',
+    desc: '음주(AUDIT) · 신체증상(PHQ-15) · 월경전증상(PMSS)',
+    icon: 'ti-heart-rate-monitor',
+    theme: 'theme-green',
+    time: '10–15분'
+  },
+  {
+    id: 'survey3',
+    file: 'survey3.html',
+    title: '강박·공황·식이 평가',
+    eyebrow: 'Survey 3',
+    desc: '강박(OCI-R-K) · 공황(PDSS-SR) · 식이(SCOFF)',
+    icon: 'ti-brain',
+    theme: 'theme-amber',
+    time: '10–15분'
+  },
+  {
+    id: 'survey4',
+    file: 'survey4.html',
+    title: '주의집중·대인관계 평가',
+    eyebrow: 'Survey 4',
+    desc: '주의집중력(ASRS) · 대인관계 민감성(IPS)',
+    icon: 'ti-focus-2',
+    theme: 'theme-purple',
+    time: '10–15분'
+  },
+  {
+    id: 'survey5',
+    file: 'survey5.html',
+    title: '기질·성격·회복탄력성',
+    eyebrow: 'Survey 5',
+    desc: '기질(TEMPS-A) · 성격병리(PID-5) · 회복탄력성(CD-RISC)',
+    icon: 'ti-chess-knight',
+    theme: 'theme-green',
+    time: '15–20분'
+  },
+  {
+    id: 'survey8',
+    file: 'survey8.html',
+    title: '아동기 외상·ADHD 성향',
+    eyebrow: 'Survey 6',
+    desc: '아동기 외상 경험(CTQ-SF 28문항) · 아동기 ADHD 성향(WURS-25)',
+    icon: 'ti-history',
+    theme: 'theme-amber',
+    time: '10–15분'
+  },
+  {
+    id: 'survey7',
+    file: 'survey7.html',
+    title: '간이 성격 검사 (BFI-44)',
+    eyebrow: 'Survey 7',
+    desc: '빅파이브 성격 검사 · 외향성·친화성·성실성·신경증·개방성 (44문항)',
+    icon: 'ti-user-pentagon',
+    theme: 'theme-purple',
+    time: '5–8분'
+  },
+  {
+    id: 'survey6',
+    file: 'survey6.html',
+    title: '방어기제 평가 (DSQ-60)',
+    eyebrow: 'Survey 8',
+    desc: '방어기제 유형 및 성숙도 평가 · 60문항 9점 척도',
+    icon: 'ti-shield-half',
+    theme: 'theme-red',
+    time: '15–20분'
+  }
+];
+
+// Survey section labels for summary grouping
+const SURVEY_GROUPS = [
+  { label: '기분 · 불안 · 수면 · 자살 사고', ids: ['survey1'] },
+  { label: '음주 · 신체 · 월경전 증상', ids: ['survey2'] },
+  { label: '강박 · 공황 · 식이', ids: ['survey3'] },
+  { label: '주의집중력 · 대인관계', ids: ['survey4'] },
+  { label: '기질 · 성격 · 회복탄력성', ids: ['survey5'] },
+  { label: '아동기 외상 · ADHD 성향', ids: ['survey8'] },
+  { label: '간이 성격 검사 (BFI-44)', ids: ['survey7'] },
+  { label: '방어기제', ids: ['survey6'] },
+];
+
+// Completion state
+const DONE_KEY = 'psych_done_v1';
+let doneSet = new Set(JSON.parse(localStorage.getItem(DONE_KEY) || '[]'));
+let currentSurveyId = null;
+
+// Score storage: { surveyId: { scores: [...] } }
+let scoreStore = {};
+let patientProfile = {};
+
+function saveDone() {
+  localStorage.setItem(DONE_KEY, JSON.stringify([...doneSet]));
+}
+
+function loadScoreCache() {
+  const ids = ['survey1','survey2','survey3','survey4','survey5','survey6','survey7','survey8'];
+  ids.forEach(id => {
+    try {
+      const raw = localStorage.getItem('hub_scores_' + id);
+      if (raw) scoreStore[id] = JSON.parse(raw).scores;
+    } catch(e) {}
+  });
+  // Load profile
+  try {
+    const p = localStorage.getItem('hub_profile');
+    if (p) patientProfile = JSON.parse(p);
+  } catch(e) {}
+}
+
+// ════════════════════════════
+// SCREENS
+// ════════════════════════════
+function showScreen(id) {
+  document.querySelectorAll('#screen-intro, #screen-hub, #screen-viewer, #screen-summary')
+    .forEach(el => el.classList.remove('active'));
+  document.getElementById('screen-' + id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function goHub() {
+  loadScoreCache();
+  showScreen('hub');
+  renderCards();
+}
+
+// ════════════════════════════
+// CARD RENDERING
+// ════════════════════════════
+function renderCards() {
+  const surveyWrap = document.getElementById('survey-cards');
+  surveyWrap.innerHTML = '';
+
+  SURVEYS.forEach(s => {
+    const isDone = doneSet.has(s.id);
+    const card = document.createElement('button');
+    card.className = 'survey-card' + (isDone ? ' done' : '');
+    card.setAttribute('aria-label', s.title);
+
+    card.innerHTML = `
+      ${isDone ? '<div class="card-done-bar"></div>' : ''}
+      <div class="survey-card-inner">
+        <div class="card-icon-wrap ${s.theme}">
+          <i class="ti ${s.icon}"></i>
+        </div>
+        <div class="card-body">
+          <div class="card-eyebrow ${s.theme}">${s.eyebrow}</div>
+          <div class="card-title">${s.title}</div>
+          <div class="card-desc">${s.desc}</div>
+        </div>
+        <div class="card-status">
+          <div class="status-badge ${isDone ? 'status-done' : 'status-pending'}">
+            ${isDone ? '✓ 완료' : s.time}
+          </div>
+        </div>
+      </div>
+    `;
+
+    card.addEventListener('click', () => {
+      if (isDone) {
+        showToast('이미 완료한 검사입니다. 길게 눌러서 다시 시작할 수 있습니다.');
+        return;
+      }
+      openSurvey(s);
+    });
+
+    let pressTimer;
+    card.addEventListener('mousedown', () => {
+      if (!isDone) return;
+      pressTimer = setTimeout(() => {
+        if (confirm(`"${s.title}" 검사를 다시 시작하시겠어요?\n완료 상태가 해제됩니다.`)) {
+          doneSet.delete(s.id);
+          saveDone();
+          renderCards();
+          updateProgress();
+          openSurvey(s);
+        }
+      }, 600);
+    });
+    card.addEventListener('mouseup', () => clearTimeout(pressTimer));
+    card.addEventListener('mouseleave', () => clearTimeout(pressTimer));
+
+    surveyWrap.appendChild(card);
+  });
+
+  updateProgress();
+}
+
+function updateProgress() {
+  const count = doneSet.size;
+  document.getElementById('done-count').textContent = count;
+  document.getElementById('progress-fill').style.width = (count / 8 * 100) + '%';
+
+  const subText = document.getElementById('hub-sub-text');
+  if (count === 0) subText.textContent = '검사를 선택하여 진행하세요';
+  else if (count === 8) subText.textContent = '모든 검사가 완료되었습니다 🎉';
+  else subText.textContent = `${8 - count}개 검사가 남아있습니다`;
+
+  // Enable/disable summary button
+  const btn = document.getElementById('summary-btn');
+  if (count > 0) {
+    btn.style.opacity = '1';
+    btn.style.pointerEvents = 'auto';
+  } else {
+    btn.style.opacity = '.4';
+    btn.style.pointerEvents = 'none';
+  }
+}
+
+// ════════════════════════════
+// VIEWER
+// ════════════════════════════
+function openSurvey(s) {
+  currentSurveyId = s.id;
+  document.getElementById('viewer-title').textContent = s.title;
+  document.getElementById('survey-frame').src = s.file;
+  showScreen('viewer');
+}
+
+function confirmBack() {
+  document.getElementById('back-modal').classList.add('show');
+}
+
+function closeBackModal() {
+  document.getElementById('back-modal').classList.remove('show');
+}
+
+function forceBack() {
+  closeBackModal();
+  backToHub();
+}
+
+function backToHub() {
+  document.getElementById('survey-frame').src = 'about:blank';
+  currentSurveyId = null;
+  showScreen('hub');
+  renderCards();
+}
+
+function markDoneAndBack() {
+  if (!currentSurveyId) return;
+  doneSet.add(currentSurveyId);
+  saveDone();
+
+  const s = SURVEYS.find(x => x.id === currentSurveyId);
+  showToast(`"${s ? s.title : '검사'}" 완료로 표시했습니다`);
+
+  document.getElementById('survey-frame').src = 'about:blank';
+  currentSurveyId = null;
+  showScreen('hub');
+  renderCards();
+}
+
+// ════════════════════════════
+// SUMMARY SCREEN
+// ════════════════════════════
+function goSummary() {
+  loadScoreCache();
+  renderSummary();
+  showScreen('summary');
+}
+
+function levelBadgeClass(level) {
+  const map = {
+    severe:'badge-severe', mod:'badge-mod', mild:'badge-mild',
+    warn:'badge-warn', normal:'badge-normal', info:'badge-info',
+    pos:'badge-pos', neg:'badge-neg'
+  };
+  return map[level] || 'badge-normal';
+}
+function levelFillClass(level) {
+  const map = {
+    severe:'fill-severe', mod:'fill-mod', mild:'fill-mild',
+    warn:'fill-warn', normal:'fill-normal', info:'fill-info',
+    pos:'fill-pos', neg:'fill-neg'
+  };
+  return map[level] || 'fill-normal';
+}
+
+function renderSummary() {
+  document.getElementById('sum-date').textContent = new Date().toLocaleDateString('ko-KR');
+
+  const body = document.getElementById('sum-body');
+  body.innerHTML = '';
+
+  const hasDone = doneSet.size > 0;
+  if (!hasDone) {
+    body.innerHTML = `
+      <div class="sum-nodata">
+        <i class="ti ti-clipboard-off"></i>
+        <p>아직 완료된 검사가 없습니다.<br>검사를 진행한 후 결과를 확인하세요.</p>
+      </div>`;
+    return;
+  }
+
+  // ── Patient Profile Card ──
+  const pf = patientProfile;
+  const hasProfile = pf && (pf.uid || pf.gender || pf.birth);
+  const ageStr = pf.birth ? `${pf.age}세 (${pf.birth}년생)` : '—';
+  const genderStr = pf.gender || '—';
+
+  const profileCard = document.createElement('div');
+  profileCard.className = 'sum-profile-card';
+  profileCard.innerHTML = `
+    <div class="sum-profile-head">
+      <i class="ti ti-user-circle"></i>
+      <div>
+        <h3>환자 기본 정보</h3>
+        <p>ID: ${pf.uid || '미입력'} &nbsp;·&nbsp; 작성일: ${new Date().toLocaleDateString('ko-KR')}</p>
+      </div>
+    </div>
+    <div class="sum-profile-body">
+      <div class="sum-pf-item">
+        <div class="sum-pf-label">성별</div>
+        <div class="sum-pf-value ${!pf.gender?'empty':''}">${genderStr}</div>
+      </div>
+      <div class="sum-pf-item">
+        <div class="sum-pf-label">나이 / 출생연도</div>
+        <div class="sum-pf-value ${!pf.birth?'empty':''}">${ageStr}</div>
+      </div>
+      <div class="sum-pf-item">
+        <div class="sum-pf-label">출생지 / 거주지</div>
+        <div class="sum-pf-value ${!pf.location?'empty':''}">${pf.location||'—'}</div>
+      </div>
+      <div class="sum-pf-item">
+        <div class="sum-pf-label">최종 학력</div>
+        <div class="sum-pf-value ${!pf.edu?'empty':''}">${pf.edu||'—'}</div>
+      </div>
+      <div class="sum-pf-item">
+        <div class="sum-pf-label">결혼 여부</div>
+        <div class="sum-pf-value ${!pf.marry?'empty':''}">${pf.marry||'—'}</div>
+      </div>
+      <div class="sum-pf-item">
+        <div class="sum-pf-label">종교</div>
+        <div class="sum-pf-value ${!pf.rel?'empty':''}">${pf.rel||'—'}</div>
+      </div>
+      <div class="sum-pf-item">
+        <div class="sum-pf-label">직업</div>
+        <div class="sum-pf-value ${!pf.job?'empty':''}">${pf.job||'—'}${pf.jobDur?' ('+pf.jobDur+')':''}</div>
+      </div>
+      <div class="sum-pf-item">
+        <div class="sum-pf-label">음주 / 흡연</div>
+        <div class="sum-pf-value ${!pf.alc?'empty':''}">${pf.alc||'—'} / ${pf.smk||'—'}</div>
+      </div>
+      <div class="sum-pf-item">
+        <div class="sum-pf-label">정신건강의학과 치료력</div>
+        <div class="sum-pf-value ${!pf.psyHx?'empty':''}">${pf.psyHx||'—'}</div>
+      </div>
+    </div>
+    ${pf.med ? `<div class="sum-profile-footer"><strong>현재 약물·질병·수술력:</strong> ${pf.med}</div>` : ''}
+  `;
+  body.appendChild(profileCard);
+
+  if (!hasProfile) {
+    const notice = document.createElement('div');
+    notice.style.cssText = 'width:100%;max-width:760px;background:var(--amber-l);border:1px solid #F0C07A;border-radius:var(--r);padding:12px 16px;font-size:12.5px;color:#78350F;margin-bottom:16px;';
+    notice.innerHTML = '<i class="ti ti-info-circle" style="margin-right:6px"></i>Survey 1을 완료해야 기본 정보가 채워집니다.';
+    body.appendChild(notice);
+  }
+
+  // Crisis check (C-SSRS lv >= 2)
+  const s1scores = scoreStore['survey1'] || [];
+  const cssrs = s1scores.find(s => s.id === 'cssrs');
+  const crisisBar = document.getElementById('sum-crisis');
+  crisisBar.classList.toggle('show', !!(cssrs && cssrs.score >= 2));
+
+  // Alert flags
+  const alertFlags = [];
+  const allScores = Object.values(scoreStore).flat();
+  allScores.forEach(s => {
+    if (s.level === 'severe') alertFlags.push(`${s.name}: ${s.badge}`);
+    if (s.id === 'cssrs' && s.score >= 2) alertFlags.push(`자살사고 ${s.score}단계`);
+    if (s.id === 'asrs' && s.badge === '선별 양성') alertFlags.push(`주의집중 선별 양성`);
+    if (s.id === 'scoff' && s.score >= 2) alertFlags.push(`식이 (SCOFF) 양성`);
+  });
+  const alertBar = document.getElementById('sum-alert');
+  const alertText = document.getElementById('sum-alert-text');
+  if (alertFlags.length > 0) {
+    alertBar.classList.add('show');
+    alertText.innerHTML = '<strong>임상적 주의 항목</strong><br>' + alertFlags.join(' &nbsp;·&nbsp; ');
+  } else {
+    alertBar.classList.remove('show');
+  }
+
+  // Render each group
+  SURVEY_GROUPS.forEach(group => {
+    const groupDone = group.ids.some(id => doneSet.has(id));
+    if (!groupDone) return; // skip not-yet-done groups entirely
+
+    // Section label
+    const label = document.createElement('div');
+    label.className = 'sum-sec-label';
+    label.textContent = group.label;
+    body.appendChild(label);
+
+    const grid = document.createElement('div');
+    grid.className = 'sum-grid';
+
+    let hasAnyScore = false;
+    group.ids.forEach(surveyId => {
+      if (!doneSet.has(surveyId)) return;
+      const scores = scoreStore[surveyId];
+      if (!scores || scores.length === 0) {
+        // Completed but no score data yet (user hasn't seen result page)
+        const card = document.createElement('div');
+        card.className = 'sum-pending-card';
+        const s = SURVEYS.find(x => x.id === surveyId);
+        card.innerHTML = `<i class="ti ti-clock"></i>결과 미수집 — ${s ? s.title : surveyId} 검사를 열어 결과 페이지를 확인하면 여기에 표시됩니다.`;
+        grid.appendChild(card);
+        hasAnyScore = true;
+        return;
+      }
+      scores.forEach(sc => {
+        const pct = sc.max > 0 ? Math.min(100, Math.round(sc.score / sc.max * 100)) : 0;
+        const card = document.createElement('div');
+        card.className = `sum-score-card level-${sc.level}`;
+        card.innerHTML = `
+          <div class="ssc-name">${sc.name}</div>
+          <div class="ssc-row">
+            <span class="ssc-score">${typeof sc.score === 'number' && !Number.isInteger(sc.score) ? sc.score.toFixed(1) : sc.score}</span>
+            <span class="ssc-max">/ ${sc.max}${sc.max <= 9 ? '점' : '점'}</span>
+          </div>
+          <div class="ssc-badge ${levelBadgeClass(sc.level)}">${sc.badge || '—'}</div>
+          ${sc.max > 1 ? `<div class="ssc-bar-track"><div class="ssc-bar-fill ${levelFillClass(sc.level)}" style="width:${pct}%"></div></div>` : ''}
+          ${sc.sub && sc.sub.length ? `<div class="ssc-sub">${sc.sub.map(s=>`<span class="ssc-sub-item">${s.n}: ${s.v}</span>`).join('')}</div>` : ''}
+        `;
+        grid.appendChild(card);
+        hasAnyScore = true;
+      });
+    });
+
+    if (hasAnyScore) body.appendChild(grid);
+  });
+
+  // Pending surveys
+  const pending = SURVEYS.filter(s => !doneSet.has(s.id));
+  if (pending.length > 0) {
+    const label = document.createElement('div');
+    label.className = 'sum-sec-label';
+    label.style.marginTop = '8px';
+    label.textContent = '미완료 검사';
+    body.appendChild(label);
+
+    const grid = document.createElement('div');
+    grid.className = 'sum-grid';
+    const card = document.createElement('div');
+    card.className = 'sum-pending-card';
+    card.innerHTML = `<i class="ti ti-list-check"></i>
+      미완료: ${pending.map(s => s.title).join(' · ')}`;
+    grid.appendChild(card);
+    body.appendChild(grid);
+  }
+}
+
+// ════════════════════════════
+// TOAST
+// ════════════════════════════
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// ════════════════════════════
+// postMessage listener
+// ════════════════════════════
+window.addEventListener('message', (e) => {
+  if (!e.data || typeof e.data !== 'object') return;
+
+  if (e.data.type === 'PATIENT_PROFILE') {
+    patientProfile = e.data.profile || {};
+    try { localStorage.setItem('hub_profile', JSON.stringify(patientProfile)); } catch(ex) {}
+  }
+
+  if (e.data.type === 'SURVEY_SCORES') {
+    const { surveyId, scores } = e.data;
+    if (surveyId && scores) {
+      scoreStore[surveyId] = scores;
+      // Also auto-mark done if scores arrive
+      if (!doneSet.has(surveyId)) {
+        doneSet.add(surveyId);
+        saveDone();
+        renderCards();
+      }
+      showToast('결과가 통합 대시보드에 저장되었습니다');
+    }
+  }
+
+  if (e.data.type === 'BACK_TO_HUB') {
+    loadScoreCache();
+    if (currentSurveyId && !doneSet.has(currentSurveyId)) {
+      // Only auto-mark done if scores were received
+      if (scoreStore[currentSurveyId]) {
+        doneSet.add(currentSurveyId);
+        saveDone();
+      }
+    }
+    document.getElementById('survey-frame').src = 'about:blank';
+    currentSurveyId = null;
+    showScreen('hub');
+    renderCards();
+  }
+});
+
+// ════════════════════════════
+// INIT
+// ════════════════════════════
+loadScoreCache();
+</script>
+</body>
+</html>
