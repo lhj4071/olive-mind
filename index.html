@@ -721,53 +721,103 @@
         }
         #sleep-save-btn:active { opacity: 0.82; }
 
-        /* ── 도구함 탭 – 복식호흡 ──────────────────────── */
-        #page-tools {
-            position: relative;
-            margin: -20px -16px 0;
-            min-height: calc(100dvh - 60px);
-            overflow: hidden;
+        /* ── 도구함 대시보드 ──────────────────────────── */
+        #page-tools { /* 일반 스크롤 섹션으로 변경 */ }
+
+        .tool-dash-card {
             display: flex; flex-direction: column;
+            border-radius: 22px; border-width: 1px; border-style: solid;
+            padding: 18px; cursor: pointer; text-align: left;
+            transition: transform 0.15s, opacity 0.15s;
+            background: none; min-height: 186px;
+            font-family: inherit;
         }
+        .tool-dash-card:active { transform: scale(0.95); opacity: 0.88; }
+        .tool-dash-icon {
+            width: 52px; height: 52px; border-radius: 26px;
+            border-width: 1px; border-style: solid;
+            display: flex; align-items: center; justify-content: center;
+            margin-bottom: 14px; flex-shrink: 0;
+        }
+        .tool-dash-title {
+            font-size: 15px; font-weight: 600; color: #e7e1d6;
+            margin-bottom: 5px; letter-spacing: -0.2px;
+        }
+        .tool-dash-tagline {
+            font-size: 12px; color: rgba(200,195,185,0.7);
+            line-height: 1.65; flex: 1;
+        }
+        .tool-dash-footer {
+            border-top-width: 1px; border-top-style: solid;
+            padding-top: 10px; margin-top: 12px;
+        }
+        .tools-sos-btn {
+            display: flex; align-items: center; gap: 7px;
+            background: #2A1010; border: 1px solid #4A2020;
+            padding: 14px 24px; border-radius: 100px; cursor: pointer;
+            transition: background 0.2s; font-family: inherit;
+        }
+        .tools-sos-btn:hover { background: #3A1818; }
+
+        /* ── 복식호흡 모달 ────────────────────────────── */
+        #breathing-modal {
+            position: fixed; inset: 0; z-index: 600;
+            background: #0A1A14;
+            display: none; flex-direction: column;
+        }
+        #breathing-modal.open { display: flex; }
+
         #breath-bg-video {
             position: absolute; inset: 0;
             width: 100%; height: 100%;
             object-fit: cover; z-index: 0;
         }
-        #breath-overlay {
-            position: absolute; inset: 0; z-index: 1;
-            background: linear-gradient(175deg,
-                rgba(0,18,8,0.60) 0%,
-                rgba(0,30,15,0.50) 60%,
-                rgba(0,18,8,0.65) 100%);
+        #breath-modal-grad-top {
+            position: absolute; top: 0; left: 0; right: 0; height: 32%; z-index: 1;
+            background: linear-gradient(to bottom, rgba(247,244,238,0.75), rgba(247,244,238,0));
+            pointer-events: none;
         }
-        #breath-content {
+        #breath-modal-grad-bot {
+            position: absolute; bottom: 0; left: 0; right: 0; height: 46%; z-index: 1;
+            background: linear-gradient(to top, rgba(247,244,238,1) 0%, rgba(247,244,238,0.9) 30%, rgba(247,244,238,0) 100%);
+            pointer-events: none;
+        }
+        #breath-modal-content {
             position: relative; z-index: 2;
-            flex: 1; display: flex; flex-direction: column;
+            display: flex; flex-direction: column; height: 100%;
+        }
+        #breath-modal-topbar {
+            display: flex; justify-content: flex-end;
+            padding: 56px 24px 0;
+        }
+        #breath-close-btn {
+            width: 44px; height: 44px; border-radius: 50%; border: none;
+            background: rgba(255,255,255,0.22); color: #2a2820;
+            font-size: 18px; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: background 0.15s;
+        }
+        #breath-close-btn:hover { background: rgba(255,255,255,0.35); }
+        #breath-instruction-wrap {
+            padding: 14px 32px 0; text-align: center;
+            min-height: 72px; display: flex;
             align-items: center; justify-content: center;
-            padding: 28px 20px 110px; gap: 0;
         }
-
-        /* 상단 stat 바 */
-        #breath-stats {
-            display: flex; align-items: center; justify-content: space-between;
-            width: 100%; max-width: 320px; margin-bottom: 28px;
+        #breath-instruction-text {
+            font-size: 18px; font-weight: 600;
+            color: #2C3A28; line-height: 1.65; letter-spacing: -0.3px;
+            transition: opacity 0.4s ease;
         }
-        #breath-today-badge, #breath-session-time {
-            font-size: 12px; font-weight: 600;
-            padding: 5px 13px; border-radius: 20px;
-            background: rgba(255,255,255,0.14); color: rgba(255,255,255,0.88);
-            border: 1px solid rgba(255,255,255,0.22);
+        #breath-circle-area {
+            flex: 1; display: flex;
+            align-items: center; justify-content: center;
         }
 
         /* SVG 래퍼 */
         #breath-circle-wrap {
             position: relative; width: 250px; height: 250px;
-            margin-bottom: 22px;
         }
         #breath-circle-wrap svg { display: block; }
-
-        /* 가운데 텍스트 오버레이 */
         #breath-center-text {
             position: absolute; inset: 0;
             display: flex; flex-direction: column;
@@ -775,63 +825,67 @@
             pointer-events: none; user-select: none;
         }
         #breath-countdown {
-            font-size: 58px; font-weight: 800; line-height: 1;
-            color: #fff; font-variant-numeric: tabular-nums;
-            text-shadow: 0 2px 12px rgba(0,0,0,0.3);
+            font-size: 72px; font-weight: 800; line-height: 1;
+            color: #5E6E44; font-variant-numeric: tabular-nums;
+            text-shadow: 0 2px 14px rgba(255,255,255,0.6);
         }
         #breath-phase-label {
             font-size: 14px; font-weight: 600; letter-spacing: 0.06em;
-            color: rgba(255,255,255,0.78); margin-top: 7px;
+            color: rgba(94,110,68,0.82); margin-top: 7px;
         }
 
-        /* 사이클 도트 */
-        #breath-dots {
-            display: flex; gap: 9px; margin-bottom: 24px;
+        /* 하단 컨트롤 패널 */
+        #breath-bottom-panel {
+            background: rgba(247,244,238,0.97);
+            border-radius: 28px 28px 0 0;
+            padding: 20px 32px env(safe-area-inset-bottom, 28px);
+            display: flex; flex-direction: column; align-items: center;
         }
+        #breath-stat-row {
+            display: flex; align-items: center; justify-content: space-between;
+            width: 100%; margin-bottom: 16px;
+        }
+        #breath-today-badge {
+            font-size: 12px; font-weight: 600; color: #5C7A2A;
+        }
+        #breath-session-time {
+            font-size: 12px; font-weight: 600; color: #8a8070;
+            display: none;
+        }
+        #breath-tempo-label {
+            font-size: 12px; font-weight: 500; color: #8B8680;
+            margin-bottom: 8px; text-align: center;
+        }
+        #breath-tempo-wrap {
+            display: flex;
+            background: rgba(0,0,0,0.06); border-radius: 14px;
+            padding: 3px; width: 100%; margin-bottom: 18px;
+        }
+        .breath-tempo-btn {
+            flex: 1; padding: 8px 0;
+            border-radius: 12px; border: none;
+            background: transparent; color: #9B9896;
+            font-size: 12px; font-weight: 500; text-align: center;
+            cursor: pointer; transition: background 0.18s, color 0.18s;
+            line-height: 1.35; font-family: inherit;
+        }
+        .breath-tempo-btn span { font-size: 11px; opacity: 0.75; }
+        .breath-tempo-btn.active {
+            background: #ffffff; color: #4a6220; font-weight: 600;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.12);
+        }
+        .breath-tempo-btn:disabled { opacity: 0.4; cursor: default; }
+
+        /* 사이클 도트 */
+        #breath-dots { display: flex; gap: 14px; margin-bottom: 10px; }
         .breath-dot {
-            width: 10px; height: 10px; border-radius: 50%;
-            background: rgba(255,255,255,0.25);
+            width: 12px; height: 12px; border-radius: 50%;
+            background: rgba(0,0,0,0.12);
             transition: background 0.35s, transform 0.35s;
         }
         .breath-dot.done {
-            background: rgba(200,255,180,0.85);
+            background: #5C7A2A;
             transform: scale(1.18);
-        }
-
-        /* 템포 버튼 */
-        #breath-tempo-wrap {
-            display: flex; gap: 10px; margin-bottom: 26px;
-        }
-        .breath-tempo-btn {
-            flex: 1; max-width: 90px; padding: 10px 0;
-            border-radius: 16px; border: 1.5px solid rgba(255,255,255,0.28);
-            background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.78);
-            font-size: 13px; font-weight: 600; text-align: center;
-            cursor: pointer; transition: background 0.18s, border-color 0.18s;
-            line-height: 1.35;
-        }
-        .breath-tempo-btn span { font-size: 11px; font-weight: 400; opacity: 0.75; }
-        .breath-tempo-btn.active {
-            background: rgba(140,200,100,0.28); border-color: rgba(160,230,120,0.7);
-            color: #fff;
-        }
-        .breath-tempo-btn:disabled { opacity: 0.45; cursor: default; }
-
-        /* 시작/정지 버튼 */
-        #breath-start-btn {
-            width: 200px; padding: 16px 0;
-            border-radius: 50px; border: none; cursor: pointer;
-            font-size: 16px; font-weight: 700; letter-spacing: 0.04em;
-            background: rgba(255,255,255,0.95); color: #1a3210;
-            box-shadow: 0 6px 28px rgba(0,0,0,0.28);
-            transition: opacity 0.15s, transform 0.12s;
-        }
-        #breath-start-btn:active { opacity: 0.84; transform: scale(0.96); }
-        #breath-start-btn.stop-mode {
-            background: rgba(255,255,255,0.16);
-            color: rgba(255,255,255,0.88);
-            border: 1.5px solid rgba(255,255,255,0.35);
-            box-shadow: none;
         }
 
         /* 완료 오버레이 */
@@ -853,6 +907,290 @@
             font-size: 64px;
             animation: completePop 0.55s cubic-bezier(0.34,1.56,0.64,1) both;
         }
+
+        /* ── PMR 모달 ─────────────────────────────────── */
+        #pmr-modal {
+            position: fixed; inset: 0; z-index: 600;
+            background: #f7f5ef;
+            display: none; flex-direction: column;
+        }
+        #pmr-modal.open { display: flex; }
+
+        .mindful-modal-header {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 56px 16px 14px;
+            border-bottom: 1px solid #ede8dc; flex-shrink: 0;
+        }
+        .mindful-back-btn {
+            width: 40px; height: 40px; border-radius: 50%;
+            border: none; background: #f0ede6; color: #4a4438;
+            font-size: 15px; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: background 0.15s; flex-shrink: 0;
+        }
+        .mindful-back-btn:hover { background: #e4dbc9; }
+        .mindful-header-title {
+            font-size: 16px; font-weight: 600; color: #2a2820;
+            letter-spacing: -0.1px;
+        }
+
+        #pmr-step-dots {
+            display: flex; justify-content: center;
+            gap: 10px; padding: 18px 0 0;
+        }
+        .pmr-step-dot {
+            width: 10px; height: 10px; border-radius: 50%;
+            background: #e4dbc9; transition: all 0.3s;
+        }
+        .pmr-step-dot.active {
+            width: 14px; height: 14px; border-radius: 7px;
+            background: #5C7A2A;
+        }
+        .pmr-step-dot.done { background: #4A6A44; }
+
+        #pmr-phase-pill-wrap {
+            display: flex; justify-content: center; padding: 12px 0 8px;
+        }
+        #pmr-phase-pill {
+            padding: 8px 22px; border-radius: 22px;
+            font-size: 13px; font-weight: 600; color: #fff;
+            letter-spacing: 0.4px; transition: background 0.4s;
+        }
+        #pmr-phase-pill.tense { background: #481818; }
+        #pmr-phase-pill.relax { background: #183428; }
+
+        #pmr-orb-area {
+            flex: 1; display: flex;
+            align-items: center; justify-content: center;
+            overflow: hidden; position: relative;
+        }
+        #pmr-orb-glow {
+            position: absolute; width: 340px; height: 340px;
+            border-radius: 50%; border: 1.5px solid transparent;
+            pointer-events: none;
+        }
+        #pmr-orb {
+            width: 280px; height: 280px; border-radius: 50%;
+            background: #4A6A44;
+            box-shadow: 0 0 48px rgba(74,106,68,0.4);
+            transition: transform 0.5s ease, background-color 0.5s ease;
+        }
+        #pmr-orb-text {
+            position: absolute;
+            display: flex; flex-direction: column;
+            align-items: center; padding: 0 32px; text-align: center;
+            pointer-events: none;
+        }
+        #pmr-guide-msg {
+            font-size: 15px; color: #2a2820; line-height: 1.7;
+            margin-bottom: 20px; font-weight: 400;
+        }
+        #pmr-timer-num {
+            font-size: 72px; font-weight: 700; color: #2a2820; line-height: 1;
+        }
+        #pmr-timer-unit {
+            font-size: 18px; color: rgba(42,40,32,0.45); margin-top: 4px;
+        }
+        #pmr-footer {
+            padding: 20px 28px 32px;
+            border-top: 1px solid #ede8dc; text-align: center;
+            flex-shrink: 0;
+        }
+        #pmr-footer-step { font-size: 13px; color: #5C7A2A; font-weight: 500; margin-bottom: 5px; }
+        #pmr-footer-hint { font-size: 13px; color: #8a8070; line-height: 1.5; }
+
+        /* PMR 진행 화면 */
+        #pmr-running {
+            display: flex; flex-direction: column; flex: 1; overflow: hidden;
+        }
+
+        /* PMR 완료 화면 */
+        #pmr-complete {
+            display: none; flex-direction: column;
+            align-items: center; justify-content: center;
+            flex: 1; padding: 36px;
+        }
+        #pmr-complete.show { display: flex; }
+        #pmr-complete-emoji { font-size: 60px; margin-bottom: 24px; }
+        #pmr-complete-title {
+            font-size: 22px; font-weight: 600; color: #2a2820;
+            text-align: center; margin-bottom: 14px; letter-spacing: -0.2px; line-height: 1.4;
+        }
+        #pmr-complete-desc {
+            font-size: 15px; color: #8a8070;
+            text-align: center; line-height: 1.65; margin-bottom: 40px;
+        }
+        .mindful-done-btn {
+            background: #486E38; border-radius: 100px;
+            padding: 16px 38px; border: none; cursor: pointer;
+            font-size: 15px; font-weight: 600; color: #fff;
+            transition: background 0.15s; font-family: inherit;
+        }
+        .mindful-done-btn:hover { background: #3a5a2c; }
+
+        /* ── 그라운딩 모달 ────────────────────────────── */
+        #grounding-modal {
+            position: fixed; inset: 0; z-index: 600;
+            background: #f7f5ef;
+            display: none; flex-direction: column;
+        }
+        #grounding-modal.open { display: flex; }
+
+        #grounding-step-pills {
+            display: flex; justify-content: center;
+            gap: 10px; padding: 16px 20px 0; flex-shrink: 0;
+        }
+        .gr-step-pill {
+            width: 42px; height: 42px; border-radius: 21px;
+            border: 1.5px solid #e4dbc9; background: #fff;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.3s;
+        }
+        .gr-step-pill.active { background: #304E28; border-color: #5C7A2A; }
+        .gr-step-pill.done { background: #243820; border-color: #4A6A44; }
+        .gr-step-pill span { font-size: 17px; font-weight: 600; color: #4A6A44; }
+        .gr-step-pill.active span { color: #fff; font-size: 20px; }
+        .gr-step-pill.done span { color: #7DC46A; }
+
+        #grounding-body {
+            flex: 1; overflow-y: auto; padding: 24px 26px 40px;
+            display: flex; flex-direction: column; align-items: center;
+            -webkit-overflow-scrolling: touch;
+        }
+        #grounding-icon-wrap {
+            width: 104px; height: 104px; border-radius: 52px;
+            background: #233020; border: 1.5px solid #304E28;
+            display: flex; align-items: center; justify-content: center;
+            margin-bottom: 24px; font-size: 48px; flex-shrink: 0;
+        }
+        #grounding-step-title {
+            font-size: 20px; font-weight: 600; color: #2a2820;
+            text-align: center; margin-bottom: 12px;
+            line-height: 1.45; letter-spacing: -0.2px;
+        }
+        #grounding-step-desc {
+            font-size: 15px; color: #8a8070;
+            text-align: center; line-height: 1.65;
+            margin-bottom: 34px; padding: 0 8px;
+        }
+        #grounding-circles-row {
+            display: flex; justify-content: center;
+            gap: 12px; flex-wrap: wrap; margin-bottom: 22px;
+        }
+        .gr-circle-btn {
+            width: 52px; height: 52px; border-radius: 50%;
+            border: 2px solid #3A5A34; background: #f7f5ef;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; transition: border-color 0.2s, transform 0.15s;
+            font-size: 16px; font-weight: 600; color: #4A6A44;
+            position: relative; overflow: hidden; flex-shrink: 0;
+        }
+        .gr-circle-btn.checked {
+            border-color: #5C7A2A;
+            background: #486E38; color: #fff;
+        }
+        .gr-circle-btn.checked::after {
+            content: '✓'; position: absolute; inset: 0;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 22px; font-weight: 700;
+        }
+        .gr-circle-btn.checked span { display: none; }
+        .gr-circle-btn:active:not(.checked) { transform: scale(0.9); }
+        #grounding-progress-hint {
+            font-size: 14px; color: #5C7A2A; font-weight: 500;
+            text-align: center; margin-bottom: 12px; line-height: 1.5;
+        }
+        #grounding-step-counter {
+            font-size: 12px; color: #4A6A44; font-weight: 500; letter-spacing: 0.4px;
+        }
+
+        /* 그라운딩 완료 */
+        #grounding-complete {
+            display: none; flex-direction: column;
+            align-items: center; justify-content: center;
+            flex: 1; padding: 36px;
+        }
+        #grounding-complete.show { display: flex; }
+
+        /* ── STOP 모달 ────────────────────────────────── */
+        #stop-modal {
+            position: fixed; inset: 0; z-index: 600;
+            display: none; flex-direction: column;
+            transition: background-color 0.4s ease;
+        }
+        #stop-modal.open { display: flex; }
+
+        #stop-header {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 56px 16px 16px; flex-shrink: 0;
+        }
+        #stop-dots-row {
+            display: flex; justify-content: center;
+            gap: 9px; padding: 4px 0 8px;
+        }
+        .stop-dot {
+            width: 8px; height: 8px; border-radius: 4px;
+            background: rgba(255,255,255,0.25);
+            transition: all 0.3s;
+        }
+        .stop-dot.active { width: 20px; }
+
+        #stop-card-wrap {
+            flex: 1; padding: 0 22px;
+            display: flex; align-items: center; justify-content: center;
+        }
+        #stop-card {
+            border-radius: 26px; padding: 30px;
+            border-top-width: 2.5px; border-top-style: solid;
+            width: 100%;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+        }
+        #stop-card.fade-out { opacity: 0; transform: scale(0.95); }
+        #stop-letter-badge {
+            width: 70px; height: 70px; border-radius: 35px;
+            background: rgba(0,0,0,0.25);
+            display: flex; align-items: center; justify-content: center;
+            margin-bottom: 20px;
+        }
+        #stop-letter {
+            font-size: 36px; font-weight: 700; line-height: 1;
+        }
+        #stop-title {
+            font-size: 20px; font-weight: 600;
+            margin-bottom: 4px; letter-spacing: -0.2px;
+        }
+        #stop-subtitle {
+            font-size: 14px; color: rgba(255,255,255,0.6);
+            margin-bottom: 20px;
+        }
+        #stop-desc {
+            font-size: 16px; color: rgba(255,255,255,0.92);
+            line-height: 1.7; white-space: pre-line;
+        }
+        #stop-counter {
+            font-size: 12px; font-weight: 500; letter-spacing: 0.3px;
+            margin-top: 24px; text-align: right;
+        }
+        #stop-nav-row {
+            display: flex; align-items: center; justify-content: flex-end;
+            gap: 10px; padding: 16px 22px 48px; flex-shrink: 0;
+        }
+        .stop-nav-secondary {
+            display: flex; align-items: center; gap: 4px;
+            padding: 12px 16px; border-radius: 22px;
+            border: 1px solid rgba(255,255,255,0.22); background: none;
+            font-size: 14px; color: rgba(255,255,255,0.6);
+            cursor: pointer; font-family: inherit; transition: background 0.15s;
+        }
+        .stop-nav-secondary:hover { background: rgba(255,255,255,0.1); }
+        .stop-nav-primary {
+            display: flex; align-items: center; gap: 6px;
+            padding: 13px 24px; border-radius: 22px;
+            border-width: 1px; border-style: solid;
+            font-size: 15px; font-weight: 600;
+            cursor: pointer; font-family: inherit; transition: opacity 0.15s;
+        }
+        .stop-nav-primary:active { opacity: 0.8; }
 
         /* ── 자료실 탭 – 질환 교육 브라우저 ─────────── */
         .lib-filter-chip {
@@ -1041,6 +1379,24 @@
             margin-top: 9px; padding-top: 9px;
             border-top: 1px solid #f5f2ec; word-break: break-all;
         }
+        /* 감정 태그 선택 버튼 (기분 기록 카드) */
+        .mood-tag-btn {
+            font-size: 12px; padding: 4px 11px; border-radius: 20px;
+            border: 1.5px solid #e4dbc9; background: #faf8f3;
+            color: #6b6558; cursor: pointer; transition: all 0.15s;
+        }
+        .mood-tag-btn.selected {
+            background: #5C7A2A; border-color: #5C7A2A; color: #fff; font-weight: 600;
+        }
+        #mood-memo-input {
+            width: 100%; padding: 10px 12px; border-radius: 12px;
+            border: 1.5px solid #e4dbc9; background: #faf8f3;
+            font-size: 13px; color: #2a2820; resize: none;
+            font-family: inherit; line-height: 1.6; outline: none;
+            box-sizing: border-box; transition: border-color 0.15s;
+        }
+        #mood-memo-input:focus { border-color: #5C7A2A; }
+        #mood-memo-input::placeholder { color: #b0a898; }
         #mood-load-more {
             width: 100%; padding: 13px; border-radius: 14px; margin-top: 4px;
             border: 1.5px solid #e4dbc9; background: #faf8f3;
@@ -1433,6 +1789,25 @@
                         </div>
                         <i class="fas fa-chevron-right flex-shrink-0" style="color: #C4956A; font-size: 12px;"></i>
                     </div>
+                </div>
+
+                <!-- 감정 태그 선택 -->
+                <div class="mt-4">
+                    <p class="text-xs font-semibold mb-2" style="color:#5C7A2A;">
+                        오늘의 감정 태그
+                        <span style="color:#b0a898;font-weight:400;">(복수 선택)</span>
+                    </p>
+                    <div id="mood-tag-buttons" class="flex flex-wrap gap-1.5"></div>
+                </div>
+
+                <!-- 한마디 메모 -->
+                <div class="mt-3 mb-1">
+                    <p class="text-xs font-semibold mb-1.5" style="color:#5C7A2A;">
+                        한마디 메모
+                        <span style="color:#b0a898;font-weight:400;">(선택)</span>
+                    </p>
+                    <textarea id="mood-memo-input" rows="2"
+                              placeholder="오늘 마음이 어떠셨나요?"></textarea>
                 </div>
 
                 <button class="btn-primary mt-4" id="btn-save-mood" onclick="saveMoodLog()">
@@ -2018,101 +2393,88 @@
         <!-- ━━━━━━━━━━━━━━━━━━━━━━━━
              도구함 탭
              ━━━━━━━━━━━━━━━━━━━━━━━━ -->
+        <!-- ━━━━━━━━━━━━━━━━━━━━━━━━
+             도구함 탭 (대시보드)
+             ━━━━━━━━━━━━━━━━━━━━━━━━ -->
         <section id="page-tools" class="page-section hidden">
 
-            <!-- 배경 비디오 -->
-            <video id="breath-bg-video"
-                   autoplay muted loop playsinline
-                   preload="auto">
-                <source src="assets/videos/breathing_loop.mp4" type="video/mp4">
-            </video>
-
-            <!-- 어두운 오버레이 -->
-            <div id="breath-overlay"></div>
-
-            <!-- 메인 콘텐츠 -->
-            <div id="breath-content">
-
-                <!-- 상단: 오늘 세트수 + 세션 시간 -->
-                <div id="breath-stats">
-                    <span id="breath-today-badge">오늘 0세트 완료</span>
-                    <span id="breath-session-time" style="display:none;">00:00</span>
-                </div>
-
-                <!-- SVG 호흡 원 -->
-                <div id="breath-circle-wrap">
-                    <svg viewBox="0 0 250 250" width="250" height="250"
-                         style="overflow: visible;">
-                        <!-- 바깥 가이드 링 -->
-                        <circle cx="125" cy="125" r="112"
-                                fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="1.5"/>
-                        <!-- 위상 진행 호 (스트로크로 진행률 표시) -->
-                        <circle id="breath-arc" cx="125" cy="125" r="112"
-                                fill="none" stroke="rgba(160,230,140,0.7)" stroke-width="3"
-                                stroke-linecap="round"
-                                stroke-dasharray="703.7" stroke-dashoffset="703.7"
-                                transform="rotate(-90 125 125)"/>
-                        <!-- 크기가 변하는 내부 원 그룹 -->
-                        <g id="breath-circle-group"
-                           style="transform-origin: 125px 125px; transform: scale(0.62);">
-                            <circle cx="125" cy="125" r="84"
-                                    fill="rgba(255,255,255,0.14)"/>
-                            <circle cx="125" cy="125" r="84"
-                                    fill="none" stroke="rgba(255,255,255,0.40)" stroke-width="2"/>
-                            <circle cx="125" cy="125" r="56"
-                                    fill="rgba(255,255,255,0.07)"/>
-                        </g>
-                    </svg>
-                    <!-- 원 중앙 오버레이 텍스트 -->
-                    <div id="breath-center-text">
-                        <span id="breath-countdown">4</span>
-                        <span id="breath-phase-label">들이마세요</span>
-                    </div>
-                </div>
-
-                <!-- 사이클 도트 (6개) -->
-                <div id="breath-dots">
-                    <div class="breath-dot" id="bdot-0"></div>
-                    <div class="breath-dot" id="bdot-1"></div>
-                    <div class="breath-dot" id="bdot-2"></div>
-                    <div class="breath-dot" id="bdot-3"></div>
-                    <div class="breath-dot" id="bdot-4"></div>
-                    <div class="breath-dot" id="bdot-5"></div>
-                </div>
-
-                <!-- 템포 선택 -->
-                <div id="breath-tempo-wrap">
-                    <button class="breath-tempo-btn" id="btempo-slow"
-                            onclick="changeBreathTempo('slow')">
-                        느림<br><span>16초</span>
-                    </button>
-                    <button class="breath-tempo-btn active" id="btempo-normal"
-                            onclick="changeBreathTempo('normal')">
-                        보통<br><span>10초</span>
-                    </button>
-                    <button class="breath-tempo-btn" id="btempo-fast"
-                            onclick="changeBreathTempo('fast')">
-                        빠름<br><span>8초</span>
-                    </button>
-                </div>
-
-                <!-- 시작 / 정지 -->
-                <button id="breath-start-btn" onclick="toggleBreath()">시작하기</button>
-
-            </div><!-- /breath-content -->
-
-            <!-- 세트 완료 오버레이 -->
-            <div id="breath-complete-overlay">
-                <div class="pop-emoji">🌿</div>
-                <p style="font-size:22px; font-weight:800; color:#fff;">세트 완료!</p>
-                <p style="font-size:14px; color:rgba(255,255,255,0.78); text-align:center; line-height:1.5;">
-                    6사이클을 마쳤어요.<br>올리브 나무가 조금 더 자랐어요.
+            <!-- 페이지 헤더 -->
+            <div style="margin-bottom:24px;padding:2px 2px 0;">
+                <p style="font-size:21px;font-weight:700;color:#2a2820;letter-spacing:-0.3px;margin-bottom:6px;">
+                    나를 위한 안정화 도구
                 </p>
-                <button onclick="_dismissBreathComplete()"
-                        style="margin-top:14px; padding:13px 36px; border-radius:50px; border:none;
-                               background:rgba(255,255,255,0.9); color:#1a3210;
-                               font-size:15px; font-weight:700; cursor:pointer;">
-                    확인
+                <p style="font-size:13px;color:#8a8070;line-height:1.65;">
+                    불안한 순간, 지금 바로 사용할 수 있는<br>4가지 마음 안정 기법이에요.
+                </p>
+            </div>
+
+            <!-- 2×2 도구 그리드 -->
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:24px;">
+
+                <!-- 복식 호흡 -->
+                <button class="tool-dash-card" onclick="openBreathingModal()"
+                        style="background:#0C2220;border-color:#1E4840;">
+                    <div class="tool-dash-icon"
+                         style="background:rgba(82,190,168,0.14);border-color:rgba(82,190,168,0.22);">
+                        <i class="fas fa-wind" style="color:#52BEA8;font-size:22px;"></i>
+                    </div>
+                    <p class="tool-dash-title">복식 호흡</p>
+                    <p class="tool-dash-tagline">갑작스런 불안이<br>밀려올 때</p>
+                    <div class="tool-dash-footer" style="border-top-color:#1E4840;">
+                        <p style="color:#52BEA8;font-size:11px;font-weight:500;letter-spacing:0.2px;">4-6 호흡 리듬</p>
+                    </div>
+                </button>
+
+                <!-- 근육 이완 -->
+                <button class="tool-dash-card" onclick="openPmrModal()"
+                        style="background:#231A0C;border-color:#483218;">
+                    <div class="tool-dash-icon"
+                         style="background:rgba(212,149,106,0.14);border-color:rgba(212,149,106,0.22);">
+                        <i class="fas fa-person-praying" style="color:#D4956A;font-size:22px;"></i>
+                    </div>
+                    <p class="tool-dash-title">근육 이완</p>
+                    <p class="tool-dash-tagline">온몸이 뻣뻣하게<br>굳어 있을 때</p>
+                    <div class="tool-dash-footer" style="border-top-color:#483218;">
+                        <p style="color:#D4956A;font-size:11px;font-weight:500;letter-spacing:0.2px;">5부위 순차 이완</p>
+                    </div>
+                </button>
+
+                <!-- 감각 그라운딩 -->
+                <button class="tool-dash-card" onclick="openGroundingModal()"
+                        style="background:#0C2114;border-color:#1A4228;">
+                    <div class="tool-dash-icon"
+                         style="background:rgba(125,196,106,0.14);border-color:rgba(125,196,106,0.22);">
+                        <i class="fas fa-crosshairs" style="color:#7DC46A;font-size:22px;"></i>
+                    </div>
+                    <p class="tool-dash-title">감각 그라운딩</p>
+                    <p class="tool-dash-tagline">생각이 너무 앞서<br>달려갈 때</p>
+                    <div class="tool-dash-footer" style="border-top-color:#1A4228;">
+                        <p style="color:#7DC46A;font-size:11px;font-weight:500;letter-spacing:0.2px;">5·4·3·2·1 기법</p>
+                    </div>
+                </button>
+
+                <!-- STOP 기법 -->
+                <button class="tool-dash-card" onclick="openStopModal()"
+                        style="background:#140E22;border-color:#2C1E50;">
+                    <div class="tool-dash-icon"
+                         style="background:rgba(154,133,212,0.14);border-color:rgba(154,133,212,0.22);">
+                        <i class="fas fa-hand" style="color:#9A85D4;font-size:22px;"></i>
+                    </div>
+                    <p class="tool-dash-title">STOP 기법</p>
+                    <p class="tool-dash-tagline">충동적으로 반응하기<br>전에 멈추고 싶을 때</p>
+                    <div class="tool-dash-footer" style="border-top-color:#2C1E50;">
+                        <p style="color:#9A85D4;font-size:11px;font-weight:500;letter-spacing:0.2px;">Stop · Breathe · Observe</p>
+                    </div>
+                </button>
+
+            </div><!-- /grid -->
+
+            <!-- SOS 긴급 연락 -->
+            <div style="display:flex;justify-content:center;padding-bottom:16px;">
+                <button class="tools-sos-btn"
+                        onclick="alert('정신건강 위기상담: 109\n긴급 구조: 119')">
+                    <i class="fas fa-phone" style="color:#E05A5A;font-size:13px;"></i>
+                    <span style="font-size:14px;font-weight:500;color:#E05A5A;">SOS 긴급 연락</span>
                 </button>
             </div>
 
@@ -2258,6 +2620,278 @@
 
 <!-- 토스트 메시지 -->
 <div id="toast"></div>
+
+<!-- ══════════════════════════════════════════
+     복식호흡 모달 (full-screen)
+     ══════════════════════════════════════════ -->
+<div id="breathing-modal">
+
+    <!-- 배경 비디오 -->
+    <video id="breath-bg-video" muted loop playsinline preload="auto">
+        <source src="assets/videos/breathing_loop.mp4" type="video/mp4">
+    </video>
+
+    <!-- 그라디언트 (상단 · 하단) -->
+    <div id="breath-modal-grad-top"></div>
+    <div id="breath-modal-grad-bot"></div>
+
+    <!-- 컨텐츠 레이어 -->
+    <div id="breath-modal-content">
+
+        <!-- 닫기 버튼 -->
+        <div id="breath-modal-topbar">
+            <button id="breath-close-btn" onclick="closeBreathingModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <!-- 안내 문구 -->
+        <div id="breath-instruction-wrap">
+            <p id="breath-instruction-text"></p>
+        </div>
+
+        <!-- SVG 원 + 카운트다운 -->
+        <div id="breath-circle-area">
+            <div id="breath-circle-wrap">
+                <svg viewBox="0 0 250 250" width="250" height="250" style="overflow:visible;">
+                    <circle cx="125" cy="125" r="112"
+                            fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="1.5"/>
+                    <circle id="breath-arc" cx="125" cy="125" r="112"
+                            fill="none" stroke="rgba(160,230,140,0.7)" stroke-width="3"
+                            stroke-linecap="round"
+                            stroke-dasharray="703.7" stroke-dashoffset="703.7"
+                            transform="rotate(-90 125 125)"/>
+                    <g id="breath-circle-group"
+                       style="transform-origin:125px 125px; transform:scale(0.62);">
+                        <circle cx="125" cy="125" r="84" fill="rgba(255,255,255,0.14)"/>
+                        <circle cx="125" cy="125" r="84"
+                                fill="none" stroke="rgba(255,255,255,0.40)" stroke-width="2"/>
+                        <circle cx="125" cy="125" r="56" fill="rgba(255,255,255,0.07)"/>
+                    </g>
+                </svg>
+                <div id="breath-center-text">
+                    <span id="breath-countdown">4</span>
+                    <span id="breath-phase-label">들이마세요</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 하단 컨트롤 패널 -->
+        <div id="breath-bottom-panel">
+
+            <!-- 오늘 세트 · 세션 시간 -->
+            <div id="breath-stat-row">
+                <span id="breath-today-badge">오늘 0세트 완료</span>
+                <span id="breath-session-time"></span>
+            </div>
+
+            <!-- 템포 탭 -->
+            <p id="breath-tempo-label">호흡 템포 조절</p>
+            <div id="breath-tempo-wrap">
+                <button class="breath-tempo-btn" id="btempo-slow"
+                        onclick="changeBreathTempo('slow')">
+                    느리게<br><span>12초</span>
+                </button>
+                <button class="breath-tempo-btn active" id="btempo-normal"
+                        onclick="changeBreathTempo('normal')">
+                    기본<br><span>10초</span>
+                </button>
+                <button class="breath-tempo-btn" id="btempo-fast"
+                        onclick="changeBreathTempo('fast')">
+                    빠르게<br><span>8초</span>
+                </button>
+            </div>
+
+            <!-- 사이클 도트 -->
+            <div id="breath-dots">
+                <div class="breath-dot" id="bdot-0"></div>
+                <div class="breath-dot" id="bdot-1"></div>
+                <div class="breath-dot" id="bdot-2"></div>
+                <div class="breath-dot" id="bdot-3"></div>
+                <div class="breath-dot" id="bdot-4"></div>
+                <div class="breath-dot" id="bdot-5"></div>
+            </div>
+            <p style="font-size:12px;color:#9B9896;">6사이클 완료 시 자동 저장</p>
+
+        </div><!-- /breath-bottom-panel -->
+    </div><!-- /breath-modal-content -->
+
+    <!-- 세트 완료 오버레이 -->
+    <div id="breath-complete-overlay">
+        <div class="pop-emoji">🌿</div>
+        <p style="font-size:22px;font-weight:800;color:#fff;">세트 완료!</p>
+        <p style="font-size:14px;color:rgba(255,255,255,0.78);text-align:center;line-height:1.5;">
+            6사이클을 마쳤어요.<br>올리브 나무가 조금 더 자랐어요.
+        </p>
+        <button onclick="_dismissBreathComplete()"
+                style="margin-top:14px;padding:13px 36px;border-radius:50px;border:none;
+                       background:rgba(255,255,255,0.9);color:#1a3210;
+                       font-size:15px;font-weight:700;cursor:pointer;">
+            확인
+        </button>
+    </div>
+
+</div><!-- /breathing-modal -->
+
+
+<!-- ══════════════════════════════════════════
+     PMR 점진적 근육 이완 모달
+     ══════════════════════════════════════════ -->
+<div id="pmr-modal">
+
+    <!-- 헤더 -->
+    <div class="mindful-modal-header">
+        <button class="mindful-back-btn" onclick="closePmrModal()">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+        <span class="mindful-header-title" id="pmr-step-name">발과 발가락</span>
+        <div style="width:40px;"></div>
+    </div>
+
+    <!-- 완료 화면 (처음엔 숨김) -->
+    <div id="pmr-complete">
+        <p id="pmr-complete-emoji">🌿</p>
+        <p id="pmr-complete-title">바디 스캔 완료</p>
+        <p id="pmr-complete-desc">모든 근육 그룹의 이완이 완료되었습니다.<br>깊은 휴식을 취하세요.</p>
+        <button class="mindful-done-btn" onclick="closePmrModal()">도구함으로 돌아가기</button>
+    </div>
+
+    <!-- 진행 화면 -->
+    <div id="pmr-running">
+
+        <!-- 단계 점 -->
+        <div id="pmr-step-dots">
+            <div class="pmr-step-dot active" id="pmr-dot-0"></div>
+            <div class="pmr-step-dot" id="pmr-dot-1"></div>
+            <div class="pmr-step-dot" id="pmr-dot-2"></div>
+            <div class="pmr-step-dot" id="pmr-dot-3"></div>
+            <div class="pmr-step-dot" id="pmr-dot-4"></div>
+        </div>
+
+        <!-- 페이즈 필 -->
+        <div id="pmr-phase-pill-wrap">
+            <div id="pmr-phase-pill" class="tense">긴장  ·  5초</div>
+        </div>
+
+        <!-- 오브 영역 -->
+        <div id="pmr-orb-area">
+            <div id="pmr-orb-glow"></div>
+            <div id="pmr-orb"></div>
+            <div id="pmr-orb-text">
+                <p id="pmr-guide-msg">발가락을 발바닥 쪽으로 꽉 구부리며 힘을 줍니다.</p>
+                <span id="pmr-timer-num">5</span>
+                <span id="pmr-timer-unit">초</span>
+            </div>
+        </div>
+
+        <!-- 푸터 -->
+        <div id="pmr-footer">
+            <p id="pmr-footer-step">1 / 5  ·  발과 발가락</p>
+            <p id="pmr-footer-hint">근육에 힘을 주세요</p>
+        </div>
+
+    </div><!-- /pmr-running -->
+
+</div><!-- /pmr-modal -->
+
+
+<!-- ══════════════════════════════════════════
+     감각 그라운딩 (5-4-3-2-1) 모달
+     ══════════════════════════════════════════ -->
+<div id="grounding-modal">
+
+    <!-- 헤더 -->
+    <div class="mindful-modal-header">
+        <button class="mindful-back-btn" onclick="closeGroundingModal()">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+        <span class="mindful-header-title">감각 그라운딩</span>
+        <div style="width:40px;"></div>
+    </div>
+
+    <!-- 완료 화면 -->
+    <div id="grounding-complete">
+        <p style="font-size:60px;margin-bottom:24px;">🌿</p>
+        <p style="font-size:22px;font-weight:600;color:#2a2820;text-align:center;margin-bottom:14px;letter-spacing:-0.2px;line-height:1.4;">
+            완전히 현재로 돌아왔습니다.
+        </p>
+        <p style="font-size:15px;color:#8a8070;text-align:center;line-height:1.65;margin-bottom:40px;">
+            지금 이 순간, 당신은 여기에 있습니다.<br>불안이 한 걸음 물러났습니다.
+        </p>
+        <button class="mindful-done-btn" onclick="closeGroundingModal()">도구함으로 돌아가기</button>
+    </div>
+
+    <!-- 단계 필 (5,4,3,2,1) -->
+    <div id="grounding-step-pills"></div>
+
+    <!-- 스크롤 바디 -->
+    <div id="grounding-body">
+        <div id="grounding-icon-wrap"></div>
+        <p id="grounding-step-title"></p>
+        <p id="grounding-step-desc"></p>
+        <div id="grounding-circles-row"></div>
+        <p id="grounding-progress-hint"></p>
+        <p id="grounding-step-counter"></p>
+    </div>
+
+</div><!-- /grounding-modal -->
+
+
+<!-- ══════════════════════════════════════════
+     STOP 기법 모달
+     ══════════════════════════════════════════ -->
+<div id="stop-modal">
+
+    <!-- 헤더 -->
+    <div id="stop-header">
+        <button class="mindful-back-btn" id="stop-back-btn" onclick="closeStopModal()">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+        <span style="font-size:16px;font-weight:600;color:rgba(255,255,255,0.88);letter-spacing:-0.1px;">
+            STOP 기법
+        </span>
+        <div style="width:40px;"></div>
+    </div>
+
+    <!-- 진행 점 -->
+    <div id="stop-dots-row">
+        <div class="stop-dot active" id="sdot-0"></div>
+        <div class="stop-dot" id="sdot-1"></div>
+        <div class="stop-dot" id="sdot-2"></div>
+        <div class="stop-dot" id="sdot-3"></div>
+    </div>
+
+    <!-- 카드 -->
+    <div id="stop-card-wrap">
+        <div id="stop-card">
+            <div id="stop-letter-badge">
+                <span id="stop-letter">S</span>
+            </div>
+            <p id="stop-title">Stop</p>
+            <p id="stop-subtitle">멈추기</p>
+            <p id="stop-desc">지금 하던 것을 잠깐 멈추세요.
+자동으로 반응하기 전에
+잠시 제동을 거는 것이 시작이에요.</p>
+            <p id="stop-counter">1 / 4</p>
+        </div>
+    </div>
+
+    <!-- 내비 버튼 -->
+    <div id="stop-nav-row">
+        <button class="stop-nav-secondary" id="stop-prev-btn"
+                onclick="stopNavigate(-1)"
+                style="display:none;">
+            <i class="fas fa-chevron-left" style="font-size:14px;"></i>
+            이전
+        </button>
+        <button class="stop-nav-primary" id="stop-next-btn"
+                onclick="stopNavigate(1)">
+            다음 단계
+            <i class="fas fa-arrow-right" style="font-size:14px;"></i>
+        </button>
+    </div>
+
+</div><!-- /stop-modal -->
 
 
 <!-- ══════════════════════════════════════════
@@ -2462,6 +3096,9 @@
         });
         document.getElementById('mood-saved-date').textContent = '';
         document.getElementById('anxiety-banner').style.display = 'none';
+        _renderEmotionTags(); // 태그 선택 초기화
+        const _memoEl = document.getElementById('mood-memo-input');
+        if (_memoEl) _memoEl.value = '';
 
         // 루틴 상태 초기화
         _rt.items  = [];
@@ -2517,6 +3154,7 @@
         _initHeroGreeting(아이디);
         setDesktopNavActive('home');
         initMoodSliders();
+        _renderEmotionTags();
         loadMoodLog();
         loadRoutines();
         loadTreeState();
@@ -2544,11 +3182,12 @@
         if (탭 === 'profile') { fetchMyTestHistory(); loadMoodStats(); }
         if (탭 === 'library') loadLibraryData();
 
-        // 도구함 탭 진입/이탈 처리
-        if (탭 === 'tools') {
-            document.getElementById('breath-bg-video')?.play().catch(() => {});
-        } else if (현재탭 === 'tools' && _breath.isPlaying) {
-            stopBreath();
+        // 도구함 탭 이탈 시 열린 마음챙김 모달 닫기
+        if (현재탭 === 'tools') {
+            closeBreathingModal();
+            closePmrModal();
+            closeGroundingModal();
+            closeStopModal();
         }
 
         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -2741,6 +3380,12 @@
         { key: 'sleep',        color: '#6A8CA0' },
     ];
 
+    const EMOTION_TAGS = [
+        '😊 행복해요', '😌 평온해요', '⚡ 활기차요', '🙏 감사해요',
+        '😔 우울해요', '😰 불안해요', '😴 피곤해요', '😤 예민해요',
+        '😶 무기력해요', '🤔 복잡해요', '😐 그냥 그래요',
+    ];
+
     function _updateSlider(key) {
         const input = document.getElementById('slider-' + key);
         const label = document.getElementById('label-' + key);
@@ -2807,6 +3452,30 @@
                String(d.getDate()).padStart(2, '0');
     }
 
+    /* ── 감정 태그 UI 헬퍼 ─────────────────────────────────────────────────── */
+
+    function _renderEmotionTags(selectedTags = []) {
+        const container = document.getElementById('mood-tag-buttons');
+        if (!container) return;
+        container.innerHTML = EMOTION_TAGS.map(tag =>
+            `<button class="mood-tag-btn${selectedTags.includes(tag) ? ' selected' : ''}"
+                     onclick="_toggleMoodTag(this)">${tag}</button>`
+        ).join('');
+    }
+
+    function _toggleMoodTag(btn) { btn.classList.toggle('selected'); }
+
+    function _getSelectedTags() {
+        return [...document.querySelectorAll('#mood-tag-buttons .mood-tag-btn.selected')]
+            .map(btn => btn.textContent.trim());
+    }
+
+    function _setSelectedTags(tags) {
+        document.querySelectorAll('#mood-tag-buttons .mood-tag-btn').forEach(btn => {
+            btn.classList.toggle('selected', tags.includes(btn.textContent.trim()));
+        });
+    }
+
     async function loadMoodLog() {
         try {
             const { data: { session } } = await sb.auth.getSession();
@@ -2814,17 +3483,28 @@
 
             const { data, error } = await sb
                 .from('mood_logs')
-                .select('score')
+                .select('score, tags, memo')
                 .eq('user_id', session.user.id)
                 .eq('date', _todayKey())
                 .maybeSingle();
 
             if (error) { console.warn('기분 기록 로드 실패:', error.message); return; }
+            if (!data) return;
 
-            if (data?.score) {
+            if (data.score) {
                 _setSliderValues(data.score);
                 document.getElementById('mood-saved-date').textContent = '오늘 기록이 저장되어 있어요 🌿';
             }
+
+            // 감정 태그 복원
+            const savedTags = data.tags
+                ? data.tags.split(',').map(t => t.trim()).filter(Boolean)
+                : [];
+            _setSelectedTags(savedTags);
+
+            // 메모 복원
+            const memoEl = document.getElementById('mood-memo-input');
+            if (memoEl && data.memo) memoEl.value = data.memo;
         } catch (e) {
             console.warn('기분 기록 로드 오류:', e.message);
         }
@@ -2842,31 +3522,18 @@
 
             const score = _getSliderValues();
             const today = _todayKey();
+            const tags  = _getSelectedTags().join(',') || null;
+            const memo  = document.getElementById('mood-memo-input')?.value.trim() || null;
 
-            // 오늘 기록이 있으면 UPDATE, 없으면 INSERT
-            const { data: existing } = await sb
+            // UPSERT: (user_id, date) 고유 제약으로 중복 없이 INSERT/UPDATE
+            const { error } = await sb
                 .from('mood_logs')
-                .select('user_id')
-                .eq('user_id', session.user.id)
-                .eq('date', today)
-                .maybeSingle();
+                .upsert(
+                    { user_id: session.user.id, date: today, score, tags, memo },
+                    { onConflict: 'user_id,date' }
+                );
 
-            let saveErr;
-            if (existing) {
-                const { error } = await sb
-                    .from('mood_logs')
-                    .update({ score })
-                    .eq('user_id', session.user.id)
-                    .eq('date', today);
-                saveErr = error;
-            } else {
-                const { error } = await sb
-                    .from('mood_logs')
-                    .insert({ user_id: session.user.id, date: today, score });
-                saveErr = error;
-            }
-
-            if (saveErr) throw saveErr;
+            if (error) throw error;
 
             saved.textContent = '오늘 기록이 저장되어 있어요 🌿';
             showToast('오늘의 기분이 저장되었습니다 🌿');
@@ -3025,24 +3692,14 @@
         try {
             const { data: { session } } = await sb.auth.getSession();
             if (!session) return;
-            const today = _todayKey();
 
-            const { data: existing } = await sb
+            const { error } = await sb
                 .from('routine_logs')
-                .select('user_id')
-                .eq('user_id', session.user.id)
-                .eq('date', today)
-                .maybeSingle();
-
-            if (existing) {
-                await sb.from('routine_logs')
-                    .update({ completed: _rt.counts })
-                    .eq('user_id', session.user.id)
-                    .eq('date', today);
-            } else {
-                await sb.from('routine_logs')
-                    .insert({ user_id: session.user.id, date: today, completed: _rt.counts });
-            }
+                .upsert(
+                    { user_id: session.user.id, date: _todayKey(), completed: _rt.counts },
+                    { onConflict: 'user_id,date' }
+                );
+            if (error) throw error;
         } catch (e) {
             console.warn('루틴 저장 실패:', e.message);
         }
@@ -3283,37 +3940,35 @@
         const level = getTreeLevel(_tree.carePoints, _tree.harvestedCount, _tree.daysSinceLast);
         if (level !== 6) return;
 
+        // 낙관적 업데이트 — DB 응답 전에 UI 즉시 전환
+        _tree.harvestedCount += 1;
+        _renderTree();
+
+        const img = document.getElementById('tree-img');
+        if (img) {
+            img.classList.add('tree-harvest-pop');
+            img.addEventListener('animationend', () => img.classList.remove('tree-harvest-pop'), { once: true });
+        }
+
         try {
             const { data: { session } } = await sb.auth.getSession();
-            if (!session) return;
-
-            const uid = session.user.id;
-            const { data: existing } = await sb.from('user_stats')
-                .select('value')
-                .eq('user_id', uid)
-                .eq('key', 'harvested_olives')
-                .maybeSingle();
-
-            if (existing) {
-                await sb.from('user_stats')
-                    .update({ value: existing.value + 1 })
-                    .eq('user_id', uid)
-                    .eq('key', 'harvested_olives');
-            } else {
-                await sb.from('user_stats')
-                    .insert({ user_id: uid, key: 'harvested_olives', value: 1 });
+            if (!session) {
+                _tree.harvestedCount -= 1; _renderTree(); return;
             }
 
-            _tree.harvestedCount += 1;
-            _renderTree();
+            const { error } = await sb
+                .from('user_stats')
+                .upsert(
+                    { user_id: session.user.id, key: 'harvested_olives', value: _tree.harvestedCount },
+                    { onConflict: 'user_id,key' }
+                );
+            if (error) throw error;
 
-            const img = document.getElementById('tree-img');
-            if (img) {
-                img.classList.add('tree-harvest-pop');
-                img.addEventListener('animationend', () => img.classList.remove('tree-harvest-pop'), { once: true });
-            }
             showToast('수확 완료! 🫒 오늘도 자신을 잘 돌봐주었어요.');
         } catch (e) {
+            // 롤백
+            _tree.harvestedCount -= 1;
+            _renderTree();
             console.warn('수확 실패:', e.message);
             showToast('수확에 실패했습니다. 다시 시도해 주세요.');
         }
@@ -3486,12 +4141,17 @@
     /* ─────────────────────────────────────────
      * 복식호흡 (4-6-6) 엔진
      * ───────────────────────────────────────── */
+    // ── 앱(useBreathSession.ts)과 동일한 템포 & 비디오 재생 속도 ────────────────
     const BREATH_TIMINGS = {
-        slow:   { phases: ['inhale','hold','exhale'], inhale: 4000, hold: 6000, exhale: 6000 }, // 16s
-        normal: { phases: ['inhale','exhale'],        inhale: 4000, hold:    0, exhale: 6000 }, // 10s
-        fast:   { phases: ['inhale','exhale'],        inhale: 3000, hold:    0, exhale: 5000 }, // 8s
+        slow:   { phases: ['inhale','exhale'], inhale: 5000, exhale: 7000, rate: 10000/12000 }, // ≈0.833× (12초)
+        normal: { phases: ['inhale','exhale'], inhale: 4000, exhale: 6000, rate: 1.0 },         // (10초)
+        fast:   { phases: ['inhale','exhale'], inhale: 3000, exhale: 5000, rate: 10000/8000 },  // =1.25×  (8초)
     };
-    const BREATH_PHASE_LABELS = { inhale: '들이마세요', hold: '참으세요', exhale: '내쉬세요' };
+    const BREATH_INSTRUCTIONS = {
+        inhale: '가슴을 가만히 두고 배를 부풀려,\n숨을 들여마십니다.',
+        exhale: '가슴을 가만히 두고, 배를 집어넣어,\n숨을 내쉽니다.',
+    };
+    const BREATH_PHASE_LABELS = { inhale: '들이마세요', exhale: '내쉬세요' };
     const REQUIRED_CYCLES     = 6;
     const ARC_CIRC            = 2 * Math.PI * 112; // r=112 → ≈703.7
 
@@ -3591,7 +4251,8 @@
         _breath.phaseDur     = nextDur;
         _breath.phaseStartAt = performance.now() - overshoot;
 
-        document.getElementById('breath-phase-label').textContent = BREATH_PHASE_LABELS[nextPhase];
+        document.getElementById('breath-phase-label').textContent = BREATH_PHASE_LABELS[nextPhase] || '';
+        _updateBreathInstruction(nextPhase);
 
         _breath.rafId = requestAnimationFrame(_breathTick);
     }
@@ -3611,11 +4272,10 @@
         // 완료 오버레이 표시
         document.getElementById('breath-complete-overlay').classList.add('show');
 
-        // 버튼 복원
-        const btn = document.getElementById('breath-start-btn');
-        if (btn) { btn.textContent = '시작하기'; btn.classList.remove('stop-mode'); }
-        document.getElementById('breath-session-time').style.display = 'none';
+        const sesEl = document.getElementById('breath-session-time');
+        if (sesEl) sesEl.style.display = 'none';
         _renderBreathTempoButtons();
+        _updateBreathVideo(false);
 
         // Supabase 저장
         try {
@@ -3649,12 +4309,36 @@
         // 원 초기 크기 복원
         const group = document.getElementById('breath-circle-group');
         if (group) group.style.transform = 'scale(0.62)';
-        // 호 초기화
         const arc = document.getElementById('breath-arc');
         if (arc) arc.setAttribute('stroke-dashoffset', ARC_CIRC.toFixed(1));
-        // 사이클 도트 초기화
         _breath.cycleCount = 0;
         _renderBreathDots();
+        // 확인 후 모달 닫기
+        closeBreathingModal();
+    }
+
+    // ── 비디오 재생 속도 + 안내 문구 업데이트 ──────────────────────────────────
+    function _updateBreathVideo(shouldPlay) {
+        const video = document.getElementById('breath-bg-video');
+        if (!video) return;
+        const rate = BREATH_TIMINGS[_breath.tempo].rate;
+        if (shouldPlay) {
+            video.playbackRate = rate;
+            video.play().catch(() => {});
+        } else {
+            video.pause();
+        }
+    }
+
+    function _updateBreathInstruction(phase) {
+        const el = document.getElementById('breath-instruction-text');
+        if (!el) return;
+        el.style.opacity = '0';
+        setTimeout(() => {
+            el.style.whiteSpace = 'pre-line';
+            el.textContent = BREATH_INSTRUCTIONS[phase] || '';
+            el.style.opacity = '1';
+        }, 200);
     }
 
     // ── 공개 액션 ─────────────────────────────────────────────
@@ -3669,26 +4353,23 @@
         _breath.cycleCount   = 0;
         _breath.sessionSecs  = 0;
 
-        document.getElementById('breath-phase-label').textContent = '들이마세요';
+        document.getElementById('breath-phase-label').textContent = BREATH_PHASE_LABELS['inhale'];
         document.getElementById('breath-countdown').textContent   = Math.ceil(timing.inhale / 1000);
+        _updateBreathInstruction('inhale');
 
         const sesEl = document.getElementById('breath-session-time');
-        sesEl.textContent = '00:00';
-        sesEl.style.display = '';
-
-        const btn = document.getElementById('breath-start-btn');
-        btn.textContent = '정지하기';
-        btn.classList.add('stop-mode');
+        if (sesEl) { sesEl.textContent = '00:00'; sesEl.style.display = ''; }
 
         _renderBreathDots();
         _renderBreathTempoButtons();
         document.getElementById('breath-complete-overlay').classList.remove('show');
+        _updateBreathVideo(true);
 
-        // 세션 타이머 (1초 갱신)
         clearInterval(_breath.sessionTimer);
         _breath.sessionTimer = setInterval(() => {
             _breath.sessionSecs++;
-            document.getElementById('breath-session-time').textContent = _fmtSecs(_breath.sessionSecs);
+            const el = document.getElementById('breath-session-time');
+            if (el) el.textContent = _fmtSecs(_breath.sessionSecs);
         }, 1000);
 
         if (_breath.rafId) cancelAnimationFrame(_breath.rafId);
@@ -3702,38 +4383,58 @@
         _breath.sessionTimer = null;
         _breath.cycleCount   = 0;
 
-        const btn = document.getElementById('breath-start-btn');
-        if (btn) { btn.textContent = '시작하기'; btn.classList.remove('stop-mode'); }
         const sesEl = document.getElementById('breath-session-time');
         if (sesEl) sesEl.style.display = 'none';
-
         document.getElementById('breath-complete-overlay')?.classList.remove('show');
         _renderBreathDots();
         _renderBreathTempoButtons();
+        _updateBreathVideo(false);
 
-        // 원 초기 상태 복원
         const group = document.getElementById('breath-circle-group');
         if (group) group.style.transform = 'scale(0.62)';
         const arc = document.getElementById('breath-arc');
         if (arc) arc.setAttribute('stroke-dashoffset', ARC_CIRC.toFixed(1));
         const phaseEl = document.getElementById('breath-phase-label');
-        if (phaseEl) phaseEl.textContent = '들이마세요';
+        if (phaseEl) phaseEl.textContent = BREATH_PHASE_LABELS['inhale'];
         const cdEl = document.getElementById('breath-countdown');
         if (cdEl) cdEl.textContent = Math.ceil(BREATH_TIMINGS[_breath.tempo].inhale / 1000);
+        const instrEl = document.getElementById('breath-instruction-text');
+        if (instrEl) instrEl.textContent = '';
     }
 
-    function toggleBreath() {
-        if (_breath.isPlaying) stopBreath();
-        else startBreath();
+    function openBreathingModal() {
+        const modal = document.getElementById('breathing-modal');
+        if (modal) modal.classList.add('open');
+        document.body.style.overflow = 'hidden';
+        startBreath();
+    }
+
+    function closeBreathingModal() {
+        stopBreath();
+        const modal = document.getElementById('breathing-modal');
+        if (modal) modal.classList.remove('open');
+        document.body.style.overflow = '';
     }
 
     function changeBreathTempo(tempo) {
-        if (_breath.isPlaying) return;
         _breath.tempo = tempo;
         _renderBreathTempoButtons();
-        const t  = BREATH_TIMINGS[tempo];
-        const cdEl = document.getElementById('breath-countdown');
-        if (cdEl) cdEl.textContent = Math.ceil(t.inhale / 1000);
+        const t = BREATH_TIMINGS[tempo];
+
+        if (_breath.isPlaying) {
+            // 앱과 동일: 사이클 리셋 후 흡기 페이즈 재시작
+            _breath.cycleCount   = 0;
+            _breath.phase        = 'inhale';
+            _breath.phaseDur     = t.inhale;
+            _breath.phaseStartAt = performance.now();
+            _renderBreathDots();
+            _updateBreathInstruction('inhale');
+            document.getElementById('breath-phase-label').textContent = BREATH_PHASE_LABELS['inhale'];
+            _updateBreathVideo(true);
+        } else {
+            const cdEl = document.getElementById('breath-countdown');
+            if (cdEl) cdEl.textContent = Math.ceil(t.inhale / 1000);
+        }
     }
 
     async function loadBreathTodayCount() {
@@ -3746,6 +4447,389 @@
             document.getElementById('breath-today-badge').textContent = `오늘 ${_breath.todayCount}세트 완료`;
         } catch (e) {
             console.warn('호흡 기록 로드 실패:', e.message);
+        }
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════
+     * ── 점진적 근육 이완 (PMR) ───────────────────────────────────────
+     * ═══════════════════════════════════════════════════════════════════ */
+    const PMR_STEPS = [
+        { id: 'feet',      name: '발과 발가락',    tenseMsg: '발가락을 발바닥 쪽으로 꽉 구부리며 힘을 줍니다.',      relaxMsg: '힘을 툭 풀고 따뜻한 이완감을 느낍니다.' },
+        { id: 'legs',      name: '종아리와 허벅지', tenseMsg: '다리 전체에 힘을 꽉 주고 버팁니다.',                 relaxMsg: '다리의 힘을 풀고 바닥으로 무겁게 가라앉는 것을 느낍니다.' },
+        { id: 'hands',     name: '주먹과 팔',       tenseMsg: '양손을 꽉 쥐고 팔 전체에 힘을 줍니다.',             relaxMsg: '주먹을 풀고 손끝으로 빠져나가는 긴장을 느낍니다.' },
+        { id: 'shoulders', name: '어깨와 목',       tenseMsg: '어깨를 귀 쪽으로 바짝 끌어올려 힘을 줍니다.',       relaxMsg: '어깨를 툭 떨어뜨리고 편안함을 느낍니다.' },
+        { id: 'face',      name: '얼굴',            tenseMsg: '미간을 찌푸리고 눈과 입을 꽉 감습니다.',             relaxMsg: '얼굴의 모든 근육을 풀고 평온해집니다.' },
+    ];
+    const PMR_TENSE_SEC = 5;
+    const PMR_RELAX_SEC = 10;
+
+    const _pmr = {
+        stepIndex: 0,
+        phase: 'idle',    // 'idle' | 'tense' | 'relax'
+        timeLeft: PMR_TENSE_SEC,
+        done: false,
+        timer: null,
+    };
+
+    function openPmrModal() {
+        _pmr.stepIndex = 0;
+        _pmr.phase     = 'idle';
+        _pmr.timeLeft  = PMR_TENSE_SEC;
+        _pmr.done      = false;
+        const modal = document.getElementById('pmr-modal');
+        if (modal) modal.classList.add('open');
+        document.body.style.overflow = 'hidden';
+        _pmrRenderStep();
+        // 1초 딜레이 후 자동 시작
+        setTimeout(_pmrStartPhase.bind(null, 'tense'), 600);
+    }
+
+    function closePmrModal() {
+        if (_pmr.timer) { clearInterval(_pmr.timer); _pmr.timer = null; }
+        _pmr.phase = 'idle';
+        const modal = document.getElementById('pmr-modal');
+        if (modal) modal.classList.remove('open');
+        // 완료/진행 화면 리셋
+        document.getElementById('pmr-complete')?.classList.remove('show');
+        const running = document.getElementById('pmr-running');
+        if (running) running.style.display = '';
+        // 오브 리셋
+        const orb = document.getElementById('pmr-orb');
+        if (orb) { orb.style.transition = ''; orb.style.transform = ''; orb.style.backgroundColor = ''; }
+        document.body.style.overflow = '';
+    }
+
+    function _pmrRenderStep() {
+        const step = PMR_STEPS[_pmr.stepIndex];
+        document.getElementById('pmr-step-name').textContent = step.name;
+        document.getElementById('pmr-footer-step').textContent =
+            `${_pmr.stepIndex + 1} / ${PMR_STEPS.length}  ·  ${step.name}`;
+        // 단계 점 업데이트
+        for (let i = 0; i < PMR_STEPS.length; i++) {
+            const dot = document.getElementById('pmr-dot-' + i);
+            if (!dot) continue;
+            dot.classList.remove('active','done');
+            if (i < _pmr.stepIndex)    dot.classList.add('done');
+            else if (i === _pmr.stepIndex) dot.classList.add('active');
+        }
+    }
+
+    function _pmrStartPhase(phase) {
+        if (_pmr.timer) { clearInterval(_pmr.timer); _pmr.timer = null; }
+        _pmr.phase    = phase;
+        const isTense = phase === 'tense';
+        const dur     = isTense ? PMR_TENSE_SEC : PMR_RELAX_SEC;
+        _pmr.timeLeft = dur;
+        const step    = PMR_STEPS[_pmr.stepIndex];
+
+        // 페이즈 필 업데이트
+        const pill = document.getElementById('pmr-phase-pill');
+        if (pill) {
+            pill.textContent = isTense ? `긴장  ·  ${PMR_TENSE_SEC}초` : `이완  ·  ${PMR_RELAX_SEC}초`;
+            pill.className   = isTense ? 'tense' : 'relax';
+        }
+
+        // 안내 메시지
+        const msgEl = document.getElementById('pmr-guide-msg');
+        if (msgEl) msgEl.textContent = isTense ? step.tenseMsg : step.relaxMsg;
+
+        // 힌트
+        const hintEl = document.getElementById('pmr-footer-hint');
+        if (hintEl) hintEl.textContent = isTense ? '근육에 힘을 주세요' : '천천히 힘을 빼고 이완을 느끼세요';
+
+        // 오브 애니메이션
+        const orb = document.getElementById('pmr-orb');
+        const glow = document.getElementById('pmr-orb-glow');
+        if (orb) {
+            orb.style.transition = `transform ${dur}s ease-in-out, background-color ${dur}s ease-in-out, box-shadow ${dur}s ease-in-out`;
+            if (isTense) {
+                orb.style.transform       = 'scale(0.7)';
+                orb.style.backgroundColor = '#7A2A2A';
+                orb.style.boxShadow       = '0 0 48px rgba(122,42,42,0.5)';
+                if (glow) glow.style.borderColor = 'rgba(122,42,42,0.3)';
+            } else {
+                orb.style.transform       = 'scale(1.4)';
+                orb.style.backgroundColor = '#3A6040';
+                orb.style.boxShadow       = '0 0 48px rgba(58,96,64,0.5)';
+                if (glow) glow.style.borderColor = 'rgba(58,96,64,0.3)';
+            }
+        }
+
+        // 타이머 숫자
+        const numEl = document.getElementById('pmr-timer-num');
+        if (numEl) numEl.textContent = dur;
+
+        _pmr.timer = setInterval(() => {
+            _pmr.timeLeft = Math.max(0, _pmr.timeLeft - 1);
+            if (numEl) numEl.textContent = _pmr.timeLeft;
+            if (_pmr.timeLeft <= 0) {
+                clearInterval(_pmr.timer); _pmr.timer = null;
+                _pmrOnPhaseEnd();
+            }
+        }, 1000);
+    }
+
+    function _pmrOnPhaseEnd() {
+        if (_pmr.phase === 'tense') {
+            _pmrStartPhase('relax');
+        } else {
+            // relax 완료 → 다음 단계 또는 완료
+            if (_pmr.stepIndex < PMR_STEPS.length - 1) {
+                _pmr.stepIndex++;
+                _pmrRenderStep();
+                // 오브 초기화 후 다음 긴장 시작
+                const orb = document.getElementById('pmr-orb');
+                if (orb) {
+                    orb.style.transition = 'transform 0.5s, background-color 0.5s, box-shadow 0.5s';
+                    orb.style.transform = 'scale(1)';
+                    orb.style.backgroundColor = '#4A6A44';
+                    orb.style.boxShadow = '0 0 48px rgba(74,106,68,0.4)';
+                }
+                setTimeout(_pmrStartPhase.bind(null, 'tense'), 600);
+            } else {
+                _pmrShowComplete();
+            }
+        }
+    }
+
+    function _pmrShowComplete() {
+        if (_pmr.timer) { clearInterval(_pmr.timer); _pmr.timer = null; }
+        _pmr.phase = 'idle';
+        const running  = document.getElementById('pmr-running');
+        const complete = document.getElementById('pmr-complete');
+        if (running)  running.style.display = 'none';
+        if (complete) complete.classList.add('show');
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════
+     * ── 감각 그라운딩 5-4-3-2-1 ─────────────────────────────────────
+     * ═══════════════════════════════════════════════════════════════════ */
+    const GROUNDING_STEPS = [
+        { count: 5, icon: '👁️', title: '눈에 보이는 것 5가지',         desc: '주변을 둘러보고 색깔, 모양, 크기가 다른 5가지를 찾아 마음속으로 이름을 부르며 체크하세요.' },
+        { count: 4, icon: '🖐️', title: '피부에 닿는 촉감 4가지',       desc: '의자의 푹신함, 옷의 촉감, 공기의 온도 등 4가지를 찾아 느껴보세요.' },
+        { count: 3, icon: '👂', title: '귀에 들리는 소리 3가지',       desc: '눈을 감고 시계 초침 소리, 바람 소리 등 3가지 소리에 집중해보세요.' },
+        { count: 2, icon: '👃', title: '코로 맡을 수 있는 냄새 2가지', desc: '주변의 향기나 내 옷에서 나는 냄새 2가지를 찾아보세요.' },
+        { count: 1, icon: '👄', title: '입에서 느껴지는 맛 1가지',     desc: '입안의 감각이나 방금 마신 물의 맛 1가지에 집중해보세요.' },
+    ];
+
+    const _gr = { stepIndex: 0, checked: 0, autoTimer: null };
+
+    function openGroundingModal() {
+        _gr.stepIndex = 0;
+        _gr.checked   = 0;
+        if (_gr.autoTimer) { clearTimeout(_gr.autoTimer); _gr.autoTimer = null; }
+        const modal = document.getElementById('grounding-modal');
+        if (modal) modal.classList.add('open');
+        document.body.style.overflow = 'hidden';
+        // 완료 화면 숨기기 + 진행 화면 표시
+        document.getElementById('grounding-complete')?.classList.remove('show');
+        document.getElementById('grounding-step-pills').style.display = '';
+        document.getElementById('grounding-body').style.display = '';
+        _grRenderStep();
+    }
+
+    function closeGroundingModal() {
+        if (_gr.autoTimer) { clearTimeout(_gr.autoTimer); _gr.autoTimer = null; }
+        const modal = document.getElementById('grounding-modal');
+        if (modal) modal.classList.remove('open');
+        document.getElementById('grounding-complete')?.classList.remove('show');
+        document.body.style.overflow = '';
+    }
+
+    function _grRenderStep() {
+        const total = GROUNDING_STEPS.length;
+        if (_gr.stepIndex >= total) { _grShowComplete(); return; }
+        const step = GROUNDING_STEPS[_gr.stepIndex];
+
+        // 스텝 필 렌더링
+        const pillsEl = document.getElementById('grounding-step-pills');
+        if (pillsEl) {
+            pillsEl.innerHTML = GROUNDING_STEPS.map((s, i) => {
+                let cls = 'gr-step-pill';
+                if (i === _gr.stepIndex) cls += ' active';
+                else if (i < _gr.stepIndex) cls += ' done';
+                return `<div class="${cls}"><span>${s.count}</span></div>`;
+            }).join('');
+        }
+
+        // 아이콘
+        const iconEl = document.getElementById('grounding-icon-wrap');
+        if (iconEl) iconEl.textContent = step.icon;
+
+        // 제목 / 설명
+        document.getElementById('grounding-step-title').textContent = step.title;
+        document.getElementById('grounding-step-desc').textContent  = step.desc;
+
+        // 단계 카운터
+        document.getElementById('grounding-step-counter').textContent =
+            `${_gr.stepIndex + 1} / ${total} 단계`;
+
+        // 원 렌더링
+        _grRenderCircles();
+        _grUpdateHint();
+    }
+
+    function _grRenderCircles() {
+        const step = GROUNDING_STEPS[_gr.stepIndex];
+        const row  = document.getElementById('grounding-circles-row');
+        if (!row) return;
+        row.innerHTML = '';
+        for (let i = 0; i < step.count; i++) {
+            const btn = document.createElement('button');
+            btn.className = 'gr-circle-btn' + (i < _gr.checked ? ' checked' : '');
+            btn.setAttribute('aria-label', `${i + 1}번째`);
+            const span = document.createElement('span');
+            span.textContent = i + 1;
+            btn.appendChild(span);
+            const idx = i;
+            btn.addEventListener('click', () => _grCheckItem(idx));
+            row.appendChild(btn);
+        }
+    }
+
+    function _grCheckItem(idx) {
+        if (idx !== _gr.checked) return; // 순서대로만
+        _gr.checked++;
+        _grRenderCircles();
+        _grUpdateHint();
+        if (_gr.checked >= GROUNDING_STEPS[_gr.stepIndex].count) {
+            _gr.autoTimer = setTimeout(() => {
+                _gr.stepIndex++;
+                _gr.checked = 0;
+                _gr.autoTimer = null;
+                _grRenderStep();
+            }, 800);
+        }
+    }
+
+    function _grUpdateHint() {
+        const step = GROUNDING_STEPS[_gr.stepIndex];
+        const hint = document.getElementById('grounding-progress-hint');
+        if (!hint) return;
+        if (_gr.checked === 0) {
+            hint.textContent = `원을 하나씩 눌러 ${step.count}가지를 확인하세요`;
+        } else if (_gr.checked < step.count) {
+            hint.textContent = `${_gr.checked} / ${step.count} 확인 중...`;
+        } else {
+            hint.textContent = `${step.count}가지 모두 확인! 잠시 후 넘어갑니다 ✓`;
+        }
+    }
+
+    function _grShowComplete() {
+        document.getElementById('grounding-step-pills').style.display = 'none';
+        document.getElementById('grounding-body').style.display = 'none';
+        document.getElementById('grounding-complete')?.classList.add('show');
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════
+     * ── STOP 기법 ────────────────────────────────────────────────────
+     * ═══════════════════════════════════════════════════════════════════ */
+    const STOP_STEPS = [
+        {
+            letter: 'S', title: 'Stop',          subtitle: '멈추기',
+            desc: '지금 하던 것을 잠깐 멈추세요.\n자동으로 반응하기 전에\n잠시 제동을 거는 것이 시작이에요.',
+            color: '#A8B58F', bgColor: '#2A3A24',
+        },
+        {
+            letter: 'T', title: 'Take a breath', subtitle: '호흡하기',
+            desc: '깊게 숨을 한 번 들이마시고\n천천히 내쉬어 보세요.\n몸이 먼저 안정을 되찾을 거예요.',
+            color: '#6A8CA0', bgColor: '#1E3040',
+        },
+        {
+            letter: 'O', title: 'Observe',       subtitle: '관찰하기',
+            desc: '지금 내 몸에서 어떤 느낌이 드나요?\n어떤 생각과 감정이 올라오는지\n판단 없이 바라보세요.',
+            color: '#C4956A', bgColor: '#3A2510',
+        },
+        {
+            letter: 'P', title: 'Proceed',       subtitle: '나아가기',
+            desc: '지금 이 순간 나에게 도움이 되는\n현명한 선택은 무엇인지 생각하며\n천천히 나아가세요.',
+            color: '#8B7CB3', bgColor: '#2A2040',
+        },
+    ];
+
+    const _stop = { step: 0 };
+
+    function openStopModal() {
+        _stop.step = 0;
+        const modal = document.getElementById('stop-modal');
+        if (modal) modal.classList.add('open');
+        document.body.style.overflow = 'hidden';
+        _stopRender(false);
+    }
+
+    function closeStopModal() {
+        const modal = document.getElementById('stop-modal');
+        if (modal) modal.classList.remove('open');
+        _stop.step = 0;
+        document.body.style.overflow = '';
+    }
+
+    function stopNavigate(dir) {
+        const newStep = _stop.step + dir;
+        if (newStep < 0) return;
+        if (newStep >= STOP_STEPS.length) { closeStopModal(); return; }
+        // 페이드 아웃 → 내용 변경 → 페이드 인
+        const card = document.getElementById('stop-card');
+        if (card) card.classList.add('fade-out');
+        setTimeout(() => {
+            _stop.step = newStep;
+            _stopRender(true);
+        }, 200);
+    }
+
+    function _stopRender(skipFade) {
+        const step   = STOP_STEPS[_stop.step];
+        const isLast = _stop.step === STOP_STEPS.length - 1;
+        const modal  = document.getElementById('stop-modal');
+
+        // 배경색
+        if (modal) modal.style.backgroundColor = step.bgColor;
+
+        // 카드
+        const card = document.getElementById('stop-card');
+        if (card) {
+            card.style.backgroundColor = step.bgColor;
+            card.style.borderTopColor  = step.color;
+            if (skipFade) {
+                card.classList.remove('fade-out');
+                card.style.opacity   = '1';
+                card.style.transform = '';
+            }
+        }
+
+        // 내용
+        const letterEl = document.getElementById('stop-letter');
+        if (letterEl) { letterEl.textContent = step.letter; letterEl.style.color = step.color; }
+        const titleEl = document.getElementById('stop-title');
+        if (titleEl) { titleEl.textContent = step.title; titleEl.style.color = step.color; }
+        document.getElementById('stop-subtitle').textContent = step.subtitle;
+        document.getElementById('stop-desc').textContent     = step.desc;
+        const counterEl = document.getElementById('stop-counter');
+        if (counterEl) { counterEl.textContent = `${_stop.step + 1} / ${STOP_STEPS.length}`; counterEl.style.color = step.color; }
+
+        // 진행 점
+        for (let i = 0; i < STOP_STEPS.length; i++) {
+            const dot = document.getElementById('sdot-' + i);
+            if (!dot) continue;
+            dot.style.backgroundColor = i === _stop.step ? step.color : 'rgba(255,255,255,0.25)';
+            dot.classList.toggle('active', i === _stop.step);
+        }
+
+        // 이전 버튼
+        const prevBtn = document.getElementById('stop-prev-btn');
+        if (prevBtn) prevBtn.style.display = _stop.step > 0 ? '' : 'none';
+
+        // 다음/완료 버튼
+        const nextBtn = document.getElementById('stop-next-btn');
+        if (nextBtn) {
+            nextBtn.style.borderColor      = step.color;
+            nextBtn.style.backgroundColor  = 'transparent';
+            nextBtn.style.color            = step.color;
+            if (isLast) {
+                nextBtn.innerHTML = `완료 <i class="fas fa-rotate-left" style="font-size:14px;"></i>`;
+            } else {
+                nextBtn.innerHTML = `다음 단계 <i class="fas fa-arrow-right" style="font-size:14px;"></i>`;
+            }
         }
     }
 
