@@ -1470,35 +1470,53 @@
             'GAD-7':  { bg: '#fdf4e6', color: '#C4956A', icon: 'fa-heart-pulse' },
             'DIVA':   { bg: '#f0eefa', color: '#6D5BA3', icon: 'fa-puzzle-piece' },
             '종합':   { bg: '#e8f4e0', color: '#2e5c10', icon: 'fa-layer-group' },
+            '기분':   { bg: '#eef2e6', color: '#5C7A2A', icon: 'fa-face-smile' },     // survey1
+            '음주':   { bg: '#fdf4e6', color: '#C4956A', icon: 'fa-wine-glass' },     // survey2
+            '강박':   { bg: '#fdf8ef', color: '#B87014', icon: 'fa-repeat' },          // survey3
+            '주의':   { bg: '#f0eefa', color: '#6D5BA3', icon: 'fa-crosshairs' },     // survey4
+            '기질':   { bg: '#eaf4ee', color: '#2E6B42', icon: 'fa-dna' },             // survey5
+            '아동':   { bg: '#fdf0ea', color: '#C45E2E', icon: 'fa-clock-rotate-left' }, // survey8
+            '성격':   { bg: '#eeecfc', color: '#6B50C2', icon: 'fa-user-pen' },        // survey7
+            '방어':   { bg: '#fef0f0', color: '#c05a5a', icon: 'fa-shield-halved' },   // survey6
         };
+
         const name = r.test_name || r.test_type || '심리검사';
         const key  = Object.keys(palette).find(k => name.includes(k));
         const { bg, color, icon } = palette[key] || { bg: '#f0ede6', color: '#8a8070', icon: 'fa-clipboard-check' };
 
-        const d = r.created_at ? new Date(r.created_at) : null;
-        const dateStr = d
-            ? `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`
+        const dt = r.created_at ? new Date(r.created_at) : null;
+        const dateStr = dt
+            ? `${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,'0')}-${String(dt.getDate()).padStart(2,'0')}`
             : '—';
 
-        const score   = r.score != null ? `${r.score}점` : '—';
-        const summary = r.result_summary || r.interpretation || r.result || '';
+        // 숫자 점수: 종합 유형이거나 null이면 생략
+        const isComprehensive = name.includes('종합');
+        const scoreHtml = (r.score != null && !isComprehensive)
+            ? `<span class="text-xl font-extrabold leading-none mr-1" style="color:${color};">${r.score}<span class="text-xs font-medium ml-0.5" style="color:${color}88;">점</span></span>`
+            : '';
+
+        // result_summary → ' | ' 구분자로 파싱해 칩 배열로 변환
+        const rawSummary = r.result_summary || r.interpretation || r.result || '';
+        const chips = rawSummary.split(' | ').filter(Boolean);
+        const chipsHtml = chips.map(p =>
+            `<span class="inline-block text-xs px-2 py-0.5 rounded-full font-medium leading-relaxed"
+                  style="background:${bg}; color:${color}; border:1px solid ${color}28;">${p}</span>`
+        ).join('');
 
         return `
             <div class="card history-card mb-3" style="border-left: 4px solid ${color};">
-                <div class="flex items-center gap-3">
-                    <div class="w-11 h-11 rounded-xl flex-shrink-0 flex items-center justify-center"
+                <div class="flex items-start gap-3">
+                    <div class="w-11 h-11 rounded-xl flex-shrink-0 flex items-center justify-center mt-0.5"
                          style="background: ${bg};">
                         <i class="fas ${icon}" style="color: ${color};"></i>
                     </div>
                     <div class="flex-1 min-w-0">
                         <div class="flex items-center justify-between mb-1.5">
-                            <span class="badge" style="background: ${bg}; color: ${color};">${name}</span>
+                            <span class="badge" style="background:${bg}; color:${color};">${name}</span>
                             <span class="text-xs" style="color: #a09890;">${dateStr}</span>
                         </div>
-                        <div class="flex items-center gap-2">
-                            <span class="text-xl font-extrabold leading-none" style="color: ${color};">${score}</span>
-                            ${summary ? `<span class="text-xs px-2 py-0.5 rounded-full font-semibold" style="background: ${bg}; color: ${color};">${summary}</span>` : ''}
-                        </div>
+                        ${scoreHtml ? `<div class="mb-1.5">${scoreHtml}</div>` : ''}
+                        ${chipsHtml ? `<div class="flex flex-wrap gap-1">${chipsHtml}</div>` : ''}
                     </div>
                 </div>
             </div>`;

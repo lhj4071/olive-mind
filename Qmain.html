@@ -1324,6 +1324,13 @@ function backToHub() {
 
 function markDoneAndBack() {
   if (!currentSurveyId) return;
+
+  // 결과 페이지를 확인한 후(=SURVEY_SCORES 수신 후)에만 허브로 복귀
+  if (!scoreStore[currentSurveyId]) {
+    showToast('검사를 끝까지 완료한 뒤 결과를 확인해 주세요.');
+    return;
+  }
+
   doneSet.add(currentSurveyId);
   saveDone();
 
@@ -1599,13 +1606,20 @@ window.addEventListener('message', (e) => {
     const { surveyId, scores } = e.data;
     if (surveyId && scores) {
       scoreStore[surveyId] = scores;
-      // Also auto-mark done if scores arrive
       if (!doneSet.has(surveyId)) {
         doneSet.add(surveyId);
         saveDone();
         renderCards();
       }
       showToast('결과가 통합 대시보드에 저장되었습니다');
+
+      // Supabase에 개별 검사 결과 저장
+      const surveyObj = SURVEYS.find(x => x.id === surveyId);
+      if (surveyObj) {
+        const summaryText = scores.map(s => `${s.name}: ${s.badge || s.score}`).join(' | ');
+        const mainScore   = scores.length > 0 ? scores[0].score : null;
+        saveTestResult(surveyObj.title, mainScore, summaryText);
+      }
     }
   }
 
