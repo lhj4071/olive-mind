@@ -8,6 +8,9 @@
     <!-- Supabase JS SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -381,6 +384,671 @@
 
             #page-profile { max-width: 640px; margin: 0 auto; }
         }
+
+        /* ── 기분 슬라이더 ─────────────────────────────── */
+        .mood-slider-wrap {
+            position: relative;
+        }
+        .mood-range {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 28px;
+            background: transparent;
+            outline: none;
+            cursor: pointer;
+            display: block;
+        }
+        .mood-range::-webkit-slider-runnable-track {
+            height: 6px;
+            border-radius: 3px;
+            background: linear-gradient(
+                to right,
+                var(--slider-color, #5C7A2A) var(--slider-pct, 44%),
+                #e4dbc9 var(--slider-pct, 44%)
+            );
+        }
+        .mood-range::-moz-range-track {
+            height: 6px;
+            border-radius: 3px;
+            background: #e4dbc9;
+        }
+        .mood-range::-moz-range-progress {
+            height: 6px;
+            border-radius: 3px 0 0 3px;
+            background: var(--slider-color, #5C7A2A);
+        }
+        .mood-range::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: #ffffff;
+            border: 2.5px solid var(--slider-color, #5C7A2A);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+            margin-top: -11px;
+            cursor: grab;
+            transition: box-shadow 0.15s;
+        }
+        .mood-range:active::-webkit-slider-thumb { cursor: grabbing; }
+        .mood-range::-moz-range-thumb {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: #ffffff;
+            border: 2.5px solid var(--slider-color, #5C7A2A);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+            cursor: grab;
+        }
+        .mood-thumb-val {
+            position: absolute;
+            top: 0;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 700;
+            pointer-events: none;
+            transform: translateX(-50%);
+            z-index: 1;
+        }
+
+        /* ── 불안 배너 ──────────────────────────────────── */
+        #anxiety-banner {
+            display: none;
+            margin-top: 14px;
+            border-radius: 14px;
+            padding: 12px 16px;
+            background: #fdf4e6;
+            border: 1px solid #f0d8b0;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        #anxiety-banner:hover { background: #faecda; }
+
+        /* ── 루틴 카드 ─────────────────────────────────── */
+        .routine-item {
+            display: flex; align-items: center; gap: 10px;
+            padding: 11px 0;
+            border-bottom: 1px solid #f5f2ec;
+        }
+        .routine-item:last-child { border-bottom: none; }
+
+        .routine-check-btn {
+            flex-shrink: 0; width: 24px; height: 24px;
+            border-radius: 50%; border: 2px solid #d0c8bc;
+            background: none; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: border-color 0.2s, background 0.2s;
+        }
+        .routine-check-btn.done { border-color: #5C7A2A; background: #5C7A2A; }
+        .routine-check-btn.done i { color: #fff; font-size: 11px; }
+        .routine-check-btn:active { transform: scale(0.9); }
+
+        .routine-counter { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+        .routine-counter-btn {
+            width: 24px; height: 24px; border-radius: 50%;
+            border: 1.5px solid #d0c8bc; background: none;
+            font-size: 14px; font-weight: 700; color: #8a8070;
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+            transition: border-color 0.15s, color 0.15s;
+        }
+        .routine-counter-btn:active { transform: scale(0.88); }
+        .routine-counter-val {
+            font-size: 13px; font-weight: 700; min-width: 34px;
+            text-align: center; color: #2a2820;
+        }
+        .routine-label { flex: 1; font-size: 14px; color: #2a2820; transition: color 0.2s; }
+        .routine-label.done { color: #b0a898; text-decoration: line-through; }
+
+        #routine-progress-track {
+            height: 4px; border-radius: 2px;
+            background: #f0ede6; margin-bottom: 6px; overflow: hidden;
+        }
+        #routine-progress-fill {
+            height: 100%; border-radius: 2px; width: 0%;
+            background: linear-gradient(to right, #5C7A2A, #8BAD45);
+            transition: width 0.35s ease;
+        }
+
+        /* ── 루틴 바텀시트 ──────────────────────────────── */
+        #routine-sheet-backdrop {
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.45);
+            z-index: 300; opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+        #routine-sheet-backdrop.open { opacity: 1; pointer-events: auto; }
+
+        #routine-sheet {
+            position: fixed; bottom: 0; left: 50%;
+            transform: translateX(-50%) translateY(100%);
+            width: 100%; max-width: 480px;
+            background: #fff;
+            border-radius: 22px 22px 0 0;
+            z-index: 301;
+            transition: transform 0.38s cubic-bezier(0.32, 0.72, 0, 1);
+            max-height: 88vh;
+            display: flex; flex-direction: column;
+            box-shadow: 0 -4px 32px rgba(42,40,32,0.14);
+        }
+        #routine-sheet.open { transform: translateX(-50%) translateY(0); }
+
+        .sheet-handle {
+            width: 40px; height: 4px; border-radius: 2px;
+            background: #e0dbd4; margin: 12px auto 0; flex-shrink: 0;
+        }
+        #routine-sheet-header {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 14px 18px 0; flex-shrink: 0;
+        }
+        #routine-sheet-body {
+            overflow-y: auto; flex: 1;
+            padding: 0 18px env(safe-area-inset-bottom, 24px);
+            padding-bottom: max(env(safe-area-inset-bottom, 0px), 24px);
+            -webkit-overflow-scrolling: touch;
+        }
+        .sheet-section-label {
+            font-size: 11px; font-weight: 700;
+            letter-spacing: 0.06em; text-transform: uppercase;
+            color: #a09890; margin: 18px 0 8px;
+        }
+        .sheet-routine-row {
+            display: flex; align-items: center; gap: 8px;
+            padding: 9px 0; border-bottom: 1px solid #f5f2ec;
+        }
+        .sheet-routine-row:last-child { border-bottom: none; }
+        .sheet-delete-btn {
+            width: 28px; height: 28px; border-radius: 50%;
+            border: none; background: #fef0f0; color: #c05a5a;
+            font-size: 11px; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0; transition: background 0.15s;
+        }
+        .sheet-delete-btn:hover { background: #fddada; }
+
+        .preset-chip {
+            display: inline-flex; align-items: center; gap: 4px;
+            padding: 6px 12px; border-radius: 20px;
+            font-size: 12px; font-weight: 600;
+            background: #eef2e6; color: #5C7A2A;
+            border: 1.5px solid transparent;
+            cursor: pointer; transition: all 0.15s; white-space: nowrap;
+        }
+        .preset-chip:active { transform: scale(0.94); }
+        .preset-chip.active { background: #5C7A2A; color: #fff; border-color: #5C7A2A; }
+
+        .sheet-add-row { display: flex; gap: 8px; margin-bottom: 8px; }
+        .sheet-emoji-input {
+            width: 52px; padding: 10px 8px; text-align: center;
+            border: 1.5px solid #e4dbc9; border-radius: 10px;
+            font-size: 16px; background: #fff; outline: none;
+        }
+        .sheet-emoji-input:focus { border-color: #5C7A2A; }
+        .sheet-label-input {
+            flex: 1; padding: 10px 12px;
+            border: 1.5px solid #e4dbc9; border-radius: 10px;
+            font-size: 14px; color: #2a2820; background: #fff; outline: none;
+        }
+        .sheet-label-input:focus { border-color: #5C7A2A; }
+        .sheet-target-row {
+            display: flex; align-items: center; gap: 10px; margin-bottom: 12px;
+        }
+        .sheet-target-btn {
+            width: 30px; height: 30px; border-radius: 50%;
+            border: 1.5px solid #d0c8bc; background: none;
+            font-size: 16px; font-weight: 700; color: #6b6558;
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+        }
+        .sheet-target-btn:active { transform: scale(0.9); }
+
+        /* ── 올리브 나무 타마고치 ─────────────────────── */
+        @keyframes treeEntry {
+            from { opacity: 0; transform: scale(0.68) translateY(14px); }
+            to   { opacity: 1; transform: scale(1)    translateY(0);    }
+        }
+        @keyframes treeGlow {
+            0%, 100% { filter: drop-shadow(0 0 0px  rgba(214,168,42,0)); }
+            50%       { filter: drop-shadow(0 6px 18px rgba(214,168,42,0.62)); }
+        }
+        @keyframes treeShake {
+            0%, 100% { transform: rotate(0deg);    }
+            15%       { transform: rotate(-1.8deg); }
+            35%       { transform: rotate( 1.8deg); }
+            55%       { transform: rotate(-1.1deg); }
+            75%       { transform: rotate( 1.1deg); }
+        }
+        @keyframes harvestPop {
+            0%   { transform: scale(1);              }
+            35%  { transform: scale(1.24) rotate(-3deg); }
+            65%  { transform: scale(0.88) rotate( 2deg); }
+            100% { transform: scale(1)   rotate( 0deg); }
+        }
+        .tree-entry       { animation: treeEntry 0.62s cubic-bezier(0.34,1.56,0.64,1) both; }
+        .tree-entry-glow  { animation: treeEntry 0.62s cubic-bezier(0.34,1.56,0.64,1) both,
+                                        treeGlow  1.5s  0.62s ease-in-out infinite; }
+        .tree-entry-shake { animation: treeEntry 0.62s cubic-bezier(0.34,1.56,0.64,1) both,
+                                        treeShake 3.2s  0.62s ease-in-out infinite; }
+        .tree-harvest-pop { animation: harvestPop 0.55s cubic-bezier(0.34,1.56,0.64,1) both !important; }
+        #tree-img-btn { background: none; border: none; padding: 0; display: block; }
+        #tree-img-btn.harvestable { cursor: pointer; }
+        #tree-harvest-badge {
+            font-size: 11px; font-weight: 600;
+            padding: 3px 10px; border-radius: 20px; margin-bottom: 6px;
+            background: rgba(255,255,255,0.16); color: rgba(255,255,255,0.88);
+            border: 1px solid rgba(255,255,255,0.22); white-space: nowrap;
+        }
+        #tree-message {
+            font-size: 11px; line-height: 1.45; text-align: center;
+            color: rgba(255,255,255,0.72); max-width: 128px; margin-top: 6px;
+            word-break: keep-all;
+        }
+
+        /* ── 수면 루틴 위젯 & 모달 ──────────────────── */
+        #sleep-widget { cursor: pointer; transition: box-shadow 0.18s, transform 0.12s; }
+        #sleep-widget:active { transform: scale(0.985); }
+        #sleep-notif-badge {
+            font-size: 11px; font-weight: 600;
+            padding: 3px 9px; border-radius: 20px;
+        }
+
+        /* 모달 백드롭 */
+        #sleep-modal-backdrop {
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.48);
+            z-index: 400; opacity: 0;
+            transition: opacity 0.24s ease;
+            pointer-events: none;
+        }
+        #sleep-modal-backdrop.open { opacity: 1; pointer-events: auto; }
+
+        /* 모달 패널 */
+        #sleep-modal {
+            position: fixed; top: 50%; left: 50%;
+            transform: translate(-50%, -50%) scale(0.91);
+            width: min(92vw, 370px);
+            background: #fff; border-radius: 26px;
+            padding: 26px 22px 22px;
+            z-index: 401; opacity: 0; pointer-events: none;
+            transition: opacity 0.24s ease, transform 0.28s cubic-bezier(0.34,1.56,0.64,1);
+            box-shadow: 0 24px 64px rgba(0,0,0,0.22);
+        }
+        #sleep-modal.open {
+            opacity: 1; pointer-events: auto;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        /* 시간 입력 */
+        .sleep-time-wrap { position: relative; }
+        .sleep-time-label {
+            font-size: 11px; font-weight: 700; letter-spacing: 0.04em;
+            color: #a09890; text-transform: uppercase; margin-bottom: 7px; display: block;
+        }
+        .sleep-time-input {
+            width: 100%; padding: 13px 16px;
+            border: 1.5px solid #e4dbc9; border-radius: 14px;
+            font-size: 26px; font-weight: 700; color: #2a2820;
+            background: #faf8f3; text-align: center; outline: none;
+            font-family: inherit; cursor: pointer; box-sizing: border-box;
+        }
+        .sleep-time-input:focus { border-color: #6A8CA0; background: #fff; }
+
+        /* 알림 토글 스위치 */
+        #sleep-notif-toggle {
+            width: 50px; height: 28px; border-radius: 14px; border: none;
+            background: #d0c8bc; position: relative; cursor: pointer;
+            flex-shrink: 0; transition: background 0.22s;
+        }
+        #sleep-notif-toggle::after {
+            content: ''; position: absolute;
+            width: 22px; height: 22px; border-radius: 50%;
+            background: #fff; top: 3px; left: 3px;
+            transition: transform 0.22s; box-shadow: 0 1px 4px rgba(0,0,0,0.22);
+        }
+        #sleep-notif-toggle.on { background: #5C7A2A; }
+        #sleep-notif-toggle.on::after { transform: translateX(22px); }
+
+        /* 저장 버튼 */
+        #sleep-save-btn {
+            width: 100%; padding: 15px;
+            border: none; border-radius: 16px; cursor: pointer;
+            font-size: 15px; font-weight: 700;
+            background: #5C7A2A; color: #fff;
+            transition: opacity 0.15s;
+        }
+        #sleep-save-btn:active { opacity: 0.82; }
+
+        /* ── 도구함 탭 – 복식호흡 ──────────────────────── */
+        #page-tools {
+            position: relative;
+            margin: -20px -16px 0;
+            min-height: calc(100dvh - 60px);
+            overflow: hidden;
+            display: flex; flex-direction: column;
+        }
+        #breath-bg-video {
+            position: absolute; inset: 0;
+            width: 100%; height: 100%;
+            object-fit: cover; z-index: 0;
+        }
+        #breath-overlay {
+            position: absolute; inset: 0; z-index: 1;
+            background: linear-gradient(175deg,
+                rgba(0,18,8,0.60) 0%,
+                rgba(0,30,15,0.50) 60%,
+                rgba(0,18,8,0.65) 100%);
+        }
+        #breath-content {
+            position: relative; z-index: 2;
+            flex: 1; display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            padding: 28px 20px 110px; gap: 0;
+        }
+
+        /* 상단 stat 바 */
+        #breath-stats {
+            display: flex; align-items: center; justify-content: space-between;
+            width: 100%; max-width: 320px; margin-bottom: 28px;
+        }
+        #breath-today-badge, #breath-session-time {
+            font-size: 12px; font-weight: 600;
+            padding: 5px 13px; border-radius: 20px;
+            background: rgba(255,255,255,0.14); color: rgba(255,255,255,0.88);
+            border: 1px solid rgba(255,255,255,0.22);
+        }
+
+        /* SVG 래퍼 */
+        #breath-circle-wrap {
+            position: relative; width: 250px; height: 250px;
+            margin-bottom: 22px;
+        }
+        #breath-circle-wrap svg { display: block; }
+
+        /* 가운데 텍스트 오버레이 */
+        #breath-center-text {
+            position: absolute; inset: 0;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            pointer-events: none; user-select: none;
+        }
+        #breath-countdown {
+            font-size: 58px; font-weight: 800; line-height: 1;
+            color: #fff; font-variant-numeric: tabular-nums;
+            text-shadow: 0 2px 12px rgba(0,0,0,0.3);
+        }
+        #breath-phase-label {
+            font-size: 14px; font-weight: 600; letter-spacing: 0.06em;
+            color: rgba(255,255,255,0.78); margin-top: 7px;
+        }
+
+        /* 사이클 도트 */
+        #breath-dots {
+            display: flex; gap: 9px; margin-bottom: 24px;
+        }
+        .breath-dot {
+            width: 10px; height: 10px; border-radius: 50%;
+            background: rgba(255,255,255,0.25);
+            transition: background 0.35s, transform 0.35s;
+        }
+        .breath-dot.done {
+            background: rgba(200,255,180,0.85);
+            transform: scale(1.18);
+        }
+
+        /* 템포 버튼 */
+        #breath-tempo-wrap {
+            display: flex; gap: 10px; margin-bottom: 26px;
+        }
+        .breath-tempo-btn {
+            flex: 1; max-width: 90px; padding: 10px 0;
+            border-radius: 16px; border: 1.5px solid rgba(255,255,255,0.28);
+            background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.78);
+            font-size: 13px; font-weight: 600; text-align: center;
+            cursor: pointer; transition: background 0.18s, border-color 0.18s;
+            line-height: 1.35;
+        }
+        .breath-tempo-btn span { font-size: 11px; font-weight: 400; opacity: 0.75; }
+        .breath-tempo-btn.active {
+            background: rgba(140,200,100,0.28); border-color: rgba(160,230,120,0.7);
+            color: #fff;
+        }
+        .breath-tempo-btn:disabled { opacity: 0.45; cursor: default; }
+
+        /* 시작/정지 버튼 */
+        #breath-start-btn {
+            width: 200px; padding: 16px 0;
+            border-radius: 50px; border: none; cursor: pointer;
+            font-size: 16px; font-weight: 700; letter-spacing: 0.04em;
+            background: rgba(255,255,255,0.95); color: #1a3210;
+            box-shadow: 0 6px 28px rgba(0,0,0,0.28);
+            transition: opacity 0.15s, transform 0.12s;
+        }
+        #breath-start-btn:active { opacity: 0.84; transform: scale(0.96); }
+        #breath-start-btn.stop-mode {
+            background: rgba(255,255,255,0.16);
+            color: rgba(255,255,255,0.88);
+            border: 1.5px solid rgba(255,255,255,0.35);
+            box-shadow: none;
+        }
+
+        /* 완료 오버레이 */
+        #breath-complete-overlay {
+            position: absolute; inset: 0; z-index: 10;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center; gap: 12px;
+            background: rgba(0,0,0,0.55);
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+        #breath-complete-overlay.show { opacity: 1; pointer-events: auto; }
+        @keyframes completePop {
+            0%  { transform: scale(0.7); opacity: 0; }
+            60% { transform: scale(1.08); opacity: 1; }
+            100%{ transform: scale(1);   opacity: 1; }
+        }
+        #breath-complete-overlay .pop-emoji {
+            font-size: 64px;
+            animation: completePop 0.55s cubic-bezier(0.34,1.56,0.64,1) both;
+        }
+
+        /* ── 자료실 탭 – 질환 교육 브라우저 ─────────── */
+        .lib-filter-chip {
+            flex-shrink: 0; padding: 7px 14px; border-radius: 20px;
+            font-size: 13px; font-weight: 600; cursor: pointer;
+            background: #f0ede6; color: #6b6558;
+            border: 1.5px solid transparent;
+            transition: background 0.17s, color 0.17s;
+            white-space: nowrap;
+        }
+        .lib-filter-chip.active   { background: #5C7A2A; color: #fff; }
+        .lib-filter-chip:not(.active):hover { background: #eef2e6; color: #5C7A2A; }
+
+        .lib-search-wrap { position: relative; margin-bottom: 14px; }
+        .lib-search-icon {
+            position: absolute; left: 14px; top: 50%;
+            transform: translateY(-50%);
+            color: #a09890; font-size: 14px; pointer-events: none;
+        }
+        #lib-search-input {
+            width: 100%; padding: 13px 14px 13px 40px; box-sizing: border-box;
+            border: 1.5px solid #e4dbc9; border-radius: 16px;
+            background: #faf8f3; font-size: 14px; color: #2a2820;
+            outline: none; font-family: inherit; -webkit-appearance: none;
+        }
+        #lib-search-input:focus { border-color: #5C7A2A; background: #fff; }
+        #lib-search-input::placeholder { color: #b0a898; }
+
+        .cond-card {
+            background: #fff; border-radius: 20px;
+            border: 1px solid #ede8dc; padding: 15px;
+            display: flex; align-items: center; gap: 14px;
+            cursor: pointer; transition: box-shadow 0.18s, transform 0.12s;
+            margin-bottom: 10px;
+        }
+        .cond-card:active { transform: scale(0.985); }
+        .cond-emoji-wrap {
+            width: 52px; height: 52px; flex-shrink: 0;
+            border-radius: 16px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 26px;
+        }
+        .cond-badge {
+            font-size: 10px; font-weight: 700; letter-spacing: 0.04em;
+            padding: 2px 8px; border-radius: 10px; display: inline-block;
+        }
+        .lib-loading { display: flex; flex-direction: column; align-items: center; padding: 56px 0; }
+        .lib-empty   { text-align: center; padding: 56px 0; color: #a09890; font-size: 14px; }
+
+        /* 슬라이드 상세 패널 */
+        #condition-panel-backdrop {
+            position: fixed; inset: 0; z-index: 600;
+            background: rgba(0,0,0,0.35);
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.28s ease;
+        }
+        #condition-panel-backdrop.open { opacity: 1; pointer-events: auto; }
+
+        #condition-panel {
+            position: fixed; top: 0; right: 0; bottom: 0;
+            width: min(100vw, 480px);
+            background: #faf8f4; z-index: 601;
+            transform: translateX(100%);
+            transition: transform 0.38s cubic-bezier(0.32, 0.72, 0, 1);
+            display: flex; flex-direction: column;
+            box-shadow: -8px 0 32px rgba(0,0,0,0.12);
+        }
+        #condition-panel.open { transform: translateX(0); }
+
+        #condition-panel-header {
+            display: flex; align-items: center; gap: 12px;
+            padding: 14px 16px; border-bottom: 1px solid #ede8dc;
+            background: #faf8f4; flex-shrink: 0;
+        }
+        #condition-panel-back {
+            width: 36px; height: 36px; border-radius: 50%;
+            border: none; background: #f0ede6; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            color: #4a4438; font-size: 14px; flex-shrink: 0;
+            transition: background 0.15s;
+        }
+        #condition-panel-back:hover { background: #e4dbc9; }
+        #condition-panel-emoji-hd { font-size: 22px; flex-shrink: 0; }
+        #condition-panel-title {
+            font-size: 16px; font-weight: 700; color: #2a2820;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1;
+        }
+        #condition-panel-body {
+            flex: 1; overflow-y: auto; padding: 20px 16px 60px;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* 아코디언 */
+        .acc-section-title {
+            font-size: 11px; font-weight: 800; letter-spacing: 0.08em;
+            color: #a09890; text-transform: uppercase;
+            margin: 24px 0 10px; padding-bottom: 7px;
+            border-bottom: 1px solid #ede8dc;
+        }
+        .acc-item {
+            border-radius: 14px; overflow: hidden; margin-bottom: 8px;
+            border: 1px solid #ede8dc; background: #fff;
+        }
+        .acc-trigger {
+            width: 100%; padding: 14px 16px;
+            display: flex; align-items: flex-start; justify-content: space-between; gap: 10px;
+            background: none; border: none; cursor: pointer; text-align: left;
+            font-size: 13px; font-weight: 600; color: #2a2820; line-height: 1.5;
+            font-family: inherit;
+        }
+        .acc-trigger:active { background: #faf8f3; }
+        .acc-icon {
+            flex-shrink: 0; font-size: 11px; color: #a09890;
+            transition: transform 0.25s ease; margin-top: 3px;
+        }
+        .acc-icon.open { transform: rotate(180deg); }
+        .acc-body {
+            display: none; padding: 0 16px 16px;
+            font-size: 13px; color: #4a4438; line-height: 1.82; word-break: keep-all;
+        }
+        .acc-body.open { display: block; animation: accFadeIn 0.22s ease; }
+        @keyframes accFadeIn {
+            from { opacity: 0; transform: translateY(-4px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 질환 히어로 */
+        .cond-hero { text-align: center; padding-bottom: 22px; border-bottom: 1px solid #ede8dc; }
+        .cond-hero-emoji { font-size: 60px; display: block; margin-bottom: 10px; }
+        .cond-hero-title { font-size: 21px; font-weight: 800; color: #2a2820; margin-bottom: 8px; }
+        .cond-hero-summary { font-size: 14px; color: #8a8070; line-height: 1.68; word-break: keep-all; }
+        .cond-hero-keywords { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin-top: 14px; }
+        .symptom-chip {
+            font-size: 11px; font-weight: 600; padding: 4px 10px;
+            border-radius: 20px; background: #f0ede6; color: #6b6558;
+        }
+
+        /* 전문가 도움 카드 */
+        .seek-help-card {
+            border-radius: 16px; padding: 18px;
+            background: linear-gradient(135deg, #fff8f0, #fdf0e6);
+            border: 1px solid #f0d8b0; margin-top: 20px;
+        }
+        .seek-help-card h3 { font-size: 13px; font-weight: 700; color: #C4956A; margin-bottom: 10px; }
+        .seek-help-card p  { font-size: 13px; color: #4a4438; line-height: 1.78; word-break: keep-all; }
+
+        /* ── CSS 변수: 기분 색상 ─────────────────────── */
+        :root {
+            --color-mood:         #7C8C5E;
+            --color-anxiety:      #C4956A;
+            --color-irritability: #A08260;
+            --color-sleep:        #6A8CA0;
+        }
+
+        /* ── 기분 통계 차트 ──────────────────────────── */
+        .stat-mini-card {
+            flex: 1; padding: 10px 6px; border-radius: 14px;
+            text-align: center; background: #faf8f3;
+            border: 1px solid #ede8dc;
+        }
+        .stat-mini-label { font-size: 10px; color: #a09890; margin-bottom: 3px; }
+        .stat-mini-value { font-size: 20px; font-weight: 800; line-height: 1; }
+        .chart-legend-item {
+            display: flex; align-items: center; gap: 5px;
+            font-size: 11px; color: #6b6558; font-weight: 600;
+        }
+        .chart-legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+        /* ── 히스토리 타임라인 ───────────────────────── */
+        .mood-history-card {
+            background: #fff; border-radius: 18px;
+            padding: 14px 16px; border: 1px solid #ede8dc; margin-bottom: 10px;
+        }
+        .mood-score-row { display: flex; gap: 6px; flex-wrap: wrap; margin: 8px 0 4px; }
+        .mood-score-chip {
+            font-size: 11px; font-weight: 700;
+            padding: 3px 10px; border-radius: 12px;
+        }
+        .mood-tags { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 6px; }
+        .mood-tag {
+            font-size: 11px; padding: 2px 9px; border-radius: 10px;
+            background: #f0ede6; color: #6b6558;
+        }
+        .mood-memo {
+            font-size: 12px; color: #6b6558; line-height: 1.65;
+            margin-top: 9px; padding-top: 9px;
+            border-top: 1px solid #f5f2ec; word-break: break-all;
+        }
+        #mood-load-more {
+            width: 100%; padding: 13px; border-radius: 14px; margin-top: 4px;
+            border: 1.5px solid #e4dbc9; background: #faf8f3;
+            font-size: 13px; font-weight: 600; color: #6b6558; cursor: pointer;
+            transition: background 0.15s;
+        }
+        #mood-load-more:hover  { background: #f0ede6; }
+        #mood-load-more:disabled { opacity: 0.5; cursor: default; }
     </style>
 </head>
 <body>
@@ -594,6 +1262,9 @@
             <button id="dnav-tests"   class="desktop-nav-btn" onclick="switchPage('tests')">
                 <i class="fas fa-clipboard-list text-xs"></i> 심리검사
             </button>
+            <button id="dnav-tools"   class="desktop-nav-btn" onclick="switchPage('tools')">
+                <i class="fas fa-wind text-xs"></i> 도구함
+            </button>
             <button id="dnav-profile" class="desktop-nav-btn" onclick="switchPage('profile')">
                 <i class="fas fa-user text-xs"></i> 내 정보
             </button>
@@ -617,36 +1288,56 @@
              ━━━━━━━━━━━━━━━━━━━━━━━━ -->
         <section id="page-home" class="page-section">
 
-            <!-- Hero 배너 -->
+            <!-- Hero 배너 + 올리브 나무 -->
             <div class="rounded-3xl overflow-hidden mb-5 hero-glow"
                  style="background: linear-gradient(148deg, #1e2e0e 0%, #2e4a10 28%, #4a7018 58%, #7aad40 100%);
                         box-shadow: 0 8px 32px rgba(42,78,16,0.28);">
-                <div class="px-7 pt-8 pb-7">
-                    <div class="w-12 h-12 rounded-2xl flex items-center justify-center mb-6"
-                         style="background: rgba(255,255,255,0.14); border: 1px solid rgba(255,255,255,0.2);">
-                        <i class="fas fa-leaf text-xl" style="color: #c8e890;"></i>
+                <div class="flex items-end" style="gap: 0; padding: 20px 20px 18px 24px;">
+
+                    <!-- 좌측: 인사 + 버튼 -->
+                    <div class="flex-1 min-w-0" style="padding-right: 8px;">
+                        <div class="w-10 h-10 rounded-xl flex items-center justify-center mb-4"
+                             style="background: rgba(255,255,255,0.14); border: 1px solid rgba(255,255,255,0.2);">
+                            <i class="fas fa-leaf" style="color: #c8e890; font-size: 15px;"></i>
+                        </div>
+                        <p id="hero-greeting" class="text-xs mb-1" style="color: rgba(255,255,255,0.6);"></p>
+                        <h2 class="font-bold text-white leading-snug mb-1"
+                            style="font-size: 19px; letter-spacing: -0.3px; text-shadow: 0 1px 4px rgba(0,0,0,0.2);">
+                            안녕하세요,<br>
+                            <span id="home-username" class="font-extrabold"
+                                  style="display: inline-block; max-width: 140px; overflow: hidden;
+                                         text-overflow: ellipsis; white-space: nowrap; vertical-align: bottom;"></span>님 👋
+                        </h2>
+                        <p id="hero-date" class="text-xs mb-5" style="color: rgba(255,255,255,0.5);"></p>
+                        <div class="flex gap-2">
+                            <button onclick="switchPage('tests')"
+                                    class="flex-1 py-2.5 rounded-xl text-xs font-bold flex items-center justify-center gap-1"
+                                    style="background: rgba(255,255,255,0.96); color: #2e4a10;
+                                           box-shadow: 0 2px 8px rgba(0,0,0,0.13);">
+                                <i class="fas fa-clipboard-list" style="font-size: 10px;"></i>심리검사
+                            </button>
+                            <button onclick="switchPage('library')"
+                                    class="flex-1 py-2.5 rounded-xl text-xs font-semibold flex items-center justify-center gap-1"
+                                    style="background: rgba(255,255,255,0.16); color: rgba(255,255,255,0.96);
+                                           border: 1px solid rgba(255,255,255,0.28);">
+                                <i class="fas fa-book-open" style="font-size: 10px;"></i>자료실
+                            </button>
+                        </div>
                     </div>
-                    <h2 class="font-bold text-white leading-snug mb-3"
-                        style="font-size: 23px; letter-spacing: -0.3px; text-shadow: 0 1px 6px rgba(0,0,0,0.22);">
-                        안녕하세요,<br><span id="home-username" class="font-extrabold"></span>님 👋
-                    </h2>
-                    <p class="text-sm leading-relaxed mb-7" style="color: rgba(255,255,255,0.78);">
-                        당신의 마음에 쉼표가 필요한 순간,<br>올리브나무와 함께하세요.
-                    </p>
-                    <div class="flex gap-2.5">
-                        <button onclick="switchPage('tests')"
-                                class="flex-1 py-3 rounded-xl text-sm font-bold flex items-center justify-center gap-1.5"
-                                style="background: rgba(255,255,255,0.96); color: #2e4a10;
-                                       box-shadow: 0 2px 10px rgba(0,0,0,0.14);">
-                            <i class="fas fa-clipboard-list text-xs"></i>심리검사
+
+                    <!-- 우측: 올리브 나무 -->
+                    <div class="flex flex-col items-center flex-shrink-0" style="width: 130px; padding-bottom: 2px;">
+                        <div id="tree-harvest-badge">🫒 <span id="tree-harvest-count">0</span>개</div>
+                        <button id="tree-img-btn" onclick="harvestOlive()" aria-label="올리브 수확">
+                            <img id="tree-img"
+                                 src="assets/images/tree/tree_0.png"
+                                 alt="올리브 나무"
+                                 class="tree-entry"
+                                 style="width: 116px; height: 116px; object-fit: contain; display: block;">
                         </button>
-                        <button onclick="switchPage('library')"
-                                class="flex-1 py-3 rounded-xl text-sm font-semibold flex items-center justify-center gap-1.5"
-                                style="background: rgba(255,255,255,0.16); color: rgba(255,255,255,0.96);
-                                       border: 1px solid rgba(255,255,255,0.28);">
-                            <i class="fas fa-book-open text-xs"></i>자료실
-                        </button>
+                        <p id="tree-message"></p>
                     </div>
+
                 </div>
             </div>
 
@@ -663,6 +1354,163 @@
                     <p class="text-sm leading-relaxed" style="color: #4a4438;">
                         "치유는 직선이 아닙니다. 천천히, 당신만의 속도로 걸어가도 괜찮습니다."
                     </p>
+                </div>
+            </div>
+
+            <!-- 오늘의 기분 기록 -->
+            <div class="card mb-5" id="mood-log-card">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <p class="font-bold text-xs tracking-wide uppercase mb-0.5" style="color: #5C7A2A;">오늘의 기분 기록</p>
+                        <p class="text-xs" id="mood-saved-date" style="color: #a09890;"></p>
+                    </div>
+                    <div class="w-9 h-9 rounded-xl flex items-center justify-center" style="background: #eef2e6;">
+                        <i class="fas fa-heart-pulse" style="color: #5C7A2A; font-size: 15px;"></i>
+                    </div>
+                </div>
+
+                <div class="space-y-5">
+                    <!-- 기분 -->
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-sm font-semibold" style="color: #2a2820;">😊 기분</span>
+                            <span class="text-xs" style="color: #a09890;">매우 나쁨 · 매우 좋음</span>
+                        </div>
+                        <div class="mood-slider-wrap">
+                            <input type="range" class="mood-range" id="slider-mood"
+                                   min="1" max="10" step="1" value="5" data-color="#7C8C5E">
+                            <span class="mood-thumb-val" id="label-mood" style="color: #7C8C5E;"></span>
+                        </div>
+                    </div>
+
+                    <!-- 불안 -->
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-sm font-semibold" style="color: #2a2820;">😰 불안</span>
+                            <span class="text-xs" style="color: #a09890;">전혀 없음 · 매우 심함</span>
+                        </div>
+                        <div class="mood-slider-wrap">
+                            <input type="range" class="mood-range" id="slider-anxiety"
+                                   min="1" max="10" step="1" value="5" data-color="#C4956A">
+                            <span class="mood-thumb-val" id="label-anxiety" style="color: #C4956A;"></span>
+                        </div>
+                    </div>
+
+                    <!-- 예민도 -->
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-sm font-semibold" style="color: #2a2820;">😤 예민도</span>
+                            <span class="text-xs" style="color: #a09890;">전혀 없음 · 매우 심함</span>
+                        </div>
+                        <div class="mood-slider-wrap">
+                            <input type="range" class="mood-range" id="slider-irritability"
+                                   min="1" max="10" step="1" value="5" data-color="#A08260">
+                            <span class="mood-thumb-val" id="label-irritability" style="color: #A08260;"></span>
+                        </div>
+                    </div>
+
+                    <!-- 수면 -->
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-sm font-semibold" style="color: #2a2820;">😴 수면</span>
+                            <span class="text-xs" style="color: #a09890;">매우 나쁨 · 매우 좋음</span>
+                        </div>
+                        <div class="mood-slider-wrap">
+                            <input type="range" class="mood-range" id="slider-sleep"
+                                   min="1" max="10" step="1" value="5" data-color="#6A8CA0">
+                            <span class="mood-thumb-val" id="label-sleep" style="color: #6A8CA0;"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 불안 7 이상 시 배너 -->
+                <div id="anxiety-banner" onclick="switchPage('tests')">
+                    <div class="flex items-center gap-2.5">
+                        <i class="fas fa-wind flex-shrink-0" style="color: #C4956A;"></i>
+                        <div class="flex-1">
+                            <p class="text-sm font-semibold" style="color: #7a5030;">많이 힘드시군요</p>
+                            <p class="text-xs mt-0.5" style="color: #a07848;">심리검사로 현재 상태를 확인해 보세요</p>
+                        </div>
+                        <i class="fas fa-chevron-right flex-shrink-0" style="color: #C4956A; font-size: 12px;"></i>
+                    </div>
+                </div>
+
+                <button class="btn-primary mt-4" id="btn-save-mood" onclick="saveMoodLog()">
+                    오늘 기분 저장하기
+                </button>
+            </div>
+
+            <!-- 오늘의 루틴 -->
+            <div class="card mb-5" id="routine-card">
+                <div class="flex items-center justify-between mb-3">
+                    <div>
+                        <p class="font-bold text-xs tracking-wide uppercase mb-0.5" style="color: #5C7A2A;">오늘의 루틴</p>
+                        <p class="text-xs" style="color: #a09890;">작은 행동 하나가 회복의 시작입니다.</p>
+                    </div>
+                    <button onclick="openRoutineSheet()"
+                            class="w-8 h-8 rounded-full flex items-center justify-center"
+                            style="background: #eef2e6; border: none; cursor: pointer; flex-shrink: 0;">
+                        <i class="fas fa-cog" style="color: #5C7A2A; font-size: 13px;"></i>
+                    </button>
+                </div>
+
+                <!-- 진행률 바 -->
+                <div id="routine-progress-track"><div id="routine-progress-fill"></div></div>
+                <p class="text-xs mb-2" id="routine-progress-label" style="color: #a09890;">0 / 0 완료</p>
+
+                <!-- 루틴 아이템 목록 -->
+                <div id="routine-list"></div>
+
+                <!-- 빈 상태 -->
+                <div id="routine-empty" class="text-center py-5">
+                    <p class="text-sm mb-3" style="color: #a09890;">아직 설정된 루틴이 없어요</p>
+                    <button onclick="openRoutineSheet()"
+                            class="text-sm font-bold px-5 py-2 rounded-xl"
+                            style="background: #eef2e6; color: #5C7A2A; border: none; cursor: pointer;">
+                        루틴 설정하기
+                    </button>
+                </div>
+
+                <!-- 전체 완료 축하 -->
+                <div id="routine-all-done" class="hidden text-center py-2.5 mt-2 rounded-xl"
+                     style="background: #eef2e6;">
+                    <p class="text-sm font-semibold" style="color: #5C7A2A;">오늘 루틴을 모두 완료했어요 🌿</p>
+                </div>
+            </div>
+
+            <!-- 수면 루틴 위젯 -->
+            <div class="card mb-5" id="sleep-widget" onclick="openSleepModal()" role="button" aria-label="수면 루틴 설정">
+                <div class="flex items-center justify-between mb-2.5">
+                    <div class="flex items-center gap-1.5">
+                        <i class="fas fa-bed text-xs" style="color: #6A8CA0;"></i>
+                        <span class="text-xs font-bold tracking-wide" style="color: #6A8CA0;">수면 루틴</span>
+                    </div>
+                    <i class="fas fa-chevron-right text-xs" style="color: #d0c8bc;"></i>
+                </div>
+                <div class="flex items-center gap-0">
+                    <div class="flex items-center gap-2 flex-1">
+                        <div class="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0"
+                             style="background: #eef4fa;">
+                            <i class="fas fa-moon" style="color: #6A8CA0; font-size: 13px;"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs" style="color: #a09890;">취침</p>
+                            <p class="text-base font-bold" id="sleep-bed-time" style="color: #2a2820;">22:30</p>
+                        </div>
+                    </div>
+                    <div style="width: 1px; height: 36px; background: #e8e2d9; margin: 0 16px;"></div>
+                    <div class="flex items-center gap-2 flex-1">
+                        <div class="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0"
+                             style="background: #fdf4e6;">
+                            <i class="fas fa-sun" style="color: #C4956A; font-size: 13px;"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs" style="color: #a09890;">기상</p>
+                            <p class="text-base font-bold" id="sleep-wake-time" style="color: #2a2820;">07:00</p>
+                        </div>
+                    </div>
+                    <span id="sleep-notif-badge"
+                          style="background: #f5f2ec; color: #a09890;">알림 꺼짐</span>
                 </div>
             </div>
 
@@ -781,142 +1629,31 @@
         <section id="page-library" class="page-section hidden">
 
             <h2 class="text-xl font-bold mb-0.5" style="color: #2a2820;">마음 자료실</h2>
-            <p class="text-sm mb-4" style="color: #8a8070;">마음 건강을 위한 교육 자료 모음</p>
+            <p class="text-sm mb-4" style="color: #8a8070;">정신건강 교육 자료 · 질환별 상세 안내</p>
 
-            <div class="flex gap-2 mb-4 overflow-x-auto scrollbar-hide pb-1">
-                <button id="filter-all"
-                        class="filter-btn flex-shrink-0 px-4 py-1.5 rounded-full text-sm font-semibold"
-                        style="background: #5C7A2A; color: #ffffff;"
-                        onclick="filterLibrary('all', this)">전체</button>
-                <button id="filter-depression"
-                        class="filter-btn flex-shrink-0 px-4 py-1.5 rounded-full text-sm font-semibold"
-                        style="background: #eef2e6; color: #5C7A2A;"
-                        onclick="filterLibrary('depression', this)">우울증</button>
-                <button id="filter-anxiety"
-                        class="filter-btn flex-shrink-0 px-4 py-1.5 rounded-full text-sm font-semibold"
-                        style="background: #eef2e6; color: #5C7A2A;"
-                        onclick="filterLibrary('anxiety', this)">불안</button>
-                <button id="filter-sleep"
-                        class="filter-btn flex-shrink-0 px-4 py-1.5 rounded-full text-sm font-semibold"
-                        style="background: #eef2e6; color: #5C7A2A;"
-                        onclick="filterLibrary('sleep', this)">수면</button>
-                <button id="filter-stress"
-                        class="filter-btn flex-shrink-0 px-4 py-1.5 rounded-full text-sm font-semibold"
-                        style="background: #eef2e6; color: #5C7A2A;"
-                        onclick="filterLibrary('stress', this)">스트레스</button>
+            <!-- 검색창 -->
+            <div class="lib-search-wrap">
+                <i class="fas fa-search lib-search-icon"></i>
+                <input id="lib-search-input" type="search"
+                       placeholder="질환명, 증상 키워드 검색..."
+                       autocomplete="off" spellcheck="false"
+                       oninput="searchLibraryConditions(this.value)">
             </div>
 
-            <div class="space-y-4" id="library-list">
-
-                <div class="card library-item" data-category="depression">
-                    <div class="flex items-start gap-3">
-                        <div class="w-14 h-14 rounded-xl flex-shrink-0 flex items-center justify-center"
-                             style="background: linear-gradient(135deg, #eef2e6, #dce8cc);">
-                            <i class="fas fa-sun text-2xl" style="color: #5C7A2A;"></i>
-                        </div>
-                        <div class="flex-1">
-                            <div class="flex items-center gap-2 mb-1">
-                                <span class="badge" style="background: #eef2e6; color: #5C7A2A;">우울증</span>
-                                <span class="text-xs" style="color: #a09890;">5분 읽기</span>
-                            </div>
-                            <h4 class="font-bold text-sm leading-snug mb-1" style="color: #2a2820;">우울증 극복을 위한 첫걸음</h4>
-                            <p class="text-xs leading-relaxed" style="color: #8a8070;">
-                                우울감을 느낄 때 취할 수 있는 일상적인 행동 변화와 전문가 도움 요청 방법을 알아봅니다.
-                            </p>
-                        </div>
-                    </div>
-                    <div class="mt-3 pt-3 flex items-center justify-between" style="border-top: 1px solid #f0ede6;">
-                        <span class="flex items-center gap-1 text-xs" style="color: #a09890;">
-                            <i class="fas fa-eye"></i> 128명이 읽었어요
-                        </span>
-                        <button onclick="showToast('준비 중인 기능입니다')"
-                                class="text-xs font-bold px-4 py-1.5 rounded-full"
-                                style="background: #eef2e6; color: #5C7A2A;">자세히 보기</button>
-                    </div>
-                </div>
-
-                <div class="card library-item" data-category="sleep">
-                    <div class="flex items-start gap-3">
-                        <div class="w-14 h-14 rounded-xl flex-shrink-0 flex items-center justify-center"
-                             style="background: linear-gradient(135deg, #eef4fa, #b8d9f5);">
-                            <i class="fas fa-moon text-2xl" style="color: #5A8FBC;"></i>
-                        </div>
-                        <div class="flex-1">
-                            <div class="flex items-center gap-2 mb-1">
-                                <span class="badge" style="background: #eef4fa; color: #5A8FBC;">수면</span>
-                                <span class="text-xs" style="color: #a09890;">7분 읽기</span>
-                            </div>
-                            <h4 class="font-bold text-sm leading-snug mb-1" style="color: #2a2820;">수면 위생 가이드</h4>
-                            <p class="text-xs leading-relaxed" style="color: #8a8070;">
-                                숙면을 위한 환경 조성과 취침 전 루틴 만들기. 좋은 수면이 마음 건강에 미치는 영향을 알아봅니다.
-                            </p>
-                        </div>
-                    </div>
-                    <div class="mt-3 pt-3 flex items-center justify-between" style="border-top: 1px solid #f0ede6;">
-                        <span class="flex items-center gap-1 text-xs" style="color: #a09890;">
-                            <i class="fas fa-eye"></i> 95명이 읽었어요
-                        </span>
-                        <button onclick="showToast('준비 중인 기능입니다')"
-                                class="text-xs font-bold px-4 py-1.5 rounded-full"
-                                style="background: #eef4fa; color: #5A8FBC;">자세히 보기</button>
-                    </div>
-                </div>
-
-                <div class="card library-item" data-category="anxiety">
-                    <div class="flex items-start gap-3">
-                        <div class="w-14 h-14 rounded-xl flex-shrink-0 flex items-center justify-center"
-                             style="background: linear-gradient(135deg, #fdf4e6, #f5dba0);">
-                            <i class="fas fa-wind text-2xl" style="color: #C4956A;"></i>
-                        </div>
-                        <div class="flex-1">
-                            <div class="flex items-center gap-2 mb-1">
-                                <span class="badge" style="background: #fdf4e6; color: #C4956A;">불안</span>
-                                <span class="text-xs" style="color: #a09890;">6분 읽기</span>
-                            </div>
-                            <h4 class="font-bold text-sm leading-snug mb-1" style="color: #2a2820;">불안한 마음을 다스리는 호흡법</h4>
-                            <p class="text-xs leading-relaxed" style="color: #8a8070;">
-                                불안이 엄습할 때 즉시 사용할 수 있는 복식호흡과 4-7-8 호흡법을 상세히 안내합니다.
-                            </p>
-                        </div>
-                    </div>
-                    <div class="mt-3 pt-3 flex items-center justify-between" style="border-top: 1px solid #f0ede6;">
-                        <span class="flex items-center gap-1 text-xs" style="color: #a09890;">
-                            <i class="fas fa-eye"></i> 74명이 읽었어요
-                        </span>
-                        <button onclick="showToast('준비 중인 기능입니다')"
-                                class="text-xs font-bold px-4 py-1.5 rounded-full"
-                                style="background: #fdf4e6; color: #C4956A;">자세히 보기</button>
-                    </div>
-                </div>
-
-                <div class="card library-item" data-category="stress">
-                    <div class="flex items-start gap-3">
-                        <div class="w-14 h-14 rounded-xl flex-shrink-0 flex items-center justify-center"
-                             style="background: linear-gradient(135deg, #f5eefa, #dac5f5);">
-                            <i class="fas fa-brain text-2xl" style="color: #6D5BA3;"></i>
-                        </div>
-                        <div class="flex-1">
-                            <div class="flex items-center gap-2 mb-1">
-                                <span class="badge" style="background: #f0eefa; color: #6D5BA3;">스트레스</span>
-                                <span class="text-xs" style="color: #a09890;">8분 읽기</span>
-                            </div>
-                            <h4 class="font-bold text-sm leading-snug mb-1" style="color: #2a2820;">만성 스트레스와 몸의 신호</h4>
-                            <p class="text-xs leading-relaxed" style="color: #8a8070;">
-                                스트레스가 신체에 미치는 영향을 이해하고, 일상에서 실천할 수 있는 스트레스 관리 전략을 소개합니다.
-                            </p>
-                        </div>
-                    </div>
-                    <div class="mt-3 pt-3 flex items-center justify-between" style="border-top: 1px solid #f0ede6;">
-                        <span class="flex items-center gap-1 text-xs" style="color: #a09890;">
-                            <i class="fas fa-eye"></i> 61명이 읽었어요
-                        </span>
-                        <button onclick="showToast('준비 중인 기능입니다')"
-                                class="text-xs font-bold px-4 py-1.5 rounded-full"
-                                style="background: #f0eefa; color: #6D5BA3;">자세히 보기</button>
-                    </div>
-                </div>
-
+            <!-- 카테고리 필터 칩 -->
+            <div class="flex gap-2 mb-5 overflow-x-auto pb-1" id="lib-filter-row"
+                 style="-webkit-overflow-scrolling: touch; scrollbar-width: none;">
+                <!-- JS로 렌더링 -->
             </div>
+
+            <!-- 질환 카드 목록 -->
+            <div id="lib-condition-list">
+                <div class="lib-loading">
+                    <i class="fas fa-spinner fa-spin" style="font-size: 22px; color: #c0b8a8;"></i>
+                    <p style="color: #a09890; font-size: 13px; margin-top: 10px;">불러오는 중...</p>
+                </div>
+            </div>
+
         </section>
 
 
@@ -1129,6 +1866,72 @@
                 <p class="text-sm mt-0.5" style="color: #8a8070;">올리브나무 회원</p>
             </div>
 
+            <!-- ── 기분 통계 차트 ── -->
+            <div class="card mb-5" id="mood-chart-card">
+                <div class="flex items-center justify-between mb-3">
+                    <h3 class="font-bold text-xs tracking-widest uppercase" style="color: #a09890;">
+                        <i class="fas fa-chart-line mr-1.5"></i>최근 30일 기분 통계
+                    </h3>
+                    <i id="chart-loading" class="fas fa-spinner fa-spin hidden" style="color: #c0b8a8; font-size: 12px;"></i>
+                </div>
+
+                <!-- 평균 미니 스탯 -->
+                <div class="flex gap-2 mb-4">
+                    <div class="stat-mini-card">
+                        <p class="stat-mini-label">기분 평균</p>
+                        <p class="stat-mini-value" id="avg-mood" style="color: var(--color-mood);">—</p>
+                    </div>
+                    <div class="stat-mini-card">
+                        <p class="stat-mini-label">불안 평균</p>
+                        <p class="stat-mini-value" id="avg-anxiety" style="color: var(--color-anxiety);">—</p>
+                    </div>
+                    <div class="stat-mini-card">
+                        <p class="stat-mini-label">수면 평균</p>
+                        <p class="stat-mini-value" id="avg-sleep" style="color: var(--color-sleep);">—</p>
+                    </div>
+                </div>
+
+                <!-- 캔버스 -->
+                <div id="chart-canvas-wrap" style="position: relative; height: 185px;">
+                    <canvas id="mood-chart-canvas"></canvas>
+                </div>
+
+                <!-- 범례 -->
+                <div class="flex flex-wrap gap-3 mt-3 justify-center">
+                    <div class="chart-legend-item">
+                        <div class="chart-legend-dot" style="background: var(--color-mood);"></div> 기분
+                    </div>
+                    <div class="chart-legend-item">
+                        <div class="chart-legend-dot" style="background: var(--color-anxiety);"></div> 불안
+                    </div>
+                    <div class="chart-legend-item">
+                        <div class="chart-legend-dot" style="background: var(--color-irritability);"></div> 예민도
+                    </div>
+                    <div class="chart-legend-item">
+                        <div class="chart-legend-dot" style="background: var(--color-sleep);"></div> 수면
+                    </div>
+                </div>
+
+                <!-- 빈 상태 -->
+                <div id="mood-chart-empty" class="hidden"
+                     style="text-align: center; padding: 24px 0; color: #a09890; font-size: 13px; line-height: 1.7;">
+                    아직 기분 기록이 없어요.<br>홈 탭에서 첫 기록을 남겨 보세요 🌿
+                </div>
+            </div>
+
+            <!-- ── 히스토리 타임라인 ── -->
+            <div class="mb-5">
+                <div class="flex items-center justify-between mb-3">
+                    <h3 class="font-bold text-xs tracking-widest uppercase" style="color: #a09890;">
+                        <i class="fas fa-calendar-days mr-1.5"></i>기분 기록 타임라인
+                    </h3>
+                </div>
+                <div id="mood-timeline-list"></div>
+                <button id="mood-load-more" class="hidden" onclick="loadMoreMoodHistory()">
+                    <i class="fas fa-circle-chevron-down" style="margin-right: 6px;"></i>더 보기
+                </button>
+            </div>
+
             <!-- 나의 마음 기록 -->
             <div class="mb-5">
                 <div class="flex items-center justify-between mb-3">
@@ -1163,6 +1966,16 @@
 
             <!-- 설정 메뉴 -->
             <div class="card mb-4" style="padding: 0; overflow: hidden;">
+                <button class="w-full flex items-center gap-3 px-4 py-3.5 text-left active:bg-warm-50"
+                        onclick="window.location.href='meds.html'"
+                        style="border-bottom: 1px solid #f5f2ec;">
+                    <div class="w-8 h-8 rounded-lg flex items-center justify-center"
+                         style="background: #e8f0e6;">
+                        <i class="fas fa-pills text-sm" style="color: #5C7A2A;"></i>
+                    </div>
+                    <span class="flex-1 text-sm font-medium" style="color: #2a2820;">내 약물 관리</span>
+                    <i class="fas fa-chevron-right text-xs" style="color: #d0c8bc;"></i>
+                </button>
                 <button class="w-full flex items-center gap-3 px-4 py-3.5 text-left active:bg-warm-50"
                         onclick="showToast('준비 중인 기능입니다')"
                         style="border-bottom: 1px solid #f5f2ec;">
@@ -1202,6 +2015,109 @@
             </p>
         </section>
 
+        <!-- ━━━━━━━━━━━━━━━━━━━━━━━━
+             도구함 탭
+             ━━━━━━━━━━━━━━━━━━━━━━━━ -->
+        <section id="page-tools" class="page-section hidden">
+
+            <!-- 배경 비디오 -->
+            <video id="breath-bg-video"
+                   autoplay muted loop playsinline
+                   preload="auto">
+                <source src="assets/videos/breathing_loop.mp4" type="video/mp4">
+            </video>
+
+            <!-- 어두운 오버레이 -->
+            <div id="breath-overlay"></div>
+
+            <!-- 메인 콘텐츠 -->
+            <div id="breath-content">
+
+                <!-- 상단: 오늘 세트수 + 세션 시간 -->
+                <div id="breath-stats">
+                    <span id="breath-today-badge">오늘 0세트 완료</span>
+                    <span id="breath-session-time" style="display:none;">00:00</span>
+                </div>
+
+                <!-- SVG 호흡 원 -->
+                <div id="breath-circle-wrap">
+                    <svg viewBox="0 0 250 250" width="250" height="250"
+                         style="overflow: visible;">
+                        <!-- 바깥 가이드 링 -->
+                        <circle cx="125" cy="125" r="112"
+                                fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="1.5"/>
+                        <!-- 위상 진행 호 (스트로크로 진행률 표시) -->
+                        <circle id="breath-arc" cx="125" cy="125" r="112"
+                                fill="none" stroke="rgba(160,230,140,0.7)" stroke-width="3"
+                                stroke-linecap="round"
+                                stroke-dasharray="703.7" stroke-dashoffset="703.7"
+                                transform="rotate(-90 125 125)"/>
+                        <!-- 크기가 변하는 내부 원 그룹 -->
+                        <g id="breath-circle-group"
+                           style="transform-origin: 125px 125px; transform: scale(0.62);">
+                            <circle cx="125" cy="125" r="84"
+                                    fill="rgba(255,255,255,0.14)"/>
+                            <circle cx="125" cy="125" r="84"
+                                    fill="none" stroke="rgba(255,255,255,0.40)" stroke-width="2"/>
+                            <circle cx="125" cy="125" r="56"
+                                    fill="rgba(255,255,255,0.07)"/>
+                        </g>
+                    </svg>
+                    <!-- 원 중앙 오버레이 텍스트 -->
+                    <div id="breath-center-text">
+                        <span id="breath-countdown">4</span>
+                        <span id="breath-phase-label">들이마세요</span>
+                    </div>
+                </div>
+
+                <!-- 사이클 도트 (6개) -->
+                <div id="breath-dots">
+                    <div class="breath-dot" id="bdot-0"></div>
+                    <div class="breath-dot" id="bdot-1"></div>
+                    <div class="breath-dot" id="bdot-2"></div>
+                    <div class="breath-dot" id="bdot-3"></div>
+                    <div class="breath-dot" id="bdot-4"></div>
+                    <div class="breath-dot" id="bdot-5"></div>
+                </div>
+
+                <!-- 템포 선택 -->
+                <div id="breath-tempo-wrap">
+                    <button class="breath-tempo-btn" id="btempo-slow"
+                            onclick="changeBreathTempo('slow')">
+                        느림<br><span>16초</span>
+                    </button>
+                    <button class="breath-tempo-btn active" id="btempo-normal"
+                            onclick="changeBreathTempo('normal')">
+                        보통<br><span>10초</span>
+                    </button>
+                    <button class="breath-tempo-btn" id="btempo-fast"
+                            onclick="changeBreathTempo('fast')">
+                        빠름<br><span>8초</span>
+                    </button>
+                </div>
+
+                <!-- 시작 / 정지 -->
+                <button id="breath-start-btn" onclick="toggleBreath()">시작하기</button>
+
+            </div><!-- /breath-content -->
+
+            <!-- 세트 완료 오버레이 -->
+            <div id="breath-complete-overlay">
+                <div class="pop-emoji">🌿</div>
+                <p style="font-size:22px; font-weight:800; color:#fff;">세트 완료!</p>
+                <p style="font-size:14px; color:rgba(255,255,255,0.78); text-align:center; line-height:1.5;">
+                    6사이클을 마쳤어요.<br>올리브 나무가 조금 더 자랐어요.
+                </p>
+                <button onclick="_dismissBreathComplete()"
+                        style="margin-top:14px; padding:13px 36px; border-radius:50px; border:none;
+                               background:rgba(255,255,255,0.9); color:#1a3210;
+                               font-size:15px; font-weight:700; cursor:pointer;">
+                    확인
+                </button>
+            </div>
+
+        </section>
+
     </main>
 
     <!-- ── 하단 네비게이션 (모바일) ── -->
@@ -1215,6 +2131,9 @@
         <button class="nav-item"        id="nav-tests"   onclick="switchPage('tests')">
             <i class="fas fa-clipboard-list"></i><span>심리검사</span>
         </button>
+        <button class="nav-item"        id="nav-tools"   onclick="switchPage('tools')">
+            <i class="fas fa-wind"></i><span>도구함</span>
+        </button>
         <button class="nav-item"        id="nav-profile" onclick="switchPage('profile')">
             <i class="fas fa-user"></i><span>내 정보</span>
         </button>
@@ -1222,6 +2141,120 @@
 
 </div><!-- /main-content -->
 
+
+<!-- ══════════════════════════════════════════
+     루틴 편집 바텀시트
+     ══════════════════════════════════════════ -->
+<div id="routine-sheet-backdrop" onclick="closeRoutineSheet()"></div>
+
+<div id="routine-sheet">
+    <div class="sheet-handle"></div>
+
+    <div id="routine-sheet-header">
+        <h3 class="font-bold text-base" style="color: #2a2820;">루틴 편집</h3>
+        <button onclick="closeRoutineSheet()"
+                style="width:32px;height:32px;border-radius:50%;border:none;
+                       background:#f5f2ec;cursor:pointer;font-size:16px;color:#8a8070;">
+            ×
+        </button>
+    </div>
+
+    <div id="routine-sheet-body">
+
+        <!-- 현재 루틴 목록 -->
+        <p class="sheet-section-label">현재 루틴</p>
+        <div id="sheet-routine-list"></div>
+
+        <!-- 새 루틴 추가 폼 -->
+        <p class="sheet-section-label" style="margin-top: 22px;">새 루틴 추가</p>
+        <div class="sheet-add-row">
+            <input type="text" id="routine-emoji-input" class="sheet-emoji-input"
+                   placeholder="🌿" maxlength="2">
+            <input type="text" id="routine-label-input" class="sheet-label-input"
+                   placeholder="루틴 이름을 입력하세요" maxlength="30">
+        </div>
+        <div class="sheet-target-row">
+            <span class="text-sm font-medium" style="color: #6b6558; flex:1;">목표 횟수</span>
+            <button class="sheet-target-btn" onclick="sheetTargetAdj(-1)">−</button>
+            <span id="sheet-target-val" class="text-sm font-bold" style="min-width:24px;text-align:center;color:#2a2820;">1</span>
+            <button class="sheet-target-btn" onclick="sheetTargetAdj(1)">+</button>
+        </div>
+        <button onclick="_addRoutineItem()"
+                class="btn-primary" style="margin-bottom: 4px;">
+            추가하기
+        </button>
+
+        <!-- 프리셋 칩 -->
+        <p class="sheet-section-label" style="margin-top: 22px;">예시에서 추가하기</p>
+        <div id="routine-preset-chips" class="flex flex-wrap gap-2 pb-4"></div>
+
+    </div>
+</div>
+
+
+<!-- 수면 설정 모달 -->
+<div id="sleep-modal-backdrop" onclick="closeSleepModal()"></div>
+<div id="sleep-modal" role="dialog" aria-modal="true" aria-labelledby="sleep-modal-title">
+
+    <!-- 헤더 -->
+    <div class="flex items-center justify-between mb-6">
+        <div class="flex items-center gap-2">
+            <div class="w-9 h-9 rounded-xl flex items-center justify-center"
+                 style="background: #eef4fa;">
+                <i class="fas fa-bed" style="color: #6A8CA0; font-size: 14px;"></i>
+            </div>
+            <h3 id="sleep-modal-title" class="font-bold" style="font-size: 17px; color: #2a2820;">수면 루틴 설정</h3>
+        </div>
+        <button onclick="closeSleepModal()"
+                style="width: 32px; height: 32px; border-radius: 50%; border: none;
+                       background: #f5f2ec; cursor: pointer; font-size: 16px; color: #6b6558;
+                       display: flex; align-items: center; justify-content: center;">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+
+    <!-- 취침 시간 -->
+    <div class="sleep-time-wrap mb-4">
+        <span class="sleep-time-label">🌙  취침 시간</span>
+        <input type="time" id="sleep-modal-bed" class="sleep-time-input" value="22:30">
+    </div>
+
+    <!-- 기상 시간 -->
+    <div class="sleep-time-wrap mb-5">
+        <span class="sleep-time-label">🌅  기상 시간</span>
+        <input type="time" id="sleep-modal-wake" class="sleep-time-input" value="07:00">
+    </div>
+
+    <!-- 알림 토글 -->
+    <div class="flex items-center justify-between mb-6 px-1">
+        <div>
+            <p class="font-bold text-sm" style="color: #2a2820;">알림 받기</p>
+            <p class="text-xs mt-0.5" style="color: #a09890;">취침·기상 시간에 브라우저 알림을 받아요</p>
+        </div>
+        <button id="sleep-notif-toggle" onclick="_toggleSleepNotif()" aria-label="알림 토글"></button>
+    </div>
+
+    <!-- 저장 -->
+    <button id="sleep-save-btn" onclick="saveSleepSettings()">저장하기</button>
+</div>
+
+<!-- 질환 상세 슬라이드 패널 -->
+<div id="condition-panel-backdrop" onclick="closeConditionPanel()"></div>
+<div id="condition-panel" role="dialog" aria-modal="true" aria-labelledby="condition-panel-title">
+
+    <!-- 고정 헤더 -->
+    <div id="condition-panel-header">
+        <button id="condition-panel-back" onclick="closeConditionPanel()" aria-label="닫기">
+            <i class="fas fa-arrow-left"></i>
+        </button>
+        <span id="condition-panel-emoji-hd" aria-hidden="true"></span>
+        <h2 id="condition-panel-title"></h2>
+    </div>
+
+    <!-- 스크롤 바디 (JS로 채움) -->
+    <div id="condition-panel-body"></div>
+
+</div>
 
 <!-- 토스트 메시지 -->
 <div id="toast"></div>
@@ -1413,13 +2446,60 @@
         document.getElementById('login-pw').value = '';
         현재탭 = 'home';
 
-        ['home','library','tests','profile'].forEach(탭 => {
+        ['home','library','tests','tools','profile'].forEach(탭 => {
             document.getElementById('page-' + 탭).classList.add('hidden');
             document.getElementById('nav-'  + 탭)?.classList.remove('active');
         });
         document.getElementById('page-home').classList.remove('hidden');
         document.getElementById('nav-home').classList.add('active');
         setDesktopNavActive('home');
+
+        // 기분 슬라이더 초기화
+        MOOD_SLIDER_DEFS.forEach(({ key }) => {
+            const input = document.getElementById('slider-' + key);
+            if (input) input.value = 5;
+            _updateSlider(key);
+        });
+        document.getElementById('mood-saved-date').textContent = '';
+        document.getElementById('anxiety-banner').style.display = 'none';
+
+        // 루틴 상태 초기화
+        _rt.items  = [];
+        _rt.counts = {};
+        clearTimeout(_rt.saveTimer);
+        _renderRoutines();
+        closeRoutineSheet();
+
+        // 나무 상태 초기화
+        _tree.carePoints     = 0;
+        _tree.harvestedCount = 0;
+        _tree.daysSinceLast  = 0;
+        _renderTree();
+
+        // 수면 설정 초기화
+        _sleep.bedTime  = '22:30';
+        _sleep.wakeTime = '07:00';
+        _sleep.isActive = false;
+        _stopSleepNotifScheduler();
+        _renderSleepWidget();
+        closeSleepModal();
+
+        // 호흡 세션 초기화
+        stopBreath();
+
+        // 차트 & 타임라인 초기화
+        if (_moodChart) { _moodChart.destroy(); _moodChart = null; }
+        _moodHistPage  = 0;
+        _moodHistTotal = 0;
+        ['avg-mood','avg-anxiety','avg-sleep'].forEach(id => {
+            const el = document.getElementById(id); if (el) el.textContent = '—';
+        });
+        const tl = document.getElementById('mood-timeline-list');
+        if (tl) tl.innerHTML = '';
+        document.getElementById('mood-load-more')?.classList.add('hidden');
+        document.getElementById('mood-chart-empty')?.classList.add('hidden');
+        document.getElementById('chart-canvas-wrap')?.classList.remove('hidden');
+
         authTabSwitch('login');
     }
 
@@ -1430,12 +2510,18 @@
         document.getElementById('auth-screen').classList.add('hidden');
         document.getElementById('main-content').classList.remove('hidden');
 
-        document.getElementById('home-username').textContent = 아이디;
         document.getElementById('profile-username').textContent = 아이디;
         document.getElementById('profile-id').textContent = 아이디;
         document.getElementById('profile-avatar').textContent = 아이디.charAt(0).toUpperCase();
 
+        _initHeroGreeting(아이디);
         setDesktopNavActive('home');
+        initMoodSliders();
+        loadMoodLog();
+        loadRoutines();
+        loadTreeState();
+        loadSleepSettings();
+        loadBreathTodayCount();
     }
 
     /* ─────────────────────────────────────────
@@ -1452,10 +2538,18 @@
 
         setDesktopNavActive(탭);
 
-        const 타이틀맵 = { home: '', library: '마음 자료실', tests: '심리검사', profile: '내 정보' };
+        const 타이틀맵 = { home: '', library: '마음 자료실', tests: '심리검사', tools: '도구함', profile: '내 정보' };
         document.getElementById('header-title').textContent = 타이틀맵[탭] || '';
 
-        if (탭 === 'profile') fetchMyTestHistory();
+        if (탭 === 'profile') { fetchMyTestHistory(); loadMoodStats(); }
+        if (탭 === 'library') loadLibraryData();
+
+        // 도구함 탭 진입/이탈 처리
+        if (탭 === 'tools') {
+            document.getElementById('breath-bg-video')?.play().catch(() => {});
+        } else if (현재탭 === 'tools' && _breath.isPlaying) {
+            stopBreath();
+        }
 
         window.scrollTo({ top: 0, behavior: 'smooth' });
         현재탭 = 탭;
@@ -1637,6 +2731,1475 @@
     /* ─────────────────────────────────────────
      * 엔터 키로 로그인 / 회원가입 실행
      * ───────────────────────────────────────── */
+    /* ─────────────────────────────────────────
+     * 기분 슬라이더
+     * ───────────────────────────────────────── */
+    const MOOD_SLIDER_DEFS = [
+        { key: 'mood',         color: '#7C8C5E' },
+        { key: 'anxiety',      color: '#C4956A' },
+        { key: 'irritability', color: '#A08260' },
+        { key: 'sleep',        color: '#6A8CA0' },
+    ];
+
+    function _updateSlider(key) {
+        const input = document.getElementById('slider-' + key);
+        const label = document.getElementById('label-' + key);
+        if (!input || !label) return;
+
+        const color = input.dataset.color;
+        const val   = +input.value;
+        // 1~10 범위에서 채움 비율 계산
+        const pct   = (val - 1) / 9 * 100;
+
+        // CSS 변수로 트랙 색상 및 채움 위치 설정
+        input.style.setProperty('--slider-color', color);
+        input.style.setProperty('--slider-pct',   pct.toFixed(2) + '%');
+
+        // 썸 위의 숫자 레이블: left = pct% + (0.5 - pct/100) * thumbWidth(28px)
+        const offset = (0.5 - pct / 100) * 28;
+        label.textContent = val;
+        label.style.left  = 'calc(' + pct + '% + ' + offset.toFixed(2) + 'px)';
+
+        // 불안 7 이상 시 배너 표시
+        if (key === 'anxiety') {
+            document.getElementById('anxiety-banner').style.display =
+                val >= 7 ? 'block' : 'none';
+        }
+    }
+
+    let _moodInitialized = false;
+
+    function initMoodSliders() {
+        // 초기 렌더링 (항상 실행)
+        MOOD_SLIDER_DEFS.forEach(({ key }) => _updateSlider(key));
+
+        // 이벤트 리스너는 한 번만 등록
+        if (_moodInitialized) return;
+        _moodInitialized = true;
+
+        MOOD_SLIDER_DEFS.forEach(({ key }) => {
+            const input = document.getElementById('slider-' + key);
+            if (input) input.addEventListener('input', () => _updateSlider(key));
+        });
+    }
+
+    function _getSliderValues() {
+        return {
+            mood:         +document.getElementById('slider-mood').value,
+            anxiety:      +document.getElementById('slider-anxiety').value,
+            irritability: +document.getElementById('slider-irritability').value,
+            sleep:        +document.getElementById('slider-sleep').value,
+        };
+    }
+
+    function _setSliderValues(values) {
+        MOOD_SLIDER_DEFS.forEach(({ key }) => {
+            const input = document.getElementById('slider-' + key);
+            if (input && values[key] != null) input.value = values[key];
+            _updateSlider(key);
+        });
+    }
+
+    function _todayKey() {
+        const d = new Date();
+        return d.getFullYear() + '-' +
+               String(d.getMonth() + 1).padStart(2, '0') + '-' +
+               String(d.getDate()).padStart(2, '0');
+    }
+
+    async function loadMoodLog() {
+        try {
+            const { data: { session } } = await sb.auth.getSession();
+            if (!session) return;
+
+            const { data, error } = await sb
+                .from('mood_logs')
+                .select('score')
+                .eq('user_id', session.user.id)
+                .eq('date', _todayKey())
+                .maybeSingle();
+
+            if (error) { console.warn('기분 기록 로드 실패:', error.message); return; }
+
+            if (data?.score) {
+                _setSliderValues(data.score);
+                document.getElementById('mood-saved-date').textContent = '오늘 기록이 저장되어 있어요 🌿';
+            }
+        } catch (e) {
+            console.warn('기분 기록 로드 오류:', e.message);
+        }
+    }
+
+    async function saveMoodLog() {
+        const btn   = document.getElementById('btn-save-mood');
+        const saved = document.getElementById('mood-saved-date');
+        try {
+            const { data: { session } } = await sb.auth.getSession();
+            if (!session) { showToast('로그인이 필요합니다.'); return; }
+
+            btn.disabled    = true;
+            btn.textContent = '저장 중...';
+
+            const score = _getSliderValues();
+            const today = _todayKey();
+
+            // 오늘 기록이 있으면 UPDATE, 없으면 INSERT
+            const { data: existing } = await sb
+                .from('mood_logs')
+                .select('user_id')
+                .eq('user_id', session.user.id)
+                .eq('date', today)
+                .maybeSingle();
+
+            let saveErr;
+            if (existing) {
+                const { error } = await sb
+                    .from('mood_logs')
+                    .update({ score })
+                    .eq('user_id', session.user.id)
+                    .eq('date', today);
+                saveErr = error;
+            } else {
+                const { error } = await sb
+                    .from('mood_logs')
+                    .insert({ user_id: session.user.id, date: today, score });
+                saveErr = error;
+            }
+
+            if (saveErr) throw saveErr;
+
+            saved.textContent = '오늘 기록이 저장되어 있어요 🌿';
+            showToast('오늘의 기분이 저장되었습니다 🌿');
+            loadTreeState();
+        } catch (e) {
+            console.warn('기분 저장 실패:', e.message);
+            showToast('저장에 실패했습니다. 다시 시도해 주세요.');
+        } finally {
+            btn.disabled    = false;
+            btn.textContent = '오늘 기분 저장하기';
+        }
+    }
+
+    /* ─────────────────────────────────────────
+     * 루틴 관리
+     * ───────────────────────────────────────── */
+    const ROUTINE_PRESETS = [
+        { emoji: '🌅', label: '물 한 잔 마시기',   targetCount: 1 },
+        { emoji: '🌅', label: '5분 스트레칭',      targetCount: 1 },
+        { emoji: '🌅', label: '햇빛 쬐기',         targetCount: 1 },
+        { emoji: '💊', label: '약 챙겨 먹기',       targetCount: 1 },
+        { emoji: '💊', label: '비타민 복용',        targetCount: 1 },
+        { emoji: '🧘', label: '복식호흡',           targetCount: 1 },
+        { emoji: '🧘', label: '감사한 일 떠올리기', targetCount: 1 },
+        { emoji: '🚶', label: '산책 10분',           targetCount: 1 },
+        { emoji: '🚶', label: '계단 이용하기',      targetCount: 1 },
+        { emoji: '📝', label: '오늘 기분 기록하기', targetCount: 1 },
+        { emoji: '📝', label: '일기 쓰기',          targetCount: 1 },
+    ];
+
+    const _rt = {
+        items:     [],  // routine_items rows
+        counts:    {},  // { itemId: completedCount } — 오늘
+        saveTimer: null,
+    };
+
+    let _sheetNewTarget = 1;
+
+    async function loadRoutines() {
+        try {
+            const { data: { session } } = await sb.auth.getSession();
+            if (!session) return;
+
+            const today = _todayKey();
+            const [itemsRes, logRes] = await Promise.all([
+                sb.from('routine_items')
+                  .select('*')
+                  .eq('user_id', session.user.id)
+                  .eq('is_active', true)
+                  .order('order_index', { ascending: true }),
+                sb.from('routine_logs')
+                  .select('completed')
+                  .eq('user_id', session.user.id)
+                  .eq('date', today)
+                  .maybeSingle(),
+            ]);
+
+            if (itemsRes.error) throw itemsRes.error;
+            _rt.items  = itemsRes.data || [];
+            _rt.counts = logRes.data?.completed || {};
+            _renderRoutines();
+        } catch (e) {
+            console.warn('루틴 로드 실패:', e.message);
+        }
+    }
+
+    function _renderRoutines() {
+        const list    = document.getElementById('routine-list');
+        const empty   = document.getElementById('routine-empty');
+        const allDone = document.getElementById('routine-all-done');
+        const fill    = document.getElementById('routine-progress-fill');
+        const lbl     = document.getElementById('routine-progress-label');
+        if (!list) return;
+
+        if (_rt.items.length === 0) {
+            list.innerHTML = '';
+            empty.classList.remove('hidden');
+            allDone.classList.add('hidden');
+            fill.style.width = '0%';
+            lbl.textContent  = '0 / 0 완료';
+            return;
+        }
+
+        empty.classList.add('hidden');
+
+        const doneCount = _rt.items.filter(
+            item => (_rt.counts[item.id] || 0) >= item.target_count
+        ).length;
+        const total = _rt.items.length;
+        const pct   = total > 0 ? (doneCount / total * 100).toFixed(1) : 0;
+
+        fill.style.width = pct + '%';
+        lbl.textContent  = doneCount + ' / ' + total + ' 완료';
+        allDone.classList.toggle('hidden', doneCount < total);
+
+        list.innerHTML = _rt.items.map(item => {
+            const count    = _rt.counts[item.id] || 0;
+            const done     = count >= item.target_count;
+            const isToggle = item.target_count === 1;
+            const emoji    = item.emoji
+                ? `<span style="font-size:16px;flex-shrink:0;">${item.emoji}</span>` : '';
+
+            if (isToggle) {
+                return `
+                <div class="routine-item">
+                    <button class="routine-check-btn ${done ? 'done' : ''}"
+                            data-id="${item.id}" onclick="_toggleRoutineItem(this.dataset.id)">
+                        ${done ? '<i class="fas fa-check"></i>' : ''}
+                    </button>
+                    ${emoji}
+                    <span class="routine-label ${done ? 'done' : ''}">${item.label}</span>
+                </div>`;
+            }
+            return `
+            <div class="routine-item">
+                <div class="routine-counter">
+                    <button class="routine-counter-btn" data-id="${item.id}"
+                            onclick="_adjustRoutineCount(this.dataset.id, -1)">−</button>
+                    <span class="routine-counter-val">${count}/${item.target_count}</span>
+                    <button class="routine-counter-btn" data-id="${item.id}"
+                            onclick="_adjustRoutineCount(this.dataset.id, 1)">+</button>
+                </div>
+                ${emoji}
+                <span class="routine-label ${done ? 'done' : ''}">${item.label}</span>
+            </div>`;
+        }).join('');
+    }
+
+    function _toggleRoutineItem(id) {
+        const item = _rt.items.find(r => r.id === id);
+        if (!item) return;
+        const cur  = _rt.counts[id] || 0;
+        _rt.counts = { ..._rt.counts, [id]: cur >= 1 ? 0 : 1 };
+        _renderRoutines();
+        _scheduleRoutineSave();
+    }
+
+    function _adjustRoutineCount(id, delta) {
+        const item = _rt.items.find(r => r.id === id);
+        if (!item) return;
+        const cur  = _rt.counts[id] || 0;
+        const next = Math.max(0, Math.min(item.target_count, cur + delta));
+        if (next === cur) return;
+        _rt.counts = { ..._rt.counts, [id]: next };
+        _renderRoutines();
+        _scheduleRoutineSave();
+    }
+
+    function _scheduleRoutineSave() {
+        // 300ms 디바운스: 연속 클릭을 모아 한 번만 DB 저장
+        clearTimeout(_rt.saveTimer);
+        _rt.saveTimer = setTimeout(_saveRoutineLog, 300);
+    }
+
+    async function _saveRoutineLog() {
+        try {
+            const { data: { session } } = await sb.auth.getSession();
+            if (!session) return;
+            const today = _todayKey();
+
+            const { data: existing } = await sb
+                .from('routine_logs')
+                .select('user_id')
+                .eq('user_id', session.user.id)
+                .eq('date', today)
+                .maybeSingle();
+
+            if (existing) {
+                await sb.from('routine_logs')
+                    .update({ completed: _rt.counts })
+                    .eq('user_id', session.user.id)
+                    .eq('date', today);
+            } else {
+                await sb.from('routine_logs')
+                    .insert({ user_id: session.user.id, date: today, completed: _rt.counts });
+            }
+        } catch (e) {
+            console.warn('루틴 저장 실패:', e.message);
+        }
+    }
+
+    /* ── 바텀시트 열기/닫기 ────────────────────── */
+    function openRoutineSheet() {
+        _renderSheetItems();
+        _renderPresetChips();
+        document.getElementById('routine-sheet').classList.add('open');
+        document.getElementById('routine-sheet-backdrop').classList.add('open');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeRoutineSheet() {
+        document.getElementById('routine-sheet').classList.remove('open');
+        document.getElementById('routine-sheet-backdrop').classList.remove('open');
+        document.body.style.overflow = '';
+        _sheetNewTarget = 1;
+        document.getElementById('routine-emoji-input').value = '';
+        document.getElementById('routine-label-input').value = '';
+        document.getElementById('sheet-target-val').textContent = '1';
+    }
+
+    function _renderSheetItems() {
+        const el = document.getElementById('sheet-routine-list');
+        if (!el) return;
+        if (_rt.items.length === 0) {
+            el.innerHTML = '<p class="text-xs py-2" style="color:#a09890;">아직 추가된 루틴이 없어요</p>';
+            return;
+        }
+        el.innerHTML = _rt.items.map(item => `
+            <div class="sheet-routine-row">
+                <span style="font-size:16px;flex-shrink:0;">${item.emoji || '•'}</span>
+                <span class="flex-1 text-sm" style="color:#2a2820;">
+                    ${item.label}${item.target_count > 1 ? ' <span style="color:#a09890;">(×' + item.target_count + ')</span>' : ''}
+                </span>
+                <button class="sheet-delete-btn" data-id="${item.id}"
+                        onclick="_deleteRoutineItem(this.dataset.id)">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        `).join('');
+    }
+
+    function _renderPresetChips() {
+        const el = document.getElementById('routine-preset-chips');
+        if (!el) return;
+        const labels = new Set(_rt.items.map(r => r.label));
+        el.innerHTML = ROUTINE_PRESETS.map((p, i) => {
+            const on = labels.has(p.label);
+            return `<button class="preset-chip ${on ? 'active' : ''}"
+                            data-idx="${i}" onclick="_addPresetByIndex(+this.dataset.idx)">
+                        ${p.emoji} ${p.label}
+                    </button>`;
+        }).join('');
+    }
+
+    async function _addRoutineItem() {
+        const labelEl = document.getElementById('routine-label-input');
+        const emojiEl = document.getElementById('routine-emoji-input');
+        const label   = labelEl.value.trim();
+        if (!label) { showToast('루틴 이름을 입력해 주세요.'); labelEl.focus(); return; }
+
+        try {
+            const { data: { session } } = await sb.auth.getSession();
+            if (!session) return;
+            const maxOrder = _rt.items.length > 0
+                ? Math.max(..._rt.items.map(r => r.order_index)) : -1;
+
+            const { error } = await sb.from('routine_items').insert({
+                user_id:      session.user.id,
+                label,
+                emoji:        emojiEl.value.trim() || null,
+                target_count: _sheetNewTarget,
+                order_index:  maxOrder + 1,
+                is_active:    true,
+            });
+            if (error) throw error;
+
+            labelEl.value  = '';
+            emojiEl.value  = '';
+            _sheetNewTarget = 1;
+            document.getElementById('sheet-target-val').textContent = '1';
+            await loadRoutines();
+            _renderSheetItems();
+            _renderPresetChips();
+            showToast('루틴이 추가되었습니다 🌿');
+        } catch (e) {
+            console.warn('루틴 추가 실패:', e.message);
+            showToast('추가에 실패했습니다.');
+        }
+    }
+
+    async function _deleteRoutineItem(id) {
+        try {
+            const { data: { session } } = await sb.auth.getSession();
+            if (!session) return;
+            const { error } = await sb.from('routine_items')
+                .update({ is_active: false })
+                .eq('id', id)
+                .eq('user_id', session.user.id);
+            if (error) throw error;
+            delete _rt.counts[id];
+            await loadRoutines();
+            _renderSheetItems();
+            _renderPresetChips();
+        } catch (e) {
+            console.warn('루틴 삭제 실패:', e.message);
+            showToast('삭제에 실패했습니다.');
+        }
+    }
+
+    async function _addPresetByIndex(idx) {
+        const preset = ROUTINE_PRESETS[idx];
+        if (!preset || _rt.items.some(r => r.label === preset.label)) return;
+        try {
+            const { data: { session } } = await sb.auth.getSession();
+            if (!session) return;
+            const maxOrder = _rt.items.length > 0
+                ? Math.max(..._rt.items.map(r => r.order_index)) : -1;
+            const { error } = await sb.from('routine_items').insert({
+                user_id:      session.user.id,
+                label:        preset.label,
+                emoji:        preset.emoji,
+                target_count: preset.targetCount,
+                order_index:  maxOrder + 1,
+                is_active:    true,
+            });
+            if (error) throw error;
+            await loadRoutines();
+            _renderSheetItems();
+            _renderPresetChips();
+        } catch (e) {
+            console.warn('프리셋 추가 실패:', e.message);
+        }
+    }
+
+    function sheetTargetAdj(delta) {
+        _sheetNewTarget = Math.max(1, Math.min(20, _sheetNewTarget + delta));
+        document.getElementById('sheet-target-val').textContent = _sheetNewTarget;
+    }
+
+    /* ─────────────────────────────────────────
+     * 올리브 나무 타마고치
+     * ───────────────────────────────────────── */
+    const TREE_MESSAGES = {
+        0: '마음의 씨앗이 심어졌어요 🌱',
+        1: '새싹이 조금씩 자라나고 있어요 🌿',
+        2: '어린 올리브 묘목이에요 🌳',
+        3: '뿌리를 내리며 단단해지고 있어요 🌲',
+        4: '무럭무럭 자라나는 올리브 나무예요 🌴',
+        5: '열매를 맺기 직전이에요! 조금만 더 🌟',
+        6: '나무를 눌러 올리브를 수확해주세요 🫒',
+        7: '나무가 보살핌을 기다리고 있어요 💧\n기록을 남기면 회복됩니다',
+    };
+
+    const _tree = { carePoints: 0, harvestedCount: 0, daysSinceLast: 0 };
+
+    function getTreeLevel(carePoints, harvestedCount, daysSinceLastLog) {
+        if (daysSinceLastLog >= 3) return 7;
+        const effective = Math.max(0, carePoints - harvestedCount * 5);
+        if (effective >= 30) return 6;
+        if (effective >= 25) return 5;
+        if (effective >= 20) return 4;
+        if (effective >= 15) return 3;
+        if (effective >= 10) return 2;
+        if (effective >= 5)  return 1;
+        return 0;
+    }
+
+    function _renderTree() {
+        const level  = getTreeLevel(_tree.carePoints, _tree.harvestedCount, _tree.daysSinceLast);
+        const img    = document.getElementById('tree-img');
+        const btn    = document.getElementById('tree-img-btn');
+        const msg    = document.getElementById('tree-message');
+        const badge  = document.getElementById('tree-harvest-count');
+        if (!img) return;
+
+        img.src = `assets/images/tree/tree_${level}.png`;
+        if (badge) badge.textContent = _tree.harvestedCount;
+        if (msg)   msg.textContent   = TREE_MESSAGES[level] || '';
+
+        // 진입 애니메이션 재시작
+        img.classList.remove('tree-entry', 'tree-entry-glow', 'tree-entry-shake');
+        img.offsetWidth; // reflow
+        if (level === 6)      img.classList.add('tree-entry-glow');
+        else if (level === 7) img.classList.add('tree-entry-shake');
+        else                  img.classList.add('tree-entry');
+
+        // 수확 가능 시 커서 활성화
+        btn.classList.toggle('harvestable', level === 6);
+        btn.style.cursor = level === 6 ? 'pointer' : 'default';
+
+        // 메시지 색상
+        if (msg) {
+            if      (level === 6) msg.style.color = 'rgba(255,220,100,0.95)';
+            else if (level === 7) msg.style.color = 'rgba(200,190,175,0.85)';
+            else                  msg.style.color = 'rgba(255,255,255,0.72)';
+        }
+    }
+
+    async function loadTreeState() {
+        try {
+            const { data: { session } } = await sb.auth.getSession();
+            if (!session) return;
+            const uid = session.user.id;
+
+            const [moodRes, breathRes, statsRes, lastMoodRes, lastBreathRes] = await Promise.all([
+                sb.from('mood_logs').select('id', { count: 'exact', head: true }).eq('user_id', uid),
+                sb.from('breathing_logs').select('count').eq('user_id', uid).catch(() => ({ data: [] })),
+                sb.from('user_stats').select('value').eq('user_id', uid).eq('key', 'harvested_olives').maybeSingle(),
+                sb.from('mood_logs').select('date').eq('user_id', uid).order('date', { ascending: false }).limit(1).maybeSingle(),
+                sb.from('breathing_logs').select('date').eq('user_id', uid).order('date', { ascending: false }).limit(1).maybeSingle().catch(() => ({ data: null })),
+            ]);
+
+            const moodCount  = moodRes.count || 0;
+            const breathSum  = ((breathRes.data || []).reduce((s, r) => s + (r.count || 0), 0));
+            _tree.carePoints     = moodCount + breathSum;
+            _tree.harvestedCount = statsRes.data?.value || 0;
+
+            const dates = [lastMoodRes.data?.date, lastBreathRes.data?.date].filter(Boolean);
+            if (dates.length) {
+                const latest = dates.sort().pop();
+                const diffMs = Date.now() - new Date(latest + 'T00:00:00').getTime();
+                _tree.daysSinceLast = Math.max(0, Math.floor(diffMs / 86_400_000));
+            } else {
+                _tree.daysSinceLast = 0;
+            }
+
+            _renderTree();
+        } catch (e) {
+            console.warn('나무 상태 로드 실패:', e.message);
+        }
+    }
+
+    async function harvestOlive() {
+        const level = getTreeLevel(_tree.carePoints, _tree.harvestedCount, _tree.daysSinceLast);
+        if (level !== 6) return;
+
+        try {
+            const { data: { session } } = await sb.auth.getSession();
+            if (!session) return;
+
+            const uid = session.user.id;
+            const { data: existing } = await sb.from('user_stats')
+                .select('value')
+                .eq('user_id', uid)
+                .eq('key', 'harvested_olives')
+                .maybeSingle();
+
+            if (existing) {
+                await sb.from('user_stats')
+                    .update({ value: existing.value + 1 })
+                    .eq('user_id', uid)
+                    .eq('key', 'harvested_olives');
+            } else {
+                await sb.from('user_stats')
+                    .insert({ user_id: uid, key: 'harvested_olives', value: 1 });
+            }
+
+            _tree.harvestedCount += 1;
+            _renderTree();
+
+            const img = document.getElementById('tree-img');
+            if (img) {
+                img.classList.add('tree-harvest-pop');
+                img.addEventListener('animationend', () => img.classList.remove('tree-harvest-pop'), { once: true });
+            }
+            showToast('수확 완료! 🫒 오늘도 자신을 잘 돌봐주었어요.');
+        } catch (e) {
+            console.warn('수확 실패:', e.message);
+            showToast('수확에 실패했습니다. 다시 시도해 주세요.');
+        }
+    }
+
+    function _initHeroGreeting(아이디) {
+        const h = new Date().getHours();
+        let emoji, text;
+        if      (h >= 5  && h < 12) { emoji = '🌅'; text = '좋은 아침이에요'; }
+        else if (h >= 12 && h < 17) { emoji = '☀️'; text = '좋은 오후예요'; }
+        else if (h >= 17 && h < 21) { emoji = '🌆'; text = '평온한 저녁이에요'; }
+        else                         { emoji = '🌙'; text = '편안한 밤 되세요'; }
+
+        const greetEl = document.getElementById('hero-greeting');
+        const dateEl  = document.getElementById('hero-date');
+        if (greetEl) greetEl.textContent = emoji + ' ' + text;
+        if (dateEl) {
+            dateEl.textContent = new Date().toLocaleDateString('ko-KR', {
+                year: 'numeric', month: 'long', day: 'numeric', weekday: 'long',
+            });
+        }
+        document.getElementById('home-username').textContent = 아이디;
+    }
+
+    /* ─────────────────────────────────────────
+     * 수면 루틴 설정
+     * ───────────────────────────────────────── */
+    const _sleep = { bedTime: '22:30', wakeTime: '07:00', isActive: false };
+    let _sleepNotifTimer = null;
+    const _sleepFired    = { bed: '', wake: '' };
+
+    function _renderSleepWidget() {
+        document.getElementById('sleep-bed-time').textContent  = _sleep.bedTime;
+        document.getElementById('sleep-wake-time').textContent = _sleep.wakeTime;
+        const badge = document.getElementById('sleep-notif-badge');
+        if (badge) {
+            badge.textContent       = _sleep.isActive ? '알림 켜짐' : '알림 꺼짐';
+            badge.style.background  = _sleep.isActive ? '#eef2e6'  : '#f5f2ec';
+            badge.style.color       = _sleep.isActive ? '#5C7A2A'  : '#a09890';
+        }
+    }
+
+    function _renderSleepToggle() {
+        document.getElementById('sleep-notif-toggle')?.classList.toggle('on', _sleep.isActive);
+    }
+
+    async function loadSleepSettings() {
+        try {
+            const { data: { session } } = await sb.auth.getSession();
+            if (!session) return;
+            const { data } = await sb.from('sleep_settings')
+                .select('bed_time, wake_time, is_active')
+                .eq('user_id', session.user.id)
+                .maybeSingle();
+            if (data) {
+                _sleep.bedTime  = data.bed_time  || '22:30';
+                _sleep.wakeTime = data.wake_time || '07:00';
+                _sleep.isActive = !!data.is_active;
+            }
+            _renderSleepWidget();
+            if (_sleep.isActive && Notification.permission === 'granted') {
+                _startSleepNotifScheduler();
+            }
+        } catch (e) {
+            console.warn('수면 설정 로드 실패:', e.message);
+        }
+    }
+
+    async function saveSleepSettings() {
+        try {
+            const { data: { session } } = await sb.auth.getSession();
+            if (!session) return;
+
+            const saveBtn = document.getElementById('sleep-save-btn');
+            saveBtn.disabled    = true;
+            saveBtn.textContent = '저장 중...';
+
+            _sleep.bedTime  = document.getElementById('sleep-modal-bed').value  || '22:30';
+            _sleep.wakeTime = document.getElementById('sleep-modal-wake').value || '07:00';
+
+            const { error } = await sb.from('sleep_settings').upsert({
+                user_id:   session.user.id,
+                bed_time:  _sleep.bedTime,
+                wake_time: _sleep.wakeTime,
+                is_active: _sleep.isActive,
+            }, { onConflict: 'user_id' });
+
+            if (error) throw error;
+
+            _renderSleepWidget();
+            closeSleepModal();
+            showToast('수면 루틴이 저장되었습니다 🌙');
+
+            if (_sleep.isActive) _startSleepNotifScheduler();
+            else                 _stopSleepNotifScheduler();
+        } catch (e) {
+            console.warn('수면 설정 저장 실패:', e.message);
+            showToast('저장에 실패했습니다. 다시 시도해 주세요.');
+        } finally {
+            const saveBtn = document.getElementById('sleep-save-btn');
+            if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = '저장하기'; }
+        }
+    }
+
+    function openSleepModal() {
+        document.getElementById('sleep-modal-bed').value  = _sleep.bedTime;
+        document.getElementById('sleep-modal-wake').value = _sleep.wakeTime;
+        _renderSleepToggle();
+        document.getElementById('sleep-modal').classList.add('open');
+        document.getElementById('sleep-modal-backdrop').classList.add('open');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeSleepModal() {
+        document.getElementById('sleep-modal').classList.remove('open');
+        document.getElementById('sleep-modal-backdrop').classList.remove('open');
+        document.body.style.overflow = '';
+    }
+
+    async function _toggleSleepNotif() {
+        if (!_sleep.isActive) {
+            if (!('Notification' in window)) {
+                showToast('이 브라우저는 알림을 지원하지 않습니다.');
+                return;
+            }
+            const perm = await Notification.requestPermission();
+            if (perm !== 'granted') {
+                showToast('알림 권한이 거부되었습니다. 브라우저 설정에서 허용해 주세요.');
+                return;
+            }
+            _sleep.isActive = true;
+        } else {
+            _sleep.isActive = false;
+        }
+        _renderSleepToggle();
+    }
+
+    function _startSleepNotifScheduler() {
+        _stopSleepNotifScheduler();
+        _sleepFired.bed  = '';
+        _sleepFired.wake = '';
+        _sleepNotifTimer = setInterval(() => {
+            if (!_sleep.isActive || Notification.permission !== 'granted') return;
+            const now   = new Date();
+            const hhmm  = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
+            const today = now.toDateString();
+            const bedKey  = today + _sleep.bedTime;
+            const wakeKey = today + _sleep.wakeTime;
+            if (hhmm === _sleep.bedTime && _sleepFired.bed !== bedKey) {
+                _sleepFired.bed = bedKey;
+                new Notification('올리브나무 🌙', {
+                    body: '취침 시간이에요. 오늘 하루도 수고했어요.',
+                    icon: 'assets/images/tree/tree_4.png',
+                });
+            }
+            if (hhmm === _sleep.wakeTime && _sleepFired.wake !== wakeKey) {
+                _sleepFired.wake = wakeKey;
+                new Notification('올리브나무 🌅', {
+                    body: '기상 시간이에요. 오늘도 좋은 하루 보내요!',
+                    icon: 'assets/images/tree/tree_4.png',
+                });
+            }
+        }, 30_000);
+    }
+
+    function _stopSleepNotifScheduler() {
+        if (_sleepNotifTimer) { clearInterval(_sleepNotifTimer); _sleepNotifTimer = null; }
+    }
+
+    /* ─────────────────────────────────────────
+     * 복식호흡 (4-6-6) 엔진
+     * ───────────────────────────────────────── */
+    const BREATH_TIMINGS = {
+        slow:   { phases: ['inhale','hold','exhale'], inhale: 4000, hold: 6000, exhale: 6000 }, // 16s
+        normal: { phases: ['inhale','exhale'],        inhale: 4000, hold:    0, exhale: 6000 }, // 10s
+        fast:   { phases: ['inhale','exhale'],        inhale: 3000, hold:    0, exhale: 5000 }, // 8s
+    };
+    const BREATH_PHASE_LABELS = { inhale: '들이마세요', hold: '참으세요', exhale: '내쉬세요' };
+    const REQUIRED_CYCLES     = 6;
+    const ARC_CIRC            = 2 * Math.PI * 112; // r=112 → ≈703.7
+
+    const _breath = {
+        isPlaying:    false,
+        tempo:        'normal',
+        phase:        'inhale',
+        phaseDur:     4000,
+        phaseStartAt: 0,       // performance.now() epoch
+        cycleCount:   0,
+        sessionSecs:  0,
+        todayCount:   0,
+        completing:   false,
+        rafId:        null,
+        sessionTimer: null,
+    };
+
+    // ── 렌더 헬퍼 ──────────────────────────────────────────
+    function _renderBreathDots() {
+        for (let i = 0; i < REQUIRED_CYCLES; i++) {
+            document.getElementById('bdot-' + i)?.classList.toggle('done', i < _breath.cycleCount);
+        }
+    }
+
+    function _renderBreathTempoButtons() {
+        ['slow','normal','fast'].forEach(t => {
+            const btn = document.getElementById('btempo-' + t);
+            if (!btn) return;
+            btn.classList.toggle('active', t === _breath.tempo);
+            btn.disabled = _breath.isPlaying;
+        });
+    }
+
+    function _fmtSecs(s) {
+        const mm = String(Math.floor(s / 60)).padStart(2, '0');
+        const ss = String(s % 60).padStart(2, '0');
+        return mm + ':' + ss;
+    }
+
+    // ── rAF 메인 루프 ───────────────────────────────────────
+    function _breathTick(now) {
+        if (!_breath.isPlaying) return;
+
+        const elapsed  = now - _breath.phaseStartAt;
+        const progress = Math.min(elapsed / _breath.phaseDur, 1.0);
+        const remaining = Math.max(0, _breath.phaseDur - elapsed);
+
+        // 카운트다운 숫자 업데이트 (정수 초만 DOM 갱신)
+        const cd   = Math.ceil(remaining / 1000);
+        const cdEl = document.getElementById('breath-countdown');
+        if (cdEl && cdEl.textContent !== String(cd)) cdEl.textContent = cd;
+
+        // 원 크기 애니메이션
+        const MIN_S = 0.62, MAX_S = 1.0;
+        let scale;
+        if (_breath.phase === 'inhale') {
+            scale = MIN_S + (MAX_S - MIN_S) * progress;
+        } else if (_breath.phase === 'hold') {
+            scale = MAX_S + 0.025 * Math.sin(now * 0.0042); // 미세 박동
+        } else {
+            scale = MAX_S - (MAX_S - MIN_S) * progress;
+        }
+        const group = document.getElementById('breath-circle-group');
+        if (group) group.style.transform = `scale(${scale.toFixed(4)})`;
+
+        // 진행 호 업데이트
+        const arc = document.getElementById('breath-arc');
+        if (arc) arc.setAttribute('stroke-dashoffset', (ARC_CIRC * (1 - progress)).toFixed(1));
+
+        // 페이즈 전환 체크
+        if (elapsed >= _breath.phaseDur) {
+            _nextBreathPhase(elapsed - _breath.phaseDur);
+            return;
+        }
+
+        _breath.rafId = requestAnimationFrame(_breathTick);
+    }
+
+    function _nextBreathPhase(overshoot) {
+        const timing  = BREATH_TIMINGS[_breath.tempo];
+        const phases  = timing.phases;
+        const curIdx  = phases.indexOf(_breath.phase);
+
+        if (_breath.phase === 'exhale') {
+            _breath.cycleCount++;
+            _renderBreathDots();
+            if (_breath.cycleCount >= REQUIRED_CYCLES) {
+                _breathComplete();
+                return;
+            }
+        }
+
+        const nextPhase = phases[(curIdx + 1) % phases.length];
+        const nextDur   = timing[nextPhase];
+
+        _breath.phase        = nextPhase;
+        _breath.phaseDur     = nextDur;
+        _breath.phaseStartAt = performance.now() - overshoot;
+
+        document.getElementById('breath-phase-label').textContent = BREATH_PHASE_LABELS[nextPhase];
+
+        _breath.rafId = requestAnimationFrame(_breathTick);
+    }
+
+    async function _breathComplete() {
+        if (_breath.completing) return;
+        _breath.completing = true;
+
+        _breath.isPlaying = false;
+        if (_breath.rafId) { cancelAnimationFrame(_breath.rafId); _breath.rafId = null; }
+        clearInterval(_breath.sessionTimer);
+        _breath.sessionTimer = null;
+
+        _breath.todayCount++;
+        document.getElementById('breath-today-badge').textContent = `오늘 ${_breath.todayCount}세트 완료`;
+
+        // 완료 오버레이 표시
+        document.getElementById('breath-complete-overlay').classList.add('show');
+
+        // 버튼 복원
+        const btn = document.getElementById('breath-start-btn');
+        if (btn) { btn.textContent = '시작하기'; btn.classList.remove('stop-mode'); }
+        document.getElementById('breath-session-time').style.display = 'none';
+        _renderBreathTempoButtons();
+
+        // Supabase 저장
+        try {
+            const { data: { session } } = await sb.auth.getSession();
+            if (!session) return;
+            const uid   = session.user.id;
+            const today = _todayKey();
+
+            const { data: existing } = await sb.from('breathing_logs')
+                .select('count').eq('user_id', uid).eq('date', today).maybeSingle();
+
+            if (existing) {
+                await sb.from('breathing_logs')
+                    .update({ count: existing.count + 1 })
+                    .eq('user_id', uid).eq('date', today);
+            } else {
+                await sb.from('breathing_logs')
+                    .insert({ user_id: uid, date: today, count: 1 });
+            }
+
+            loadTreeState(); // 케어 포인트 즉시 반영
+        } catch (e) {
+            console.warn('호흡 기록 저장 실패:', e.message);
+        }
+
+        _breath.completing = false;
+    }
+
+    function _dismissBreathComplete() {
+        document.getElementById('breath-complete-overlay').classList.remove('show');
+        // 원 초기 크기 복원
+        const group = document.getElementById('breath-circle-group');
+        if (group) group.style.transform = 'scale(0.62)';
+        // 호 초기화
+        const arc = document.getElementById('breath-arc');
+        if (arc) arc.setAttribute('stroke-dashoffset', ARC_CIRC.toFixed(1));
+        // 사이클 도트 초기화
+        _breath.cycleCount = 0;
+        _renderBreathDots();
+    }
+
+    // ── 공개 액션 ─────────────────────────────────────────────
+    function startBreath() {
+        const timing = BREATH_TIMINGS[_breath.tempo];
+
+        _breath.isPlaying    = true;
+        _breath.completing   = false;
+        _breath.phase        = 'inhale';
+        _breath.phaseDur     = timing.inhale;
+        _breath.phaseStartAt = performance.now();
+        _breath.cycleCount   = 0;
+        _breath.sessionSecs  = 0;
+
+        document.getElementById('breath-phase-label').textContent = '들이마세요';
+        document.getElementById('breath-countdown').textContent   = Math.ceil(timing.inhale / 1000);
+
+        const sesEl = document.getElementById('breath-session-time');
+        sesEl.textContent = '00:00';
+        sesEl.style.display = '';
+
+        const btn = document.getElementById('breath-start-btn');
+        btn.textContent = '정지하기';
+        btn.classList.add('stop-mode');
+
+        _renderBreathDots();
+        _renderBreathTempoButtons();
+        document.getElementById('breath-complete-overlay').classList.remove('show');
+
+        // 세션 타이머 (1초 갱신)
+        clearInterval(_breath.sessionTimer);
+        _breath.sessionTimer = setInterval(() => {
+            _breath.sessionSecs++;
+            document.getElementById('breath-session-time').textContent = _fmtSecs(_breath.sessionSecs);
+        }, 1000);
+
+        if (_breath.rafId) cancelAnimationFrame(_breath.rafId);
+        _breath.rafId = requestAnimationFrame(_breathTick);
+    }
+
+    function stopBreath() {
+        _breath.isPlaying = false;
+        if (_breath.rafId) { cancelAnimationFrame(_breath.rafId); _breath.rafId = null; }
+        clearInterval(_breath.sessionTimer);
+        _breath.sessionTimer = null;
+        _breath.cycleCount   = 0;
+
+        const btn = document.getElementById('breath-start-btn');
+        if (btn) { btn.textContent = '시작하기'; btn.classList.remove('stop-mode'); }
+        const sesEl = document.getElementById('breath-session-time');
+        if (sesEl) sesEl.style.display = 'none';
+
+        document.getElementById('breath-complete-overlay')?.classList.remove('show');
+        _renderBreathDots();
+        _renderBreathTempoButtons();
+
+        // 원 초기 상태 복원
+        const group = document.getElementById('breath-circle-group');
+        if (group) group.style.transform = 'scale(0.62)';
+        const arc = document.getElementById('breath-arc');
+        if (arc) arc.setAttribute('stroke-dashoffset', ARC_CIRC.toFixed(1));
+        const phaseEl = document.getElementById('breath-phase-label');
+        if (phaseEl) phaseEl.textContent = '들이마세요';
+        const cdEl = document.getElementById('breath-countdown');
+        if (cdEl) cdEl.textContent = Math.ceil(BREATH_TIMINGS[_breath.tempo].inhale / 1000);
+    }
+
+    function toggleBreath() {
+        if (_breath.isPlaying) stopBreath();
+        else startBreath();
+    }
+
+    function changeBreathTempo(tempo) {
+        if (_breath.isPlaying) return;
+        _breath.tempo = tempo;
+        _renderBreathTempoButtons();
+        const t  = BREATH_TIMINGS[tempo];
+        const cdEl = document.getElementById('breath-countdown');
+        if (cdEl) cdEl.textContent = Math.ceil(t.inhale / 1000);
+    }
+
+    async function loadBreathTodayCount() {
+        try {
+            const { data: { session } } = await sb.auth.getSession();
+            if (!session) return;
+            const { data } = await sb.from('breathing_logs')
+                .select('count').eq('user_id', session.user.id).eq('date', _todayKey()).maybeSingle();
+            _breath.todayCount = data?.count || 0;
+            document.getElementById('breath-today-badge').textContent = `오늘 ${_breath.todayCount}세트 완료`;
+        } catch (e) {
+            console.warn('호흡 기록 로드 실패:', e.message);
+        }
+    }
+
+    /* ─────────────────────────────────────────
+     * 자료실 – 정신질환 교육 브라우저
+     * ───────────────────────────────────────── */
+    const LIB_CATS = [
+        { key: 'all',       label: '전체'    },
+        { key: 'mood',      label: '기분장애' },
+        { key: 'anxiety',   label: '불안장애' },
+        { key: 'sleep',     label: '수면'    },
+        { key: 'cognitive', label: '인지'    },
+        { key: 'trauma',    label: '트라우마' },
+        { key: 'addiction', label: '중독'    },
+        { key: 'psychosis', label: '정신증'  },
+        { key: 'other',     label: '기타'    },
+        { key: 'crisis',    label: '위기'    },
+    ];
+
+    const CAT_STYLE = {
+        mood:      { bg: '#eef2e6', color: '#5C7A2A' },
+        anxiety:   { bg: '#fdf4e6', color: '#C4956A' },
+        sleep:     { bg: '#eef4fa', color: '#5A8FBC' },
+        cognitive: { bg: '#f0eefa', color: '#6D5BA3' },
+        trauma:    { bg: '#fdf0ec', color: '#C46A5A' },
+        addiction: { bg: '#fef3e6', color: '#C47A2A' },
+        psychosis: { bg: '#eaf4ef', color: '#3A8C6E' },
+        other:     { bg: '#f5f2ec', color: '#8a8070' },
+        crisis:    { bg: '#fdf0f0', color: '#C45A5A' },
+    };
+
+    const CAT_LABEL = {
+        mood: '기분장애', anxiety: '불안장애', sleep: '수면', cognitive: '인지',
+        trauma: '트라우마', addiction: '중독', psychosis: '정신증', other: '기타', crisis: '위기',
+    };
+
+    let _libData   = null;
+    let _libFilter = 'all';
+    let _libQuery  = '';
+
+    async function loadLibraryData() {
+        if (_libData) { _renderFilterChips(); _renderConditionList(); return; }
+        try {
+            const res = await fetch('assets/data/psychiatric_conditions_v1.json');
+            _libData  = await res.json();
+            _renderFilterChips();
+            _renderConditionList();
+        } catch (e) {
+            console.warn('자료실 데이터 로드 실패:', e.message);
+            const el = document.getElementById('lib-condition-list');
+            if (el) el.innerHTML = '<div class="lib-empty">데이터를 불러올 수 없습니다.</div>';
+        }
+    }
+
+    function _renderFilterChips() {
+        const row = document.getElementById('lib-filter-row');
+        if (!row) return;
+        row.innerHTML = LIB_CATS.map(c => `
+            <button class="lib-filter-chip${c.key === _libFilter ? ' active' : ''}"
+                    data-cat="${c.key}"
+                    onclick="filterLibraryConditions('${c.key}', this)">
+                ${c.label}
+            </button>`).join('');
+    }
+
+    function filterLibraryConditions(cat, btn) {
+        _libFilter = cat;
+        document.querySelectorAll('.lib-filter-chip').forEach(b => b.classList.remove('active'));
+        if (btn) btn.classList.add('active');
+        const inp = document.getElementById('lib-search-input');
+        if (inp) { inp.value = ''; _libQuery = ''; }
+        _renderConditionList();
+    }
+
+    function searchLibraryConditions(query) {
+        _libQuery  = query.trim().toLowerCase();
+        _libFilter = 'all';
+        document.querySelectorAll('.lib-filter-chip').forEach((b, i) => {
+            b.classList.toggle('active', i === 0);
+        });
+        _renderConditionList();
+    }
+
+    function _renderConditionList() {
+        const list = document.getElementById('lib-condition-list');
+        if (!list || !_libData) return;
+
+        let items = _libData;
+        if (_libFilter !== 'all') items = items.filter(d => d.category === _libFilter);
+        if (_libQuery) {
+            const q = _libQuery;
+            items = items.filter(d =>
+                d.title.toLowerCase().includes(q) ||
+                d.summary.toLowerCase().includes(q) ||
+                (d.symptomKeywords || []).some(k => k.toLowerCase().includes(q))
+            );
+        }
+
+        if (items.length === 0) {
+            list.innerHTML = '<div class="lib-empty">검색 결과가 없습니다 🔍</div>';
+            return;
+        }
+
+        list.innerHTML = items.map(d => {
+            const s = CAT_STYLE[d.category] || CAT_STYLE.other;
+            const lbl = CAT_LABEL[d.category] || d.category;
+            return `
+            <div class="cond-card" onclick="openConditionPanel('${d.id}')"
+                 role="button" tabindex="0" aria-label="${d.title} 상세 보기">
+                <div class="cond-emoji-wrap" style="background:${s.bg};">${d.emoji}</div>
+                <div style="flex:1; min-width:0;">
+                    <span class="cond-badge" style="background:${s.bg}; color:${s.color}; margin-bottom:4px; display:inline-block;">${lbl}</span>
+                    <p style="font-size:15px; font-weight:700; color:#2a2820; margin:0 0 3px;
+                               white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${d.title}</p>
+                    <p style="font-size:12px; color:#8a8070; line-height:1.5; margin:0;
+                               display:-webkit-box; -webkit-line-clamp:2;
+                               -webkit-box-orient:vertical; overflow:hidden;">${d.summary}</p>
+                </div>
+                <i class="fas fa-chevron-right" style="color:#d0c8bc; font-size:13px; flex-shrink:0;"></i>
+            </div>`;
+        }).join('');
+    }
+
+    function openConditionPanel(id) {
+        if (!_libData) return;
+        const item = _libData.find(d => d.id === id);
+        if (!item) return;
+
+        _renderConditionDetail(item);
+        document.getElementById('condition-panel-emoji-hd').textContent = item.emoji;
+        document.getElementById('condition-panel-title').textContent     = item.title;
+        document.getElementById('condition-panel').classList.add('open');
+        document.getElementById('condition-panel-backdrop').classList.add('open');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeConditionPanel() {
+        document.getElementById('condition-panel').classList.remove('open');
+        document.getElementById('condition-panel-backdrop').classList.remove('open');
+        document.body.style.overflow = '';
+        setTimeout(() => {
+            const body = document.getElementById('condition-panel-body');
+            if (body) body.scrollTop = 0;
+        }, 400);
+    }
+
+    function _renderConditionDetail(item) {
+        const s   = CAT_STYLE[item.category] || CAT_STYLE.other;
+        const lbl = CAT_LABEL[item.category] || item.category;
+        let html  = '';
+
+        // ── 히어로 ──
+        html += `<div class="cond-hero">
+            <span class="cond-hero-emoji">${item.emoji}</span>
+            <h1 class="cond-hero-title">${item.title}</h1>
+            <p class="cond-hero-summary">${item.summary}</p>`;
+        if (item.symptomKeywords?.length) {
+            html += `<div class="cond-hero-keywords">` +
+                item.symptomKeywords.map(k => `<span class="symptom-chip">${k}</span>`).join('') +
+                `</div>`;
+        }
+        html += `</div>`;
+
+        // ── 개요 (아코디언) ──
+        if (item.sections?.length) {
+            html += `<p class="acc-section-title">📖 개요</p>`;
+            html += item.sections.map((sec, i) => `
+            <div class="acc-item">
+                <button class="acc-trigger" onclick="_toggleAccordion(this)" aria-expanded="${i === 0}">
+                    <span>${_escHtml(sec.heading)}</span>
+                    <i class="fas fa-chevron-down acc-icon${i === 0 ? ' open' : ''}"></i>
+                </button>
+                <div class="acc-body${i === 0 ? ' open' : ''}">
+                    <p>${_escHtml(sec.body).replace(/\n/g, '<br>')}</p>
+                </div>
+            </div>`).join('');
+        }
+
+        // ── 흔한 오해 (아코디언) ──
+        if (item.misconceptions?.length) {
+            html += `<p class="acc-section-title">🙅 흔한 오해</p>`;
+            html += item.misconceptions.map(m => `
+            <div class="acc-item">
+                <button class="acc-trigger" onclick="_toggleAccordion(this)" aria-expanded="false">
+                    <span>${_escHtml(m.myth)}</span>
+                    <i class="fas fa-chevron-down acc-icon"></i>
+                </button>
+                <div class="acc-body">
+                    <p>${_escHtml(m.fact).replace(/\n/g, '<br>')}</p>
+                </div>
+            </div>`).join('');
+        }
+
+        // ── FAQ (아코디언) ──
+        if (item.faqItems?.length) {
+            html += `<p class="acc-section-title">❓ 자주 묻는 질문</p>`;
+            html += item.faqItems.map(f => `
+            <div class="acc-item">
+                <button class="acc-trigger" onclick="_toggleAccordion(this)" aria-expanded="false">
+                    <span>${_escHtml(f.question || f.q || '')}</span>
+                    <i class="fas fa-chevron-down acc-icon"></i>
+                </button>
+                <div class="acc-body">
+                    <p>${_escHtml(f.answer || f.a || '').replace(/\n/g, '<br>')}</p>
+                </div>
+            </div>`).join('');
+        }
+
+        // ── 전문가 도움 시기 ──
+        if (item.whenToSeekHelp) {
+            html += `
+            <div class="seek-help-card">
+                <h3>🔔 이럴 때 도움을 받으세요</h3>
+                <p>${_escHtml(item.whenToSeekHelp).replace(/\n/g, '<br>')}</p>
+            </div>`;
+        }
+
+        document.getElementById('condition-panel-body').innerHTML = html;
+    }
+
+    function _toggleAccordion(trigger) {
+        const body   = trigger.nextElementSibling;
+        const icon   = trigger.querySelector('.acc-icon');
+        const isOpen = body.classList.contains('open');
+        body.classList.toggle('open', !isOpen);
+        if (icon)  icon.classList.toggle('open',  !isOpen);
+        trigger.setAttribute('aria-expanded', String(!isOpen));
+    }
+
+    function _escHtml(str) {
+        return String(str)
+            .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    /* ─────────────────────────────────────────
+     * 기분 통계 차트 & 히스토리 타임라인
+     * ───────────────────────────────────────── */
+    const MOOD_COLORS = {
+        mood:         '#7C8C5E',
+        anxiety:      '#C4956A',
+        irritability: '#A08260',
+        sleep:        '#6A8CA0',
+    };
+    const MOOD_PAGE_SIZE = 15;
+
+    let _moodChart     = null;
+    let _moodHistPage  = 0;
+    let _moodHistTotal = 0;
+
+    async function loadMoodStats() {
+        const { data: { session } } = await sb.auth.getSession();
+        if (!session) return;
+        const uid = session.user.id;
+
+        const from = new Date();
+        from.setDate(from.getDate() - 29);
+        const fromStr = from.toISOString().slice(0, 10);
+
+        document.getElementById('chart-loading')?.classList.remove('hidden');
+
+        try {
+            const { data: logs30 } = await sb.from('mood_logs')
+                .select('date, score')
+                .eq('user_id', uid)
+                .gte('date', fromStr)
+                .order('date', { ascending: true });
+
+            _renderMoodStatSummary(logs30 || []);
+            _renderMoodChart(logs30 || []);
+
+            _moodHistPage = 0;
+            document.getElementById('mood-timeline-list').innerHTML = '';
+            document.getElementById('mood-load-more').classList.add('hidden');
+            await _loadMoodTimelinePage();
+        } catch (e) {
+            console.warn('기분 통계 로드 실패:', e.message);
+        } finally {
+            document.getElementById('chart-loading')?.classList.add('hidden');
+        }
+    }
+
+    function _renderMoodStatSummary(logs) {
+        const avg = (key) => {
+            const vals = logs.map(l => l.score?.[key]).filter(v => v != null);
+            return vals.length ? (vals.reduce((a, b) => a + b, 0) / vals.length).toFixed(1) : '—';
+        };
+        const setEl = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+        setEl('avg-mood',    avg('mood'));
+        setEl('avg-anxiety', avg('anxiety'));
+        setEl('avg-sleep',   avg('sleep'));
+    }
+
+    function _renderMoodChart(logs) {
+        const emptyEl  = document.getElementById('mood-chart-empty');
+        const wrapEl   = document.getElementById('chart-canvas-wrap');
+        const canvas   = document.getElementById('mood-chart-canvas');
+
+        if (!logs.length) {
+            emptyEl?.classList.remove('hidden');
+            wrapEl?.classList.add('hidden');
+            return;
+        }
+        emptyEl?.classList.add('hidden');
+        wrapEl?.classList.remove('hidden');
+
+        const labels  = logs.map(l => {
+            const d = new Date(l.date + 'T00:00:00');
+            return `${d.getMonth() + 1}/${d.getDate()}`;
+        });
+        const toVals  = key => logs.map(l => l.score?.[key] ?? null);
+        const ptR     = logs.length <= 14 ? 4 : 2;
+
+        const datasets = [
+            { label: '기분',   data: toVals('mood'),         borderColor: MOOD_COLORS.mood },
+            { label: '불안',   data: toVals('anxiety'),      borderColor: MOOD_COLORS.anxiety },
+            { label: '예민도', data: toVals('irritability'), borderColor: MOOD_COLORS.irritability },
+            { label: '수면',   data: toVals('sleep'),        borderColor: MOOD_COLORS.sleep },
+        ].map(ds => ({
+            ...ds,
+            backgroundColor: ds.borderColor + '20',
+            borderWidth: 2, pointRadius: ptR, pointHoverRadius: 6,
+            tension: 0.4, fill: false, spanGaps: true,
+        }));
+
+        if (_moodChart) {
+            _moodChart.data.labels   = labels;
+            _moodChart.data.datasets = datasets;
+            _moodChart.update('none');
+            return;
+        }
+
+        _moodChart = new Chart(canvas, {
+            type: 'line',
+            data: { labels, datasets },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: { mode: 'index', intersect: false },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: 'rgba(42,40,32,0.88)',
+                        titleColor: '#fff',
+                        bodyColor: 'rgba(255,255,255,0.82)',
+                        padding: 10, cornerRadius: 10,
+                        callbacks: {
+                            title: ([{ label }]) => label,
+                            label: ({ dataset, raw }) =>
+                                raw != null ? `${dataset.label}: ${raw}점` : `${dataset.label}: —`,
+                        },
+                    },
+                },
+                scales: {
+                    x: {
+                        ticks: {
+                            font: { size: 10 }, color: '#a09890',
+                            maxTicksLimit: 8, maxRotation: 0,
+                        },
+                        grid: { color: '#f0ede6' },
+                        border: { dash: [4, 4] },
+                    },
+                    y: {
+                        min: 1, max: 10,
+                        ticks: { stepSize: 3, font: { size: 10 }, color: '#a09890' },
+                        grid: { color: '#f0ede6' },
+                        border: { dash: [4, 4] },
+                    },
+                },
+            },
+        });
+    }
+
+    async function _loadMoodTimelinePage() {
+        const { data: { session } } = await sb.auth.getSession();
+        if (!session) return;
+
+        const from = _moodHistPage * MOOD_PAGE_SIZE;
+        const to   = from + MOOD_PAGE_SIZE - 1;
+
+        const { data, count } = await sb.from('mood_logs')
+            .select('date, score, tags, memo', { count: 'exact' })
+            .eq('user_id', session.user.id)
+            .order('date', { ascending: false })
+            .range(from, to);
+
+        if (_moodHistPage === 0) _moodHistTotal = count || 0;
+
+        const list    = document.getElementById('mood-timeline-list');
+        const moreBtn = document.getElementById('mood-load-more');
+
+        if (!data?.length && _moodHistPage === 0) {
+            list.innerHTML =
+                '<p style="text-align:center;color:#a09890;font-size:13px;padding:24px 0;">아직 기분 기록이 없어요 🌿</p>';
+            moreBtn.classList.add('hidden');
+            return;
+        }
+
+        list.insertAdjacentHTML('beforeend', (data || []).map(_makeMoodHistCard).join(''));
+
+        const loaded = (_moodHistPage + 1) * MOOD_PAGE_SIZE;
+        const hasMore = loaded < _moodHistTotal && (data?.length || 0) === MOOD_PAGE_SIZE;
+        moreBtn.classList.toggle('hidden', !hasMore);
+    }
+
+    async function loadMoreMoodHistory() {
+        const btn = document.getElementById('mood-load-more');
+        if (btn) { btn.disabled = true; btn.textContent = '불러오는 중...'; }
+        _moodHistPage++;
+        await _loadMoodTimelinePage();
+        if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-circle-chevron-down" style="margin-right:6px;"></i>더 보기';
+        }
+    }
+
+    function _makeMoodHistCard(log) {
+        const d    = new Date(log.date + 'T00:00:00');
+        const week = ['일','월','화','수','목','금','토'][d.getDay()];
+        const dateLbl = `${d.getMonth() + 1}월 ${d.getDate()}일 (${week})`;
+        const sc   = log.score || {};
+
+        const chips = [
+            { key: 'mood',         label: '기분'   },
+            { key: 'anxiety',      label: '불안'   },
+            { key: 'irritability', label: '예민도' },
+            { key: 'sleep',        label: '수면'   },
+        ].filter(c => sc[c.key] != null)
+         .map(c => {
+             const col = MOOD_COLORS[c.key];
+             return `<span class="mood-score-chip" style="background:${col}1a;color:${col};">${c.label} ${sc[c.key]}</span>`;
+         }).join('');
+
+        let extra = '';
+        if (log.tags) {
+            const tags = log.tags.split(',').map(t => t.trim()).filter(Boolean);
+            if (tags.length) extra += `<div class="mood-tags">${tags.map(t => `<span class="mood-tag">${_escHtml(t)}</span>`).join('')}</div>`;
+        }
+        if (log.memo) {
+            const txt = log.memo.length > 90 ? log.memo.slice(0, 90) + '…' : log.memo;
+            extra += `<p class="mood-memo">"${_escHtml(txt)}"</p>`;
+        }
+
+        return `
+        <div class="mood-history-card">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+                <span style="font-size:12px;font-weight:700;color:#5C7A2A;">${dateLbl}</span>
+                ${sc.mood != null ? `<span style="font-size:11px;color:#a09890;">기분 <b style="color:${MOOD_COLORS.mood};">${sc.mood}</b>/10</span>` : ''}
+            </div>
+            <div class="mood-score-row">${chips}</div>
+            ${extra}
+        </div>`;
+    }
+
     document.addEventListener('keydown', (e) => {
         if (e.key !== 'Enter') return;
         if (document.getElementById('auth-screen').classList.contains('hidden')) return;

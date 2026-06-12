@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>내 약물 관리 — 올리브나무</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { font-family: -apple-system, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+               background: #f8f6f0; color: #2a2820; min-height: 100dvh; }
+
+        /* ── 상단 헤더 ── */
+        #top-bar {
+            position: sticky; top: 0; z-index: 100;
+            background: #fff;
+            border-bottom: 1px solid #f0ede6;
+            display: flex; align-items: center; gap: 12px;
+            padding: 0 16px; height: 56px;
+        }
+        #top-bar h1 { font-size: 16px; font-weight: 700; color: #2a2820; flex: 1; margin: 0; }
+        #back-btn { width: 36px; height: 36px; border-radius: 50%; border: none;
+                    background: #f5f2ec; cursor: pointer; display: flex; align-items: center;
+                    justify-content: center; color: #6b6558; font-size: 15px; }
+        #back-btn:active { background: #ede9e1; }
+
+        /* ── 공통 카드 ── */
+        .card { background: #fff; border-radius: 16px; padding: 16px;
+                box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+        .section-label { font-size: 13px; font-weight: 700; color: #8a8070;
+                         letter-spacing: 0.04em; text-transform: uppercase;
+                         margin-bottom: 8px; padding: 0 4px; }
+
+        /* ── 섹션 탭 ── */
+        #section-tabs { display: flex; gap: 6px; padding: 12px 16px 0; position: sticky;
+                        top: 56px; z-index: 90; background: #f8f6f0; }
+        .sec-tab { flex: 1; padding: 8px 4px; border-radius: 10px; border: none;
+                   font-size: 12px; font-weight: 600; cursor: pointer;
+                   background: #f0ede6; color: #8a8070; transition: all 0.18s; }
+        .sec-tab.active { background: #5C7A2A; color: #fff; }
+
+        /* ── 복용 약물 목록 ── */
+        .med-item { display: flex; align-items: center; gap: 12px;
+                    padding: 12px 0; border-bottom: 1px solid #f5f2ec; }
+        .med-item:last-child { border-bottom: none; }
+        .med-thumb { width: 52px; height: 52px; border-radius: 10px; object-fit: cover;
+                     background: #f0ede6; flex-shrink: 0; }
+        .med-thumb-placeholder { width: 52px; height: 52px; border-radius: 10px;
+                                  background: #eef2e6; flex-shrink: 0;
+                                  display: flex; align-items: center; justify-content: center;
+                                  font-size: 20px; }
+        .med-info { flex: 1; min-width: 0; }
+        .med-name { font-size: 14px; font-weight: 600; color: #2a2820; white-space: nowrap;
+                    overflow: hidden; text-overflow: ellipsis; }
+        .med-sub { font-size: 11px; color: #8a8070; margin-top: 2px; }
+        .med-dosage { font-size: 12px; color: #5C7A2A; margin-top: 3px; font-weight: 500; }
+        .med-del-btn { width: 30px; height: 30px; border-radius: 50%; border: none;
+                       background: #fef0f0; color: #c05a5a; cursor: pointer; font-size: 12px;
+                       display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+
+        /* ── 텍스트 검색 ── */
+        .search-input-wrap { position: relative; }
+        .search-input-wrap i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+                               color: #b0a898; font-size: 14px; }
+        #text-search-input { width: 100%; padding: 10px 12px 10px 36px; border-radius: 12px;
+                             border: 1.5px solid #e8e3db; font-size: 14px; background: #faf9f6;
+                             outline: none; color: #2a2820; }
+        #text-search-input:focus { border-color: #5C7A2A; }
+
+        /* ── 위저드 ── */
+        .wiz-step { display: none; }
+        .wiz-step.active { display: block; }
+        .wiz-title { font-size: 14px; font-weight: 700; color: #2a2820; margin-bottom: 12px; }
+        .wiz-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+        .wiz-chip { padding: 7px 14px; border-radius: 20px; border: 1.5px solid #e8e3db;
+                    font-size: 13px; cursor: pointer; background: #fff; color: #6b6558;
+                    transition: all 0.15s; user-select: none; }
+        .wiz-chip.selected { background: #5C7A2A; color: #fff; border-color: #5C7A2A; }
+        .wiz-chip:active { opacity: 0.8; }
+        .wiz-nav { display: flex; gap: 8px; margin-top: 14px; }
+        .wiz-nav button { flex: 1; padding: 10px; border-radius: 12px; border: none;
+                          font-size: 14px; font-weight: 600; cursor: pointer; }
+        #wiz-prev-btn { background: #f0ede6; color: #6b6558; }
+        #wiz-next-btn { background: #5C7A2A; color: #fff; }
+        #wiz-prev-btn:disabled, #wiz-next-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+        .wiz-progress { display: flex; gap: 4px; justify-content: center; margin-bottom: 14px; }
+        .wiz-dot { width: 6px; height: 6px; border-radius: 50%; background: #e8e3db; transition: background 0.2s; }
+        .wiz-dot.done { background: #5C7A2A; }
+
+        /* ── 검색 결과 ── */
+        .drug-result-item { display: flex; align-items: center; gap: 10px;
+                            padding: 10px 12px; border-radius: 12px; cursor: pointer;
+                            transition: background 0.15s; }
+        .drug-result-item:active { background: #f5f2ec; }
+        .drug-result-img { width: 44px; height: 22px; border-radius: 6px; object-fit: cover;
+                           background: #f0ede6; flex-shrink: 0; }
+        .drug-result-img-placeholder { width: 44px; height: 22px; border-radius: 6px;
+                                        background: #eef2e6; flex-shrink: 0; }
+        .drug-result-name { font-size: 13px; font-weight: 600; color: #2a2820; line-height: 1.3; }
+        .drug-result-sub  { font-size: 11px; color: #8a8070; margin-top: 1px; }
+        .drug-add-btn { margin-left: auto; flex-shrink: 0; width: 28px; height: 28px;
+                        border-radius: 50%; border: none; background: #eef2e6;
+                        color: #5C7A2A; font-size: 13px; cursor: pointer;
+                        display: flex; align-items: center; justify-content: center; }
+
+        /* ── 약물 추가 모달 ── */
+        #add-modal-backdrop { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.35);
+                              z-index: 200; }
+        #add-modal { display: none; position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+                     width: 100%; max-width: 480px; background: #fff; border-radius: 20px 20px 0 0;
+                     z-index: 201; padding: 20px 20px 32px; }
+        #add-modal.open { display: block; }
+        #add-modal-backdrop.open { display: block; }
+        #add-modal h3 { font-size: 16px; font-weight: 700; color: #2a2820; margin-bottom: 4px; }
+        #add-modal .entp { font-size: 12px; color: #8a8070; margin-bottom: 16px; }
+        .modal-field label { display: block; font-size: 12px; font-weight: 600; color: #8a8070;
+                             margin-bottom: 5px; }
+        .modal-field input, .modal-field textarea {
+            width: 100%; padding: 10px 12px; border-radius: 10px;
+            border: 1.5px solid #e8e3db; font-size: 14px; background: #faf9f6;
+            outline: none; color: #2a2820; font-family: inherit; }
+        .modal-field input:focus, .modal-field textarea:focus { border-color: #5C7A2A; }
+        .modal-field textarea { resize: none; height: 72px; }
+        #add-modal-save { width: 100%; padding: 12px; border-radius: 12px; border: none;
+                          background: #5C7A2A; color: #fff; font-size: 15px; font-weight: 700;
+                          cursor: pointer; margin-top: 16px; }
+        #add-modal-save:active { background: #4a6422; }
+
+        /* ── 부작용 로그 타임라인 ── */
+        .se-add-form { background: #faf9f6; border-radius: 14px; padding: 14px; margin-bottom: 16px; }
+        .se-add-form .field-label { font-size: 12px; font-weight: 600; color: #8a8070; margin-bottom: 6px; }
+        .se-chips-wrap { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+        .se-chip { padding: 6px 12px; border-radius: 16px; font-size: 12px; cursor: pointer;
+                   border: 1.5px solid #e8e3db; background: #fff; color: #6b6558;
+                   transition: all 0.15s; user-select: none; }
+        .se-chip.selected { background: #C4956A; color: #fff; border-color: #C4956A; }
+        #se-memo-input { width: 100%; padding: 9px 12px; border-radius: 10px;
+                         border: 1.5px solid #e8e3db; font-size: 13px; background: #fff;
+                         outline: none; color: #2a2820; font-family: inherit; margin-bottom: 10px; }
+        #se-memo-input:focus { border-color: #C4956A; }
+        #se-save-btn { width: 100%; padding: 10px; border-radius: 10px; border: none;
+                       background: #C4956A; color: #fff; font-size: 14px; font-weight: 600;
+                       cursor: pointer; }
+        #se-save-btn:active { background: #b4845a; }
+
+        .se-med-selector { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+        .se-med-chip { padding: 6px 12px; border-radius: 14px; font-size: 12px; cursor: pointer;
+                       border: 1.5px solid #e8e3db; background: #fff; color: #6b6558;
+                       transition: all 0.15s; white-space: nowrap; user-select: none; }
+        .se-med-chip.selected { background: #5C7A2A; color: #fff; border-color: #5C7A2A; }
+
+        .timeline-item { position: relative; padding-left: 28px; padding-bottom: 20px; }
+        .timeline-item::before { content: ''; position: absolute; left: 8px; top: 22px; bottom: 0;
+                                  width: 1px; background: #f0ede6; }
+        .timeline-item:last-child::before { display: none; }
+        .timeline-dot { position: absolute; left: 0; top: 4px; width: 18px; height: 18px;
+                        border-radius: 50%; background: #fdf4e6; border: 2px solid #C4956A;
+                        display: flex; align-items: center; justify-content: center; font-size: 9px; color: #C4956A; }
+        .timeline-date { font-size: 11px; color: #b0a898; margin-bottom: 4px; }
+        .timeline-drug { font-size: 12px; font-weight: 600; color: #5C7A2A; margin-bottom: 4px; }
+        .timeline-effects { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 4px; }
+        .timeline-effect-tag { padding: 3px 8px; border-radius: 10px; font-size: 11px;
+                               background: #fdf4e6; color: #C4956A; }
+        .timeline-memo { font-size: 12px; color: #6b6558; }
+
+        /* ── 로딩/빈화면 ── */
+        .empty-state { text-align: center; padding: 40px 20px; color: #b0a898; }
+        .empty-state i { font-size: 32px; margin-bottom: 10px; display: block; opacity: 0.5; }
+        .empty-state p { font-size: 14px; }
+        .spinner { display: inline-block; width: 20px; height: 20px; border: 2px solid #e8e3db;
+                   border-top-color: #5C7A2A; border-radius: 50%; animation: spin 0.7s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ── 토스트 ── */
+        #toast { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(20px);
+                 background: #2a2820; color: #fff; padding: 10px 20px; border-radius: 20px;
+                 font-size: 13px; white-space: nowrap; opacity: 0; transition: all 0.28s;
+                 z-index: 999; pointer-events: none; }
+        #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+        /* ── 콘텐츠 래퍼 ── */
+        #main-content { padding: 12px 16px 80px; max-width: 480px; margin: 0 auto; }
+
+        /* ── 섹션 패널 ── */
+        .sec-panel { display: none; }
+        .sec-panel.active { display: block; }
+
+        /* 검색 탭 내부 탭 */
+        .search-mode-tabs { display: flex; background: #f5f2ec; border-radius: 10px;
+                            padding: 3px; margin-bottom: 14px; }
+        .smt-btn { flex: 1; padding: 7px 0; border-radius: 8px; border: none; font-size: 13px;
+                   font-weight: 600; cursor: pointer; background: transparent; color: #8a8070; transition: all 0.15s; }
+        .smt-btn.active { background: #fff; color: #2a2820;
+                          box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+
+        /* 인증 화면 */
+        #auth-screen { position: fixed; inset: 0; background: #f8f6f0; z-index: 300;
+                       display: flex; align-items: center; justify-content: center; padding: 24px; }
+        #auth-box { background: #fff; border-radius: 20px; padding: 28px 24px; width: 100%; max-width: 360px;
+                    box-shadow: 0 4px 20px rgba(0,0,0,0.1); text-align: center; }
+        #auth-box h2 { font-size: 20px; font-weight: 700; margin-bottom: 6px; }
+        #auth-box p  { font-size: 13px; color: #8a8070; margin-bottom: 20px; }
+        #auth-id, #auth-pw { width: 100%; padding: 11px 14px; border-radius: 10px;
+                              border: 1.5px solid #e8e3db; font-size: 14px; outline: none;
+                              background: #faf9f6; margin-bottom: 10px; font-family: inherit; }
+        #auth-id:focus, #auth-pw:focus { border-color: #5C7A2A; }
+        #auth-login-btn { width: 100%; padding: 12px; border-radius: 12px; border: none;
+                          background: #5C7A2A; color: #fff; font-size: 15px; font-weight: 700; cursor: pointer; }
+        #auth-err { font-size: 12px; color: #c05a5a; margin-top: 10px; min-height: 18px; }
+    </style>
+</head>
+<body>
+
+<!-- 인증 화면 -->
+<div id="auth-screen">
+    <div id="auth-box">
+        <div style="font-size:40px; margin-bottom:12px;">💊</div>
+        <h2>내 약물 관리</h2>
+        <p>올리브나무 계정으로 로그인하세요</p>
+        <input type="text" id="auth-id" placeholder="아이디" autocomplete="username" autocapitalize="none">
+        <input type="password" id="auth-pw" placeholder="비밀번호" autocomplete="current-password">
+        <button id="auth-login-btn" onclick="doLogin()">로그인</button>
+        <div id="auth-err"></div>
+    </div>
+</div>
+
+<!-- 상단 헤더 -->
+<div id="top-bar">
+    <button id="back-btn" onclick="goBack()"><i class="fas fa-chevron-left"></i></button>
+    <h1>내 약물 관리</h1>
+</div>
+
+<!-- 섹션 탭 -->
+<div id="section-tabs">
+    <button class="sec-tab active" data-sec="meds-list" onclick="switchSec('meds-list')">
+        <i class="fas fa-list-ul" style="margin-right:4px;"></i>복용 목록
+    </button>
+    <button class="sec-tab" data-sec="search" onclick="switchSec('search')">
+        <i class="fas fa-magnifying-glass" style="margin-right:4px;"></i>검색·추가
+    </button>
+    <button class="sec-tab" data-sec="side-effects" onclick="switchSec('side-effects')">
+        <i class="fas fa-triangle-exclamation" style="margin-right:4px;"></i>부작용
+    </button>
+</div>
+
+<!-- 메인 콘텐츠 -->
+<div id="main-content">
+
+    <!-- ━━ 섹션 1: 복용 목록 ━━ -->
+    <div id="sec-meds-list" class="sec-panel active">
+        <div class="section-label" style="margin-top:8px;">복용 중인 약물</div>
+        <div class="card" id="meds-list-card">
+            <div class="empty-state" id="meds-list-empty" style="display:none;">
+                <i class="fas fa-pills"></i>
+                <p>복용 중인 약물이 없습니다<br><span style="font-size:12px;">검색·추가 탭에서 약물을 추가해보세요</span></p>
+            </div>
+            <div id="meds-list-loading" style="text-align:center;padding:24px;">
+                <div class="spinner"></div>
+            </div>
+            <div id="meds-list-items"></div>
+        </div>
+    </div>
+
+    <!-- ━━ 섹션 2: 검색·추가 ━━ -->
+    <div id="sec-search" class="sec-panel">
+        <!-- 검색 모드 탭 -->
+        <div class="search-mode-tabs" style="margin-top:8px;">
+            <button class="smt-btn active" onclick="setSearchMode('text')">이름 검색</button>
+            <button class="smt-btn" onclick="setSearchMode('wizard')">외형으로 찾기</button>
+        </div>
+
+        <!-- 텍스트 검색 -->
+        <div id="mode-text">
+            <div class="search-input-wrap">
+                <i class="fas fa-magnifying-glass"></i>
+                <input id="text-search-input" type="text" placeholder="약 이름을 입력하세요"
+                       autocomplete="off" oninput="onTextSearch(this.value)">
+            </div>
+            <div id="text-search-results" style="margin-top:8px;"></div>
+        </div>
+
+        <!-- 외형 위저드 -->
+        <div id="mode-wizard" style="display:none;">
+            <!-- 진행 도트 -->
+            <div class="wiz-progress" id="wiz-progress"></div>
+
+            <!-- 스텝 0: 모양 -->
+            <div class="wiz-step active" id="wiz-step-0">
+                <div class="wiz-title">💊 약의 모양을 선택하세요</div>
+                <div class="wiz-chips" id="wiz-chips-0"></div>
+            </div>
+
+            <!-- 스텝 1: 색상 -->
+            <div class="wiz-step" id="wiz-step-1">
+                <div class="wiz-title">🎨 약의 주 색상을 선택하세요</div>
+                <div class="wiz-chips" id="wiz-chips-1"></div>
+            </div>
+
+            <!-- 스텝 2: 제형 -->
+            <div class="wiz-step" id="wiz-step-2">
+                <div class="wiz-title">💠 제형을 선택하세요</div>
+                <div class="wiz-chips" id="wiz-chips-2"></div>
+            </div>
+
+            <!-- 스텝 3: 결과 -->
+            <div class="wiz-step" id="wiz-step-3">
+                <div class="wiz-title">🔍 검색 결과</div>
+                <div id="wiz-results"></div>
+            </div>
+
+            <div class="wiz-nav">
+                <button id="wiz-prev-btn" onclick="wizPrev()" disabled>이전</button>
+                <button id="wiz-next-btn" onclick="wizNext()">다음</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ━━ 섹션 3: 부작용 ━━ -->
+    <div id="sec-side-effects" class="sec-panel">
+        <!-- 기록 폼 -->
+        <div class="se-add-form" style="margin-top:8px;">
+            <div class="field-label">어떤 약에 대한 기록인가요?</div>
+            <div id="se-med-selector" class="se-med-selector">
+                <span style="font-size:12px;color:#b0a898;">복용 중인 약물이 없습니다</span>
+            </div>
+            <div class="field-label">증상을 선택하세요 (복수 선택 가능)</div>
+            <div class="se-chips-wrap" id="se-effect-chips"></div>
+            <input id="se-memo-input" type="text" placeholder="메모 (선택사항)" maxlength="200">
+            <button id="se-save-btn" onclick="saveSideEffect()">부작용 기록하기</button>
+        </div>
+
+        <!-- 타임라인 -->
+        <div class="section-label">기록 타임라인</div>
+        <div class="card" id="se-timeline-card">
+            <div id="se-timeline-loading" style="text-align:center;padding:20px;">
+                <div class="spinner"></div>
+            </div>
+            <div id="se-timeline-empty" class="empty-state" style="display:none;">
+                <i class="fas fa-triangle-exclamation"></i>
+                <p>기록된 부작용이 없습니다</p>
+            </div>
+            <div id="se-timeline-items"></div>
+        </div>
+        <div id="se-load-more-wrap" style="text-align:center;margin-top:12px;display:none;">
+            <button onclick="loadMoreSE()" style="padding:9px 24px;border-radius:20px;border:1.5px solid #e8e3db;background:#fff;font-size:13px;cursor:pointer;color:#6b6558;">
+                더 보기
+            </button>
+        </div>
+    </div>
+
+</div>
+
+<!-- 약물 추가 모달 -->
+<div id="add-modal-backdrop" onclick="closeAddModal()"></div>
+<div id="add-modal">
+    <h3 id="add-modal-name"></h3>
+    <div class="entp" id="add-modal-entp"></div>
+    <div class="modal-field" style="margin-bottom:10px;">
+        <label>복용량 / 시간대</label>
+        <input id="add-modal-dosage" type="text" placeholder="예: 1정, 취침 전" maxlength="100">
+    </div>
+    <div class="modal-field">
+        <label>메모 (선택사항)</label>
+        <textarea id="add-modal-memo" placeholder="주의사항, 처방 이유 등"></textarea>
+    </div>
+    <button id="add-modal-save" onclick="confirmAddMed()">복용 목록에 추가</button>
+</div>
+
+<!-- 토스트 -->
+<div id="toast"></div>
+
+<script>
+'use strict';
+
+const SUPABASE_URL      = 'https://pmdwqeknvcesjeaglnma.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBtZHdxZWtudmNlc2plYWdsbm1hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyMDU5MTQsImV4cCI6MjA5Njc4MTkxNH0.0hnS6xA7gsUakOCVf14yz_NwKADv2k7jy6hPZZ-cEQE';
+
+const { createClient } = window.supabase;
+const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// ── 상태 ──
+let _userId = null;
+let _allDrugs = [];          // psychiatric_drugs_v6.json 캐시
+let _myMeds   = [];          // medications 테이블 로컬 캐시
+let _pendingDrug = null;     // 추가 모달에서 선택된 약
+let _currentSec = 'meds-list';
+let _searchMode = 'text';
+let _textSearchTimer = null;
+
+// 위저드 상태
+const WIZ_STEPS = ['shape','color','formulation'];
+let _wiz = { step: 0, shape: null, color: null, formulation: null };
+
+// 부작용 선택 상태
+let _seSelectedEffects = new Set();
+let _seSelectedMedSeq  = null;
+let _sePage = 0;
+const SE_PAGE_SIZE = 20;
+let _seTotalCount = 0;
+
+// 부작용 증상 목록
+const SE_SYMPTOMS = [
+    '졸음','두통','어지러움','메스꺼움','구역질','식욕 감소','식욕 증가','구강 건조',
+    '변비','설사','복통','불면증','불안감 증가','기억력 저하','집중력 저하',
+    '손 떨림','체중 증가','체중 감소','성기능 저하','피부 발진','발한 증가','부종'
+];
+
+// ── 유틸 ──
+function _esc(s) {
+    if (!s) return '';
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+                    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+function showToast(msg, duration = 2200) {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), duration);
+}
+function fmtDate(iso) {
+    if (!iso) return '';
+    const d = new Date(iso);
+    const pad = n => String(n).padStart(2,'0');
+    return `${d.getFullYear()}.${pad(d.getMonth()+1)}.${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
+// ── 인증 ──
+async function doLogin() {
+    const idVal = document.getElementById('auth-id').value.trim();
+    const pwVal = document.getElementById('auth-pw').value;
+    const errEl = document.getElementById('auth-err');
+    errEl.textContent = '';
+    if (!idVal || !pwVal) { errEl.textContent = '아이디와 비밀번호를 입력해주세요.'; return; }
+
+    const btn = document.getElementById('auth-login-btn');
+    btn.disabled = true; btn.textContent = '로그인 중...';
+
+    const email = idVal + '@olivemind.local';
+    const { data, error } = await sb.auth.signInWithPassword({ email, password: pwVal });
+
+    btn.disabled = false; btn.textContent = '로그인';
+    if (error) { errEl.textContent = '아이디 또는 비밀번호가 올바르지 않습니다.'; return; }
+    _userId = data.user.id;
+    document.getElementById('auth-screen').style.display = 'none';
+    onAuthReady();
+}
+function goBack() {
+    window.location.href = 'index.html';
+}
+
+// ── 앱 초기화 ──
+async function onAuthReady() {
+    buildSEChips();
+    await Promise.all([loadDrugDB(), loadMyMeds()]);
+    buildWizard();
+    await loadSETimeline(true);
+}
+
+// ── 약물 DB 로드 ──
+async function loadDrugDB() {
+    const res = await fetch('assets/data/psychiatric_drugs_v6.json');
+    const json = await res.json();
+    _allDrugs = json.drugs || [];
+}
+
+// ── 섹션 전환 ──
+function switchSec(sec) {
+    _currentSec = sec;
+    document.querySelectorAll('.sec-tab').forEach(b => {
+        b.classList.toggle('active', b.dataset.sec === sec);
+    });
+    document.querySelectorAll('.sec-panel').forEach(p => {
+        p.classList.toggle('active', p.id === 'sec-' + sec);
+    });
+    if (sec === 'meds-list') renderMedsList();
+    if (sec === 'side-effects') refreshSEMedSelector();
+}
+
+// ── 검색 모드 ──
+function setSearchMode(mode) {
+    _searchMode = mode;
+    document.querySelectorAll('.smt-btn').forEach((b, i) => {
+        b.classList.toggle('active', (mode === 'text' && i === 0) || (mode === 'wizard' && i === 1));
+    });
+    document.getElementById('mode-text').style.display   = mode === 'text'   ? 'block' : 'none';
+    document.getElementById('mode-wizard').style.display = mode === 'wizard' ? 'block' : 'none';
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// 섹션 1: 복용 목록
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+async function loadMyMeds() {
+    const { data, error } = await sb
+        .from('medications')
+        .select('*')
+        .eq('user_id', _userId)
+        .order('added_at', { ascending: false });
+
+    document.getElementById('meds-list-loading').style.display = 'none';
+    if (error) { showToast('복용 목록 로드 실패'); return; }
+    _myMeds = data || [];
+    renderMedsList();
+}
+
+function renderMedsList() {
+    const itemsEl = document.getElementById('meds-list-items');
+    const emptyEl = document.getElementById('meds-list-empty');
+    if (_myMeds.length === 0) {
+        emptyEl.style.display = 'block';
+        itemsEl.innerHTML = '';
+        return;
+    }
+    emptyEl.style.display = 'none';
+    itemsEl.innerHTML = _myMeds.map(m => {
+        const drug = _allDrugs.find(d => d.itemSeq === m.item_seq);
+        const imgHtml = (drug && drug.imageUrl)
+            ? `<img class="med-thumb" src="${_esc(drug.imageUrl)}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" loading="lazy">
+               <div class="med-thumb-placeholder" style="display:none;">💊</div>`
+            : `<div class="med-thumb-placeholder">💊</div>`;
+        return `
+        <div class="med-item">
+            ${imgHtml}
+            <div class="med-info">
+                <div class="med-name">${_esc(m.item_name)}</div>
+                <div class="med-sub">${_esc(m.entp_name || '')}</div>
+                ${m.dosage ? `<div class="med-dosage"><i class="fas fa-clock" style="font-size:10px;margin-right:3px;"></i>${_esc(m.dosage)}</div>` : ''}
+            </div>
+            <button class="med-del-btn" onclick="deleteMed('${_esc(m.item_seq)}','${_esc(m.item_name)}')">
+                <i class="fas fa-trash"></i>
+            </button>
+        </div>`;
+    }).join('');
+}
+
+async function deleteMed(itemSeq, itemName) {
+    if (!confirm(`'${itemName}' 을(를) 복용 목록에서 삭제할까요?`)) return;
+    const { error } = await sb
+        .from('medications')
+        .delete()
+        .eq('user_id', _userId)
+        .eq('item_seq', itemSeq);
+    if (error) { showToast('삭제 실패'); return; }
+    _myMeds = _myMeds.filter(m => m.item_seq !== itemSeq);
+    renderMedsList();
+    refreshSEMedSelector();
+    showToast('삭제되었습니다');
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// 섹션 2: 텍스트 검색
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function onTextSearch(query) {
+    clearTimeout(_textSearchTimer);
+    const q = query.trim();
+    if (!q) { document.getElementById('text-search-results').innerHTML = ''; return; }
+    _textSearchTimer = setTimeout(() => _doTextSearch(q), 280);
+}
+
+function _doTextSearch(q) {
+    if (!_allDrugs.length) {
+        document.getElementById('text-search-results').innerHTML =
+            '<p style="font-size:13px;color:#b0a898;padding:12px;">약물 DB 로딩 중...</p>';
+        return;
+    }
+    const ql = q.toLowerCase();
+    const results = _allDrugs.filter(d =>
+        d.itemName.toLowerCase().includes(ql) ||
+        (d.entpName && d.entpName.toLowerCase().includes(ql))
+    ).slice(0, 40);
+    renderSearchResults(results, 'text-search-results');
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// 섹션 2: 위저드 검색
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+const WIZ_SHAPES = ['원형','타원형','장방형','사각형','마름모형','오각형','팔각형','기타'];
+const WIZ_COLORS = ['하양','노랑','주황','분홍','빨강','보라','파랑','초록','연두','청록','갈색','회색','투명'];
+const WIZ_FORMS  = ['정제','나정','필름코팅정','서방정','당의정','구강붕해정','경질캡슐제, 정제',
+                    '연질캡슐제, 액상','장용성필름코팅정','서방성필름코팅정','기타'];
+
+function buildWizard() {
+    // 진행 도트
+    const dots = WIZ_STEPS.map((_, i) => `<div class="wiz-dot" id="wiz-dot-${i}"></div>`).join('');
+    document.getElementById('wiz-progress').innerHTML = dots;
+
+    // 칩 렌더
+    _buildChips('wiz-chips-0', WIZ_SHAPES, 'shape');
+    _buildChips('wiz-chips-1', WIZ_COLORS, 'color');
+    _buildChips('wiz-chips-2', WIZ_FORMS,  'formulation');
+    _updateWizUI();
+}
+
+function _buildChips(containerId, items, field) {
+    const el = document.getElementById(containerId);
+    el.innerHTML = items.map(v =>
+        `<div class="wiz-chip" data-field="${field}" data-val="${_esc(v)}" onclick="selectWizChip(this,'${field}','${_esc(v)}')">${_esc(v)}</div>`
+    ).join('');
+}
+
+function selectWizChip(el, field, val) {
+    const container = el.parentElement;
+    container.querySelectorAll('.wiz-chip').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+    _wiz[field] = val;
+    _updateWizUI();
+}
+
+function _updateWizUI() {
+    const step = _wiz.step;
+    document.querySelectorAll('.wiz-step').forEach((s, i) => {
+        s.classList.toggle('active', i === step);
+    });
+    document.querySelectorAll('.wiz-dot').forEach((d, i) => {
+        d.classList.toggle('done', i <= step);
+    });
+    document.getElementById('wiz-prev-btn').disabled = step === 0;
+
+    const isLast = step === WIZ_STEPS.length; // step 3 = 결과
+    const nextBtn = document.getElementById('wiz-next-btn');
+    nextBtn.textContent = isLast ? '다시 찾기' : (step === WIZ_STEPS.length - 1 ? '검색하기' : '다음');
+}
+
+function wizNext() {
+    if (_wiz.step === WIZ_STEPS.length) {
+        // 다시 찾기
+        _wiz = { step: 0, shape: null, color: null, formulation: null };
+        document.querySelectorAll('.wiz-chip').forEach(c => c.classList.remove('selected'));
+        _updateWizUI();
+        return;
+    }
+    if (_wiz.step < WIZ_STEPS.length - 1) {
+        _wiz.step++;
+        _updateWizUI();
+    } else {
+        // 검색 실행
+        _wiz.step = WIZ_STEPS.length;
+        _runWizardSearch();
+        _updateWizUI();
+    }
+}
+
+function wizPrev() {
+    if (_wiz.step > 0) { _wiz.step--; _updateWizUI(); }
+}
+
+function _runWizardSearch() {
+    let results = _allDrugs;
+    if (_wiz.shape)       results = results.filter(d => d.shape === _wiz.shape);
+    if (_wiz.color)       results = results.filter(d => d.color1 === _wiz.color || d.color2 === _wiz.color);
+    if (_wiz.formulation) {
+        const form = _wiz.formulation;
+        if (form === '기타') {
+            const knownForms = WIZ_FORMS.filter(f => f !== '기타');
+            results = results.filter(d => !knownForms.some(kf => d.formulation && d.formulation.includes(kf.split(',')[0])));
+        } else {
+            results = results.filter(d => d.formulation && d.formulation.includes(form.split(',')[0]));
+        }
+    }
+    renderSearchResults(results.slice(0, 50), 'wiz-results');
+}
+
+// ── 공통 결과 렌더러 ──
+function renderSearchResults(drugs, containerId) {
+    const el = document.getElementById(containerId);
+    if (!drugs.length) {
+        el.innerHTML = '<p style="font-size:13px;color:#b0a898;padding:12px;">검색 결과가 없습니다</p>';
+        return;
+    }
+    el.innerHTML = drugs.map(d => {
+        const isAdded = _myMeds.some(m => m.item_seq === d.itemSeq);
+        const imgHtml = d.imageUrl
+            ? `<img class="drug-result-img" src="${_esc(d.imageUrl)}" loading="lazy" onerror="this.style.display='none';">`
+            : `<div class="drug-result-img-placeholder"></div>`;
+        const addBtn = isAdded
+            ? `<div class="drug-add-btn" style="background:#eef2e6;color:#5C7A2A;cursor:default;" title="이미 추가됨">
+                 <i class="fas fa-check"></i>
+               </div>`
+            : `<button class="drug-add-btn" onclick="openAddModal(event,'${_esc(d.itemSeq)}')" title="추가">
+                 <i class="fas fa-plus"></i>
+               </button>`;
+        return `
+        <div class="drug-result-item">
+            ${imgHtml}
+            <div style="flex:1;min-width:0;">
+                <div class="drug-result-name">${_esc(d.itemName)}</div>
+                <div class="drug-result-sub">${_esc(d.entpName || '')}${d.className ? ' · '+_esc(d.className) : ''}</div>
+            </div>
+            ${addBtn}
+        </div>`;
+    }).join('');
+}
+
+// ── 약물 추가 모달 ──
+function openAddModal(e, itemSeq) {
+    e.stopPropagation();
+    _pendingDrug = _allDrugs.find(d => d.itemSeq === itemSeq);
+    if (!_pendingDrug) return;
+    document.getElementById('add-modal-name').textContent  = _pendingDrug.itemName;
+    document.getElementById('add-modal-entp').textContent  = _pendingDrug.entpName || '';
+    document.getElementById('add-modal-dosage').value = '';
+    document.getElementById('add-modal-memo').value   = '';
+    document.getElementById('add-modal').classList.add('open');
+    document.getElementById('add-modal-backdrop').classList.add('open');
+}
+
+function closeAddModal() {
+    document.getElementById('add-modal').classList.remove('open');
+    document.getElementById('add-modal-backdrop').classList.remove('open');
+    _pendingDrug = null;
+}
+
+async function confirmAddMed() {
+    if (!_pendingDrug) return;
+    const dosage = document.getElementById('add-modal-dosage').value.trim();
+    const memo   = document.getElementById('add-modal-memo').value.trim();
+
+    const record = {
+        user_id:   _userId,
+        item_seq:  _pendingDrug.itemSeq,
+        item_name: _pendingDrug.itemName,
+        entp_name: _pendingDrug.entpName || null,
+        dosage:    dosage || null,
+        memo:      memo   || null,
+    };
+
+    const btn = document.getElementById('add-modal-save');
+    btn.disabled = true; btn.textContent = '저장 중...';
+
+    const { error } = await sb.from('medications').upsert(record, { onConflict: 'user_id,item_seq' });
+    btn.disabled = false; btn.textContent = '복용 목록에 추가';
+
+    if (error) { showToast('저장 실패: ' + error.message); return; }
+
+    // 로컬 캐시 업데이트
+    const existing = _myMeds.findIndex(m => m.item_seq === record.item_seq);
+    if (existing >= 0) _myMeds[existing] = { ..._myMeds[existing], ...record };
+    else _myMeds.unshift({ ...record, added_at: new Date().toISOString() });
+
+    closeAddModal();
+    renderMedsList();
+    refreshSEMedSelector();
+    showToast('복용 목록에 추가되었습니다 ✓');
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// 섹션 3: 부작용 기록
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function buildSEChips() {
+    const el = document.getElementById('se-effect-chips');
+    el.innerHTML = SE_SYMPTOMS.map(s =>
+        `<div class="se-chip" onclick="toggleSEChip(this,'${_esc(s)}')">${_esc(s)}</div>`
+    ).join('');
+}
+
+function toggleSEChip(el, sym) {
+    if (_seSelectedEffects.has(sym)) {
+        _seSelectedEffects.delete(sym);
+        el.classList.remove('selected');
+    } else {
+        _seSelectedEffects.add(sym);
+        el.classList.add('selected');
+    }
+}
+
+function refreshSEMedSelector() {
+    const el = document.getElementById('se-med-selector');
+    if (!_myMeds.length) {
+        el.innerHTML = '<span style="font-size:12px;color:#b0a898;">복용 중인 약물이 없습니다</span>';
+        _seSelectedMedSeq = null;
+        return;
+    }
+    el.innerHTML = _myMeds.map(m =>
+        `<div class="se-med-chip${_seSelectedMedSeq === m.item_seq ? ' selected' : ''}"
+              onclick="selectSEMed('${_esc(m.item_seq)}',this)">${_esc(m.item_name)}</div>`
+    ).join('');
+    if (_seSelectedMedSeq && !_myMeds.find(m => m.item_seq === _seSelectedMedSeq)) {
+        _seSelectedMedSeq = null;
+    }
+}
+
+function selectSEMed(itemSeq, el) {
+    _seSelectedMedSeq = _seSelectedMedSeq === itemSeq ? null : itemSeq;
+    document.querySelectorAll('.se-med-chip').forEach(c => c.classList.remove('selected'));
+    if (_seSelectedMedSeq) el.classList.add('selected');
+}
+
+async function saveSideEffect() {
+    if (!_seSelectedMedSeq) { showToast('약물을 선택해주세요'); return; }
+    if (_seSelectedEffects.size === 0) { showToast('증상을 하나 이상 선택해주세요'); return; }
+
+    const med    = _myMeds.find(m => m.item_seq === _seSelectedMedSeq);
+    const memo   = document.getElementById('se-memo-input').value.trim();
+    const record = {
+        user_id:   _userId,
+        item_seq:  _seSelectedMedSeq,
+        item_name: med ? med.item_name : '',
+        effects:   Array.from(_seSelectedEffects),
+        memo:      memo || null,
+    };
+
+    const btn = document.getElementById('se-save-btn');
+    btn.disabled = true; btn.textContent = '저장 중...';
+    const { error } = await sb.from('side_effect_logs').insert(record);
+    btn.disabled = false; btn.textContent = '부작용 기록하기';
+
+    if (error) { showToast('저장 실패: ' + error.message); return; }
+
+    // 리셋
+    _seSelectedEffects.clear();
+    document.querySelectorAll('.se-chip').forEach(c => c.classList.remove('selected'));
+    document.getElementById('se-memo-input').value = '';
+
+    showToast('기록되었습니다 ✓');
+    _sePage = 0;
+    await loadSETimeline(true);
+}
+
+async function loadSETimeline(reset = false) {
+    if (reset) { _sePage = 0; _seTotalCount = 0; }
+    const from = _sePage * SE_PAGE_SIZE;
+    const to   = from + SE_PAGE_SIZE - 1;
+
+    const { data, error, count } = await sb
+        .from('side_effect_logs')
+        .select('*', { count: 'exact' })
+        .eq('user_id', _userId)
+        .order('logged_at', { ascending: false })
+        .range(from, to);
+
+    document.getElementById('se-timeline-loading').style.display = 'none';
+
+    if (error) { showToast('타임라인 로드 실패'); return; }
+    if (reset) { _seTotalCount = count || 0; }
+
+    const items = data || [];
+    const itemsEl = document.getElementById('se-timeline-items');
+    const emptyEl = document.getElementById('se-timeline-empty');
+
+    if (reset) itemsEl.innerHTML = '';
+    if (_seTotalCount === 0) { emptyEl.style.display = 'block'; return; }
+    emptyEl.style.display = 'none';
+
+    itemsEl.innerHTML += items.map(log => {
+        const tags = (log.effects || []).map(e =>
+            `<span class="timeline-effect-tag">${_esc(e)}</span>`
+        ).join('');
+        return `
+        <div class="timeline-item">
+            <div class="timeline-dot"><i class="fas fa-exclamation"></i></div>
+            <div class="timeline-date">${fmtDate(log.logged_at)}</div>
+            <div class="timeline-drug"><i class="fas fa-pills" style="font-size:10px;margin-right:3px;"></i>${_esc(log.item_name || '')}</div>
+            <div class="timeline-effects">${tags}</div>
+            ${log.memo ? `<div class="timeline-memo">${_esc(log.memo)}</div>` : ''}
+        </div>`;
+    }).join('');
+
+    const loaded = (_sePage + 1) * SE_PAGE_SIZE;
+    const moreWrap = document.getElementById('se-load-more-wrap');
+    moreWrap.style.display = loaded < _seTotalCount ? 'block' : 'none';
+}
+
+async function loadMoreSE() {
+    _sePage++;
+    await loadSETimeline(false);
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// 세션 체크 & 시작
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+(async function init() {
+    const { data: { session } } = await sb.auth.getSession();
+    if (session) {
+        _userId = session.user.id;
+        document.getElementById('auth-screen').style.display = 'none';
+        onAuthReady();
+    }
+})();
+</script>
+</body>
+</html>
