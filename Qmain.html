@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&family=Noto+Serif+KR:wght@400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root {
   --bg:      #F5F4F0;
@@ -1342,6 +1343,13 @@ function goSummary() {
   loadScoreCache();
   renderSummary();
   showScreen('summary');
+
+  // Supabase 저장: 완료된 검사 목록 기반 통합 결과 저장
+  const allScores = Object.values(scoreStore).flat();
+  const summaryText = allScores.length > 0
+    ? allScores.map(s => `${s.name}: ${s.badge || '완료'}`).join(' | ')
+    : `${doneSet.size}개 검사 완료`;
+  saveTestResult('종합검사', doneSet.size, summaryText);
 }
 
 function levelBadgeClass(level) {
@@ -1546,6 +1554,34 @@ function showToast(msg) {
   t.classList.add('show');
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+/* ── Supabase 설정 ──────────────────────────────────────────
+ * Supabase 대시보드 → Settings → API → anon/public key 복사 후 아래 값을 교체하세요.
+ * Authentication → Providers → Email → "Confirm email" OFF 설정 필요.
+ * ─────────────────────────────────────────────────────────── */
+const SUPABASE_URL      = 'https://pmdwqeknvcesjeaglnma.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBtZHdxZWtudmNlc2plYWdsbm1hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyMDU5MTQsImV4cCI6MjA5Njc4MTkxNH0.0hnS6xA7gsUakOCVf14yz_NwKADv2k7jy6hPZZ-cEQE'; // ← 실제 JWT anon key로 교체
+
+let _sb = null;
+try {
+  const { createClient } = window.supabase;
+  _sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+} catch(e) {}
+
+async function saveTestResult(testType, score, resultSummary) {
+  if (!_sb) return;
+  try {
+    const { data: { session } } = await _sb.auth.getSession();
+    if (!session) return; // 비회원: 저장 생략, 결과만 표시
+    const { error } = await _sb.from('test_results').insert({
+      user_id:        session.user.id,
+      test_type:      testType,
+      score:          score,
+      result_summary: resultSummary
+    });
+    if (!error) showToast('검사 결과가 안전하게 저장되었습니다.');
+  } catch(e) {}
 }
 
 // ════════════════════════════

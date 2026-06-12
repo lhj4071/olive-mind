@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&family=Noto+Serif+KR:wght@300;400;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
@@ -533,6 +534,18 @@ body {
   .q-card.active, .cont-btn, .sec-next-btn { animation: none; }
   .lk-opt, .start-btn { transition: none; }
 }
+
+/* ── Toast ── */
+#sb-toast {
+  position: fixed; bottom: 28px; left: 50%;
+  transform: translateX(-50%) translateY(12px);
+  background: rgba(30,47,14,0.92); color: #c8e890;
+  padding: 10px 22px; border-radius: 22px;
+  font-size: 13px; font-weight: 500;
+  opacity: 0; transition: opacity 0.3s, transform 0.3s;
+  z-index: 999; pointer-events: none; white-space: nowrap;
+}
+#sb-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 </style>
 </head>
 <body>
@@ -596,7 +609,47 @@ body {
 <!-- RESULT -->
 <div id="result-screen"></div>
 
+<!-- Toast (Supabase 저장 알림) -->
+<div id="sb-toast"></div>
+
 <script>
+/* ── Supabase 설정 ──────────────────────────────────────────
+ * Supabase 대시보드 → Settings → API → anon/public key 복사 후 아래 값을 교체하세요.
+ * Authentication → Providers → Email → "Confirm email" OFF 설정 필요.
+ * ─────────────────────────────────────────────────────────── */
+const SUPABASE_URL      = 'https://pmdwqeknvcesjeaglnma.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBtZHdxZWtudmNlc2plYWdsbm1hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyMDU5MTQsImV4cCI6MjA5Njc4MTkxNH0.0hnS6xA7gsUakOCVf14yz_NwKADv2k7jy6hPZZ-cEQE'; // ← 실제 JWT anon key로 교체
+
+let _sb = null;
+try {
+  const { createClient } = window.supabase;
+  _sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+} catch(e) { console.warn('Supabase 초기화 실패:', e.message); }
+
+let _sbToastTimer = null;
+function showSbToast(msg) {
+  const el = document.getElementById('sb-toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(_sbToastTimer);
+  _sbToastTimer = setTimeout(() => el.classList.remove('show'), 3000);
+}
+
+async function saveTestResult(testType, score, resultSummary) {
+  if (!_sb) return;
+  try {
+    const { data: { session } } = await _sb.auth.getSession();
+    if (!session) return; // 비회원: 저장 생략, 결과만 표시
+    const { error } = await _sb.from('test_results').insert({
+      user_id:        session.user.id,
+      test_type:      testType,
+      score:          score,
+      result_summary: resultSummary
+    });
+    if (!error) showSbToast('검사 결과가 안전하게 저장되었습니다.');
+  } catch(e) { /* 네트워크 오류 무시 — 결과 화면은 정상 표시 */ }
+}
+
 const GUIDE = '지난 2주 동안, 다음 문제들로 인해 얼마나 자주 방해를 받았습니까?';
 
 const ITEMS = [
@@ -769,6 +822,7 @@ function showResult() {
   document.getElementById('topnav').style.display = 'none';
 
   const sc = score();
+  saveTestResult('PHQ-9', sc.total, sc.level);
   const pct = Math.round((sc.total / 27) * 100);
   const now = new Date();
   const dateStr = `${now.getFullYear()}년 ${now.getMonth()+1}월 ${now.getDate()}일`;

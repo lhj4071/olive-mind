@@ -1,4 +1,5 @@
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -347,6 +348,34 @@ function asrsTotal(){return ASRS_Q.reduce((s,q)=>s+(ASRS[q.id]||0),0);}
 function cntP(arr){return arr.filter(q=>SC[q.id]>=2).length;}
 function showToast(msg,dur=2200){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),dur);}
 
+/* ── Supabase 설정 ──────────────────────────────────────────
+ * Supabase 대시보드 → Settings → API → anon/public key 복사 후 아래 값을 교체하세요.
+ * Authentication → Providers → Email → "Confirm email" OFF 설정 필요.
+ * ─────────────────────────────────────────────────────────── */
+const SUPABASE_URL      = 'https://pmdwqeknvcesjeaglnma.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBtZHdxZWtudmNlc2plYWdsbm1hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyMDU5MTQsImV4cCI6MjA5Njc4MTkxNH0.0hnS6xA7gsUakOCVf14yz_NwKADv2k7jy6hPZZ-cEQE'; // ← 실제 JWT anon key로 교체
+
+let _sb = null;
+try {
+  const { createClient } = window.supabase;
+  _sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+} catch(e) {}
+
+async function saveTestResult(testType, score, resultSummary) {
+  if (!_sb) return;
+  try {
+    const { data: { session } } = await _sb.auth.getSession();
+    if (!session) return; // 비회원: 저장 생략, 결과만 표시
+    const { error } = await _sb.from('test_results').insert({
+      user_id:        session.user.id,
+      test_type:      testType,
+      score:          score,
+      result_summary: resultSummary
+    });
+    if (!error) showToast('검사 결과가 안전하게 저장되었습니다.', 3000);
+  } catch(e) {}
+}
+
 function mkItem(q,i,ac){
   const id=q.id;const alt=i%2===1;
   return `<div class="qw" style="${alt?'background:var(--bg)':''}"><div class="qi">
@@ -401,6 +430,10 @@ function buildReport(){
   if(aAmet&&aHmet){sub='복합형 (Combined)';subCol='var(--red-d)';}
   else if(aAmet){sub='주의력결핍 우세형';subCol='var(--blue-d)';}
   else if(aHmet){sub='과잉행동·충동성 우세형';subCol='var(--purple-d)';}
+  if (!buildReport._saved) {
+    buildReport._saved = true;
+    saveTestResult('DIVA', asrsTot, sub);
+  }
   function cbadge(met,t){if(met===true)return `<span class="cbadge bok"><i class="ti ti-check" style="font-size:10px"></i>${t}</span>`;if(met===false)return `<span class="cbadge balert"><i class="ti ti-x" style="font-size:10px"></i>${t}</span>`;return `<span class="cbadge bneu">${t}</span>`;}
   const clinItems=[];
   if(aAmet&&aHmet)clinItems.push({t:'main',s:`성인기 주의력결핍(${aA}/9)과 과잉행동·충동성(${aH}/9) 모두 DSM-5 성인 기준(≥5개)을 충족합니다. 복합형 가능성이 시사됩니다.`});
