@@ -215,6 +215,96 @@
         .library-item { transition: transform 0.15s ease, box-shadow 0.15s ease; }
         .library-item:hover { transform: translateY(-1px); box-shadow: 0 4px 20px rgba(42,40,32,0.1); }
 
+        /* ── 스플래시 스크린 ─────────────────────────── */
+        #splash-screen {
+            position: fixed; inset: 0; z-index: 9999;
+            background: linear-gradient(160deg, #f5f7ee 0%, #e8efd3 100%);
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            transition: opacity 0.5s ease;
+        }
+        #splash-screen.fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
+        .splash-logo-ring {
+            width: 88px; height: 88px; border-radius: 50%;
+            background: linear-gradient(135deg, #5C7A2A, #8BAD45);
+            display: flex; align-items: center; justify-content: center;
+            margin-bottom: 24px;
+            box-shadow: 0 10px 40px rgba(92,122,42,0.35);
+            animation: splashPulse 1.8s ease-in-out infinite;
+        }
+        @keyframes splashPulse {
+            0%, 100% { box-shadow: 0 10px 40px rgba(92,122,42,0.35); }
+            50%       { box-shadow: 0 10px 56px rgba(92,122,42,0.55); }
+        }
+        .splash-dots {
+            display: flex; gap: 6px; margin-top: 24px;
+        }
+        .splash-dots span {
+            width: 7px; height: 7px; border-radius: 50%;
+            background: #5C7A2A; opacity: 0.35;
+            animation: dotBounce 1.2s ease-in-out infinite;
+        }
+        .splash-dots span:nth-child(2) { animation-delay: 0.2s; }
+        .splash-dots span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes dotBounce {
+            0%, 80%, 100% { transform: scale(0.8); opacity: 0.35; }
+            40%           { transform: scale(1.2); opacity: 1; }
+        }
+
+        /* ── 검사 기록 스피너 ────────────────────────── */
+        .history-spinner {
+            width: 18px; height: 18px;
+            border: 2px solid #d8d0c4;
+            border-top-color: #5C7A2A;
+            border-radius: 50%;
+            animation: histSpin 0.8s linear infinite;
+            flex-shrink: 0;
+        }
+        @keyframes histSpin { to { transform: rotate(360deg); } }
+
+        /* ── 검사 기록 카드 ───────────────────────────── */
+        .history-card {
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+        .history-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 24px rgba(42,40,32,0.1) !important;
+        }
+
+        /* ── 강화된 마이크로 인터랙션 ─────────────────── */
+        .input-field {
+            transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s;
+        }
+        .input-field:focus {
+            border-color: #5C7A2A;
+            box-shadow: 0 0 0 3px rgba(92,122,42,0.14), 0 2px 8px rgba(92,122,42,0.08);
+            transform: translateY(-1px);
+        }
+        .btn-primary {
+            position: relative; overflow: hidden;
+        }
+        .btn-primary::after {
+            content: ''; position: absolute; inset: 0;
+            background: rgba(255,255,255,0);
+            transition: background 0.15s;
+        }
+        .btn-primary:active::after {
+            background: rgba(255,255,255,0.15);
+        }
+        .btn-primary:active {
+            transform: scale(0.97) !important;
+        }
+        .btn-primary:hover:not(:disabled) {
+            background: #4a6220;
+            box-shadow: 0 4px 16px rgba(92,122,42,0.28);
+            transform: translateY(-1px);
+        }
+        /* auth-tab 강화 */
+        .auth-tab:hover { color: #5C7A2A; }
+
         /* ══════════════════════════════════════════════════
            반응형: 데스크톱 (768px 이상)
            ══════════════════════════════════════════════════ */
@@ -294,6 +384,20 @@
     </style>
 </head>
 <body>
+
+<!-- ══════════════════════════════════════════
+     스플래시 스크린 (세션 확인 중)
+     ══════════════════════════════════════════ -->
+<div id="splash-screen">
+    <div class="splash-logo-ring">
+        <i class="fas fa-leaf" style="font-size: 34px; color: white;"></i>
+    </div>
+    <h1 style="font-size: 20px; font-weight: 800; color: #2a2820; letter-spacing: -0.3px;">내 마음, 올리브나무</h1>
+    <p style="font-size: 13px; color: #8a8070; margin-top: 6px;">잠시만 기다려 주세요</p>
+    <div class="splash-dots">
+        <span></span><span></span><span></span>
+    </div>
+</div>
 
 <!-- ══════════════════════════════════════════
      인증 화면
@@ -1025,6 +1129,23 @@
                 <p class="text-sm mt-0.5" style="color: #8a8070;">올리브나무 회원</p>
             </div>
 
+            <!-- 나의 마음 기록 -->
+            <div class="mb-5">
+                <div class="flex items-center justify-between mb-3">
+                    <h3 class="font-bold text-xs tracking-widest uppercase" style="color: #a09890;">
+                        <i class="fas fa-chart-line mr-1.5"></i>나의 마음 기록
+                    </h3>
+                </div>
+                <div id="test-history-list">
+                    <!-- 로딩 플레이스홀더 (switchPage 호출 전 초기 상태) -->
+                    <div class="card flex items-center justify-center gap-3 py-7"
+                         style="background: #faf8f3; border: 1px solid #ede8dc;">
+                        <div class="history-spinner"></div>
+                        <span class="text-sm" style="color: #a09890;">기록을 불러오는 중입니다...</span>
+                    </div>
+                </div>
+            </div>
+
             <!-- 계정 정보 -->
             <div class="card mb-4" style="border: 1px solid #ede8dc;">
                 <p class="text-xs font-bold mb-3 tracking-wide uppercase" style="color: #a09890;">계정 정보</p>
@@ -1139,15 +1260,31 @@
      * 페이지 로드: 세션 복원
      * ───────────────────────────────────────── */
     window.addEventListener('DOMContentLoaded', async () => {
+        const splash = document.getElementById('splash-screen');
+        const authScreen = document.getElementById('auth-screen');
+        const mainContent = document.getElementById('main-content');
+
+        // 명시적 초기 상태 보장: auth 표시, main 숨김
+        authScreen.classList.remove('hidden');
+        mainContent.classList.add('hidden');
+
         try {
             const { data: { session } } = await sb.auth.getSession();
             if (session) {
                 const id = session.user.email.replace(FAKE_DOMAIN, '');
                 앱화면열기(id);
+            } else {
+                authScreen.classList.remove('hidden');
+                mainContent.classList.add('hidden');
             }
         } catch (e) {
-            // Supabase 연결 실패 시 로그인 화면 유지
             console.warn('Supabase 세션 확인 실패:', e.message);
+            authScreen.classList.remove('hidden');
+            mainContent.classList.add('hidden');
+        } finally {
+            // 스플래시 페이드 아웃
+            splash.classList.add('fade-out');
+            setTimeout(() => { splash.style.display = 'none'; }, 520);
         }
     });
 
@@ -1318,8 +1455,118 @@
         const 타이틀맵 = { home: '', library: '마음 자료실', tests: '심리검사', profile: '내 정보' };
         document.getElementById('header-title').textContent = 타이틀맵[탭] || '';
 
+        if (탭 === 'profile') fetchMyTestHistory();
+
         window.scrollTo({ top: 0, behavior: 'smooth' });
         현재탭 = 탭;
+    }
+
+    /* ─────────────────────────────────────────
+     * 검사 기록 카드 렌더링 헬퍼
+     * ───────────────────────────────────────── */
+    function renderHistoryCard(r) {
+        const palette = {
+            'PHQ-9':  { bg: '#eef2e6', color: '#5C7A2A', icon: 'fa-brain' },
+            'GAD-7':  { bg: '#fdf4e6', color: '#C4956A', icon: 'fa-heart-pulse' },
+            'DIVA':   { bg: '#f0eefa', color: '#6D5BA3', icon: 'fa-puzzle-piece' },
+            '종합':   { bg: '#e8f4e0', color: '#2e5c10', icon: 'fa-layer-group' },
+        };
+        const name = r.test_name || r.test_type || '심리검사';
+        const key  = Object.keys(palette).find(k => name.includes(k));
+        const { bg, color, icon } = palette[key] || { bg: '#f0ede6', color: '#8a8070', icon: 'fa-clipboard-check' };
+
+        const d = r.created_at ? new Date(r.created_at) : null;
+        const dateStr = d
+            ? `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`
+            : '—';
+
+        const score   = r.score != null ? `${r.score}점` : '—';
+        const summary = r.result_summary || r.interpretation || r.result || '';
+
+        return `
+            <div class="card history-card mb-3" style="border-left: 4px solid ${color};">
+                <div class="flex items-center gap-3">
+                    <div class="w-11 h-11 rounded-xl flex-shrink-0 flex items-center justify-center"
+                         style="background: ${bg};">
+                        <i class="fas ${icon}" style="color: ${color};"></i>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center justify-between mb-1.5">
+                            <span class="badge" style="background: ${bg}; color: ${color};">${name}</span>
+                            <span class="text-xs" style="color: #a09890;">${dateStr}</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xl font-extrabold leading-none" style="color: ${color};">${score}</span>
+                            ${summary ? `<span class="text-xs px-2 py-0.5 rounded-full font-semibold" style="background: ${bg}; color: ${color};">${summary}</span>` : ''}
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+    }
+
+    /* ─────────────────────────────────────────
+     * 나의 검사 기록 불러오기
+     * ───────────────────────────────────────── */
+    async function fetchMyTestHistory() {
+        const container = document.getElementById('test-history-list');
+
+        container.innerHTML = `
+            <div class="card flex items-center justify-center gap-3 py-7"
+                 style="background: #faf8f3; border: 1px solid #ede8dc;">
+                <div class="history-spinner"></div>
+                <span class="text-sm" style="color: #a09890;">기록을 불러오는 중입니다...</span>
+            </div>`;
+
+        try {
+            const { data: { session } } = await sb.auth.getSession();
+            if (!session) return;
+
+            const { data, error } = await sb
+                .from('test_results')
+                .select('*')
+                .eq('user_id', session.user.id)
+                .order('created_at', { ascending: false });
+
+            if (error) throw error;
+
+            if (!data || data.length === 0) {
+                container.innerHTML = `
+                    <div class="card text-center py-9"
+                         style="border: 1.5px dashed #d8d0c4; background: #faf8f3;">
+                        <div class="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-3"
+                             style="background: #eef2e6;">
+                            <i class="fas fa-seedling text-2xl" style="color: #8BAD45;"></i>
+                        </div>
+                        <p class="font-semibold text-sm mb-1" style="color: #6b6558;">
+                            아직 진행한 검사가 없습니다
+                        </p>
+                        <p class="text-xs mb-5" style="color: #a09890;">
+                            첫 마음 검진을 시작해 보세요.
+                        </p>
+                        <button onclick="switchPage('tests')"
+                                class="btn-primary inline-flex items-center gap-1.5"
+                                style="width: auto; padding: 10px 24px; font-size: 13px; display: inline-flex;">
+                            <i class="fas fa-clipboard-list text-xs"></i>심리검사 시작하기
+                        </button>
+                    </div>`;
+                return;
+            }
+
+            container.innerHTML = data.map(renderHistoryCard).join('');
+
+        } catch (e) {
+            console.error('검사 기록 로드 실패:', e.message);
+            container.innerHTML = `
+                <div class="card text-center py-6"
+                     style="background: #fff8f8; border: 1px solid #f5dada;">
+                    <i class="fas fa-circle-exclamation mb-2" style="color: #c05a5a; font-size: 20px;"></i>
+                    <p class="text-sm mt-1" style="color: #c05a5a;">기록을 불러오지 못했습니다.</p>
+                    <button onclick="fetchMyTestHistory()"
+                            class="text-xs mt-2.5 underline" style="color: #a09890;">
+                        다시 시도
+                    </button>
+                </div>`;
+        }
     }
 
     /* ─────────────────────────────────────────
