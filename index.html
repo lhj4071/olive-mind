@@ -6157,7 +6157,7 @@ window.GW = (() => {
    Check-In (CI) — 주간 목표 점검 & 결과 요약
    ══════════════════════════════════════════════════════════════════════ */
 
-const CI = (() => {
+window.CI = (() => {
     // ── 상수 ────────────────────────────────────────────────────────────────
 
     const SCORE_OPTS = [
@@ -6426,6 +6426,8 @@ const CI = (() => {
 window.addEventListener('load', () => {
     setTimeout(() => { if (typeof CI !== 'undefined') CI.init(); }, 1500);
 });
+
+</script>
 
 </body>
 </html>
