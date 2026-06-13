@@ -164,6 +164,12 @@
         .timeline-effect-tag { padding: 3px 8px; border-radius: 10px; font-size: 11px;
                                background: #fdf4e6; color: #C4956A; }
         .timeline-memo { font-size: 12px; color: #6b6558; }
+        .severity-badge { display: inline-flex; align-items: center; gap: 3px;
+                          padding: 2px 8px; border-radius: 10px; font-size: 10px;
+                          font-weight: 600; margin-bottom: 4px; }
+        .severity-mild     { background: #eef2e6; color: #5C7A2A; }
+        .severity-moderate { background: #fdf4e6; color: #C4956A; }
+        .severity-severe   { background: #fef0f0; color: #c05a5a; }
 
         /* ── 로딩/빈화면 ── */
         .empty-state { text-align: center; padding: 40px 20px; color: #b0a898; }
@@ -845,11 +851,19 @@ async function loadSETimeline(reset = false) {
         const tags = (log.effects || []).map(e =>
             `<span class="timeline-effect-tag">${_esc(e)}</span>`
         ).join('');
+        const sevClass = log.severity === '중증' ? 'severity-severe'
+                       : log.severity === '중등도' ? 'severity-moderate'
+                       : log.severity === '경도'   ? 'severity-mild'
+                       : '';
+        const sevBadge = sevClass
+            ? `<span class="severity-badge ${sevClass}">${_esc(log.severity)}</span>`
+            : '';
         return `
         <div class="timeline-item">
             <div class="timeline-dot"><i class="fas fa-exclamation"></i></div>
             <div class="timeline-date">${fmtDate(log.logged_at)}</div>
             <div class="timeline-drug"><i class="fas fa-pills" style="font-size:10px;margin-right:3px;"></i>${_esc(log.item_name || '')}</div>
+            ${sevBadge}
             <div class="timeline-effects">${tags}</div>
             ${log.memo ? `<div class="timeline-memo">${_esc(log.memo)}</div>` : ''}
         </div>`;

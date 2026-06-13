@@ -1747,15 +1747,15 @@
                     </div>
                 </div>
 
-                <p class="text-sm mb-5 mt-1" style="color: #7a8870; line-height: 1.7;">
+                <p class="text-sm mb-6 mt-2" style="color: #6e7e5a; line-height: 1.85;">
                     오늘 당신의 마음에 어떤 바람이 불었나요?
                 </p>
 
-                <div class="space-y-5">
+                <div class="space-y-6">
                     <!-- 기분 -->
                     <div>
                         <div class="flex items-center justify-between mb-2">
-                            <span class="text-sm font-semibold" style="color: #4a4a44;">😊 기분</span>
+                            <span class="text-sm font-semibold" style="color: #484840;">😊 기분</span>
                             <span class="text-xs" style="color: #a09890;">매우 나쁨 · 매우 좋음</span>
                         </div>
                         <div class="mood-slider-wrap">
@@ -1768,7 +1768,7 @@
                     <!-- 불안 -->
                     <div>
                         <div class="flex items-center justify-between mb-2">
-                            <span class="text-sm font-semibold" style="color: #4a4a44;">😰 불안</span>
+                            <span class="text-sm font-semibold" style="color: #484840;">😰 불안</span>
                             <span class="text-xs" style="color: #a09890;">전혀 없음 · 매우 심함</span>
                         </div>
                         <div class="mood-slider-wrap">
@@ -1781,7 +1781,7 @@
                     <!-- 예민도 -->
                     <div>
                         <div class="flex items-center justify-between mb-2">
-                            <span class="text-sm font-semibold" style="color: #4a4a44;">😤 예민도</span>
+                            <span class="text-sm font-semibold" style="color: #484840;">😤 예민도</span>
                             <span class="text-xs" style="color: #a09890;">전혀 없음 · 매우 심함</span>
                         </div>
                         <div class="mood-slider-wrap">
@@ -1794,7 +1794,7 @@
                     <!-- 수면 -->
                     <div>
                         <div class="flex items-center justify-between mb-2">
-                            <span class="text-sm font-semibold" style="color: #4a4a44;">😴 수면</span>
+                            <span class="text-sm font-semibold" style="color: #484840;">😴 수면</span>
                             <span class="text-xs" style="color: #a09890;">매우 나쁨 · 매우 좋음</span>
                         </div>
                         <div class="mood-slider-wrap">
@@ -1818,17 +1818,17 @@
                 </div>
 
                 <!-- 감정 태그 선택 -->
-                <div class="mt-6">
-                    <p class="text-xs font-semibold mb-1" style="color:#5C7A2A;">오늘의 감정 태그</p>
-                    <p class="text-xs mb-3" style="color:#9aab88; line-height: 1.65;">
+                <div class="mt-7">
+                    <p class="text-xs font-semibold mb-1.5" style="color:#5C7A2A;">오늘의 감정 태그</p>
+                    <p class="text-xs mb-4" style="color:#9aab88; line-height: 1.75;">
                         천천히, 편안하게 지금의 감정을 골라주세요.
                     </p>
-                    <div id="mood-tag-buttons" class="flex flex-wrap gap-1.5"></div>
+                    <div id="mood-tag-buttons" class="flex flex-wrap gap-2"></div>
                 </div>
 
                 <!-- 한마디 메모 -->
-                <div class="mt-5 mb-1">
-                    <p class="text-xs font-semibold mb-1.5" style="color:#5C7A2A;">
+                <div class="mt-6 mb-1">
+                    <p class="text-xs font-semibold mb-2" style="color:#5C7A2A;">
                         한마디 메모
                         <span style="color:#b0a898;font-weight:400;">(선택)</span>
                     </p>
@@ -1836,17 +1836,17 @@
                               placeholder="오늘 마음이 어떠셨나요?"></textarea>
                 </div>
 
-                <button class="btn-primary mt-6" id="btn-save-mood" onclick="saveMoodLog()">
+                <button class="btn-primary mt-7" id="btn-save-mood" onclick="saveMoodLog()">
                     오늘 하루도 수고했어요
                 </button>
             </div>
 
             <!-- 오늘의 루틴 -->
             <div class="card mb-5" id="routine-card">
-                <div class="flex items-center justify-between mb-3">
+                <div class="flex items-center justify-between mb-4">
                     <div>
-                        <p class="font-bold text-xs tracking-wide uppercase mb-0.5" style="color: #5C7A2A;">오늘의 루틴</p>
-                        <p class="text-xs" style="color: #a09890;">작은 행동 하나가 회복의 시작입니다.</p>
+                        <p class="font-bold text-xs tracking-wide uppercase mb-1" style="color: #5C7A2A;">오늘의 루틴</p>
+                        <p class="text-xs" style="color: #a09890; line-height: 1.6;">작은 행동 하나가 회복의 시작입니다.</p>
                     </div>
                     <button onclick="openRoutineSheet()"
                             class="w-8 h-8 rounded-full flex items-center justify-center"
@@ -1857,28 +1857,44 @@
 
                 <!-- 진행률 바 -->
                 <div id="routine-progress-track"><div id="routine-progress-fill"></div></div>
-                <p class="text-xs mb-2" id="routine-progress-label" style="color: #a09890;">0 / 0 완료</p>
+                <p class="text-xs mb-3 mt-1.5" id="routine-progress-label" style="color: #a09890; line-height: 1.6;">0 / 0 완료</p>
 
                 <!-- 루틴 아이템 목록 -->
                 <div id="routine-list"></div>
 
                 <!-- 빈 상태 -->
-                <div id="routine-empty" class="text-center py-10 px-4">
-                    <div style="font-size: 30px; margin-bottom: 14px; opacity: 0.7;">🌿</div>
-                    <p class="text-sm" style="color: #8a9880; line-height: 1.75;">
-                        오늘 하루, 잠시 쉬어가는 건 어떨까요?<br>아무것도 하지 않아도 괜찮습니다.
+                <div id="routine-empty" class="text-center py-8 px-6">
+                    <div style="width: 60px; height: 60px; border-radius: 50%;
+                                background: linear-gradient(135deg, #eef4e8 0%, #ddecc4 100%);
+                                margin: 0 auto 18px; display: flex; align-items: center;
+                                justify-content: center; box-shadow: 0 2px 12px rgba(92,122,42,0.12);">
+                        <span style="font-size: 26px; line-height: 1;">🌿</span>
+                    </div>
+                    <p class="text-sm" style="color: #5e6e50; line-height: 1.9; letter-spacing: -0.1px;">
+                        오늘 하루, 잠시 쉬어가는 건 어떨까요?
+                    </p>
+                    <p class="text-sm" style="color: #9aab88; line-height: 1.9;">
+                        아무것도 하지 않아도 괜찮습니다.
                     </p>
                     <button onclick="openRoutineSheet()"
-                            class="mt-5 text-sm font-bold px-5 py-2.5 rounded-xl"
-                            style="background: #eef2e6; color: #5C7A2A; border: none; cursor: pointer;">
+                            class="mt-6 text-sm font-semibold px-5 py-2.5 rounded-xl"
+                            style="background: #eef2e6; color: #5C7A2A; border: none; cursor: pointer;
+                                   letter-spacing: -0.1px; transition: background 0.18s;">
                         루틴 설정하기
                     </button>
                 </div>
 
                 <!-- 전체 완료 축하 -->
-                <div id="routine-all-done" class="hidden text-center py-2.5 mt-2 rounded-xl"
-                     style="background: #eef2e6;">
-                    <p class="text-sm font-semibold" style="color: #5C7A2A;">오늘 루틴을 모두 완료했어요 🌿</p>
+                <div id="routine-all-done" class="hidden text-center py-6 px-5 mt-3 rounded-2xl"
+                     style="background: linear-gradient(135deg, #eef4e8 0%, #e2edd0 100%);
+                            border: 1px solid #cfe3b0;">
+                    <div style="font-size: 24px; margin-bottom: 8px;">🌳</div>
+                    <p class="text-sm font-semibold" style="color: #3e5c1a; letter-spacing: -0.1px;">
+                        오늘 루틴을 모두 완료했어요
+                    </p>
+                    <p class="text-xs mt-2" style="color: #6b8048; line-height: 1.85;">
+                        오늘도 자신을 돌봐주셨군요.<br>정말 수고하셨어요.
+                    </p>
                 </div>
             </div>
 
