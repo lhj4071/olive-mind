@@ -5786,7 +5786,7 @@
    의존: goalData.js (userSession, getFilteredGoals, getRecommendedRoutines)
    ══════════════════════════════════════════════════════════════════════ */
 
-const GW = (() => {
+window.GW = (() => {
     // ── 상수 ────────────────────────────────────────────────────────────────
 
     const TOTAL_STEPS = 5;
@@ -6042,6 +6042,7 @@ const GW = (() => {
     // ── 공개 액션 ────────────────────────────────────────────────────────────
 
     function open() {
+        console.log('목표 설정 마법사 열기 실행됨');
         _step = 1;
         document.getElementById('gw-modal').classList.remove('hidden');
         document.body.style.overflow = 'hidden';
