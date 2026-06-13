@@ -2156,12 +2156,26 @@
                     <p class="text-sm" style="color: #9aab88; line-height: 1.9;">
                         아무것도 하지 않아도 괜찮습니다.
                     </p>
-                    <button onclick="openRoutineSheet()"
-                            class="mt-6 text-sm font-semibold px-5 py-2.5 rounded-xl"
-                            style="background: #eef2e6; color: #5C7A2A; border: none; cursor: pointer;
-                                   letter-spacing: -0.1px; transition: background 0.18s;">
-                        루틴 설정하기
-                    </button>
+                    <div style="display:flex;flex-direction:column;align-items:center;gap:10px;margin-top:20px;">
+                        <button onclick="GW.open()"
+                                style="display:flex;align-items:center;gap:8px;
+                                       background:linear-gradient(135deg,#5C7A2A,#4a6220);
+                                       color:#fff;font-size:14px;font-weight:700;
+                                       border:none;border-radius:999px;padding:13px 22px;
+                                       cursor:pointer;letter-spacing:-0.2px;
+                                       box-shadow:0 6px 20px rgba(92,122,42,0.28);
+                                       transition:all 0.18s;">
+                            🎯 나의 치료 목표와 루틴 설정하기
+                        </button>
+                        <button onclick="openRoutineSheet()"
+                                style="background:transparent;color:#9aab88;font-size:12px;
+                                       border:none;cursor:pointer;letter-spacing:-0.1px;
+                                       padding:4px 8px;transition:color 0.18s;"
+                                onmouseover="this.style.color='#5C7A2A'"
+                                onmouseout="this.style.color='#9aab88'">
+                            직접 루틴 추가하기
+                        </button>
+                    </div>
                 </div>
 
                 <!-- 전체 완료 축하 -->
@@ -3939,10 +3953,43 @@
     const _rt = {
         items:     [],  // routine_items rows
         counts:    {},  // { itemId: completedCount } — 오늘
+        goalMap:   {},  // { routineLabel: goalText } — 치료 목표 연결
         saveTimer: null,
     };
 
     let _sheetNewTarget = 1;
+
+    // 치료 목표 세션 → routineLabel → goalText 역방향 맵 빌드
+    async function _loadGoalMap(uid) {
+        try {
+            const { data } = await sb.from('test_results')
+                .select('result_summary')
+                .eq('user_id', uid)
+                .eq('test_type', 'treatment_goals')
+                .order('created_at', { ascending: false })
+                .limit(1)
+                .maybeSingle();
+
+            if (!data?.result_summary) { _rt.goalMap = {}; return; }
+
+            const saved   = JSON.parse(data.result_summary);
+            const goalMap = {};
+
+            for (const domain of (saved.selectedDomains || [])) {
+                for (const goalId of (saved.selectedGoals?.[domain] || [])) {
+                    const goalObj = (goalData.goals[domain] || []).find(g => g.id === goalId);
+                    if (!goalObj || goalObj.is_custom) continue;
+                    for (const r of (goalData.routines[goalId] || [])) {
+                        goalMap[r.text] = goalObj.text;
+                    }
+                }
+            }
+            _rt.goalMap = goalMap;
+        } catch (e) {
+            console.warn('목표 맵 로드 실패:', e.message);
+            _rt.goalMap = {};
+        }
+    }
 
     async function loadRoutines() {
         try {
@@ -3961,6 +4008,7 @@
                   .eq('user_id', session.user.id)
                   .eq('date', today)
                   .maybeSingle(),
+                _loadGoalMap(session.user.id),
             ]);
 
             if (itemsRes.error) throw itemsRes.error;
@@ -4008,20 +4056,40 @@
             const emoji    = item.emoji
                 ? `<span style="font-size:16px;flex-shrink:0;">${item.emoji}</span>` : '';
 
+            // 치료 목표 배지: routineLabel → goalText 역방향 매핑
+            const linkedGoal = (_rt.goalMap || {})[item.label];
+            const goalBadge  = linkedGoal
+                ? `<span style="display:inline-block;font-size:10px;color:#5C7A2A;
+                               background:#eef4e5;border:1px solid #cfe3b0;
+                               border-radius:999px;padding:2px 8px;margin-top:4px;
+                               line-height:1.5;letter-spacing:-0.1px;max-width:100%;
+                               white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"
+                       title="${linkedGoal}">🎯 ${linkedGoal}</span>`
+                : '';
+
+            // 라벨 + 배지를 감싸는 컨테이너
+            const labelWrap = `
+                <span style="display:flex;flex-direction:column;flex:1;min-width:0;gap:2px;">
+                    <span class="routine-label ${done ? 'done' : ''}"
+                          style="display:block;">${item.label}</span>
+                    ${goalBadge}
+                </span>`;
+
             if (isToggle) {
                 return `
-                <div class="routine-item">
+                <div class="routine-item" style="align-items:flex-start;padding:10px 0;">
                     <button class="routine-check-btn ${done ? 'done' : ''}"
+                            style="margin-top:2px;flex-shrink:0;"
                             data-id="${item.id}" onclick="_toggleRoutineItem(this.dataset.id)">
                         ${done ? '<i class="fas fa-check"></i>' : ''}
                     </button>
                     ${emoji}
-                    <span class="routine-label ${done ? 'done' : ''}">${item.label}</span>
+                    ${labelWrap}
                 </div>`;
             }
             return `
-            <div class="routine-item">
-                <div class="routine-counter">
+            <div class="routine-item" style="align-items:flex-start;padding:10px 0;">
+                <div class="routine-counter" style="margin-top:2px;flex-shrink:0;">
                     <button class="routine-counter-btn" data-id="${item.id}"
                             onclick="_adjustRoutineCount(this.dataset.id, -1)">−</button>
                     <span class="routine-counter-val">${count}/${item.target_count}</span>
@@ -4029,7 +4097,7 @@
                             onclick="_adjustRoutineCount(this.dataset.id, 1)">+</button>
                 </div>
                 ${emoji}
-                <span class="routine-label ${done ? 'done' : ''}">${item.label}</span>
+                ${labelWrap}
             </div>`;
         }).join('');
     }
@@ -6056,7 +6124,10 @@ const GW = (() => {
                     }),
                 });
 
-                // ③ 체크인 카드 갱신
+                // ③ 루틴 목록 + goalMap 즉시 갱신 (새 루틴 없어도 배지 반영을 위해 항상 호출)
+                await loadRoutines();
+
+                // ④ 체크인 카드 갱신
                 if (typeof CI !== 'undefined') await CI.init();
             }
         } catch (e) {
