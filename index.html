@@ -1433,20 +1433,6 @@
            목표 설정 마법사 (GW — Goal Wizard)
            ══════════════════════════════════════════════════ */
 
-        /* FAB 트리거 버튼 */
-        #gw-fab {
-            position: fixed; bottom: 84px; right: 16px;
-            background: #5C7A2A; color: #fff;
-            border: none; border-radius: 999px;
-            padding: 13px 20px; font-size: 14px; font-weight: 700;
-            display: flex; align-items: center; gap: 8px;
-            box-shadow: 0 6px 24px rgba(92,122,42,0.38);
-            cursor: pointer; z-index: 180;
-            transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
-        }
-        #gw-fab:hover  { background: #4a6220; transform: translateY(-2px); box-shadow: 0 10px 32px rgba(92,122,42,0.45); }
-        #gw-fab:active { transform: scale(0.96); }
-        @media (min-width: 768px) { #gw-fab { right: calc(50% - 480px + 16px); } }
 
         /* 모달 오버레이 */
         #gw-modal {
@@ -5757,14 +5743,8 @@
 </div>
 
 <!-- ══════════════════════════════════════════════════════════════════════
-     목표 설정 마법사 (Goal Wizard) — FAB + 모달
+     목표 설정 마법사 (Goal Wizard) — 모달
      ══════════════════════════════════════════════════════════════════════ -->
-
-<!-- FAB 트리거 -->
-<button id="gw-fab" onclick="GW.open()" aria-label="목표 설정">
-    <i class="fas fa-bullseye"></i>
-    목표 설정
-</button>
 
 <!-- 모달 -->
 <div id="gw-modal" class="hidden" role="dialog" aria-modal="true" aria-label="치료 목표 설정">
