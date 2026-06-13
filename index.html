@@ -344,9 +344,9 @@
             #header-title { display: none !important; }
             #toast { bottom: 24px; }
 
-            /* 인증 화면: 두 패널 레이아웃 */
-            #auth-screen {
-                display: flex !important;
+            /* 인증 화면: 두 패널 레이아웃 (.hidden 시에는 display:none 유지) */
+            #auth-screen:not(.hidden) {
+                display: flex;
                 flex-direction: row;
                 background: none;
                 min-height: 100vh;
@@ -2957,6 +2957,7 @@
      * 화면 전환 헬퍼 (페이드 인/아웃)
      * ───────────────────────────────────────── */
     function _fadeShow(el) {
+        el.style.display = ''; // _fadeHide가 심은 인라인 display:none 제거
         el.classList.remove('hidden');
         el.style.opacity = '0';
         el.style.transition = '';
@@ -2970,6 +2971,7 @@
 
     function _fadeHide(el) {
         el.classList.add('hidden');
+        el.style.display = 'none'; // !important CSS 충돌 방어용 인라인 강제
         el.style.opacity = '';
         el.style.transition = '';
     }
