@@ -8,6 +8,9 @@
     <!-- Supabase JS SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+    <!-- 치료 목표 & 루틴 데이터 -->
+    <script src="goalData.js"></script>
+
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
 
@@ -1425,6 +1428,261 @@
         }
         #mood-load-more:hover  { background: #f0ede6; }
         #mood-load-more:disabled { opacity: 0.5; cursor: default; }
+
+        /* ══════════════════════════════════════════════════
+           목표 설정 마법사 (GW — Goal Wizard)
+           ══════════════════════════════════════════════════ */
+
+        /* FAB 트리거 버튼 */
+        #gw-fab {
+            position: fixed; bottom: 84px; right: 16px;
+            background: #5C7A2A; color: #fff;
+            border: none; border-radius: 999px;
+            padding: 13px 20px; font-size: 14px; font-weight: 700;
+            display: flex; align-items: center; gap: 8px;
+            box-shadow: 0 6px 24px rgba(92,122,42,0.38);
+            cursor: pointer; z-index: 180;
+            transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+        }
+        #gw-fab:hover  { background: #4a6220; transform: translateY(-2px); box-shadow: 0 10px 32px rgba(92,122,42,0.45); }
+        #gw-fab:active { transform: scale(0.96); }
+        @media (min-width: 768px) { #gw-fab { right: calc(50% - 480px + 16px); } }
+
+        /* 모달 오버레이 */
+        #gw-modal {
+            position: fixed; inset: 0; z-index: 500;
+            background: rgba(0,0,0,0.55);
+            display: flex; align-items: flex-end; justify-content: center;
+            backdrop-filter: blur(3px);
+        }
+        #gw-modal.hidden { display: none; }
+
+        /* 모달 컨테이너 */
+        .gw-container {
+            background: #f7f5ef; width: 100%; max-width: 480px;
+            border-radius: 24px 24px 0 0;
+            max-height: 92vh; display: flex; flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 -8px 48px rgba(0,0,0,0.22);
+            animation: gwSlideUp 0.32s cubic-bezier(0.22, 0.68, 0, 1.2) forwards;
+        }
+        @keyframes gwSlideUp {
+            from { transform: translateY(60px); opacity: 0; }
+            to   { transform: translateY(0);    opacity: 1; }
+        }
+
+        /* 헤더 */
+        .gw-header {
+            display: flex; align-items: center; gap: 12px;
+            padding: 16px 18px 12px;
+            border-bottom: 1px solid #e8e4db; flex-shrink: 0;
+        }
+        #gw-back-btn {
+            background: none; border: none; cursor: pointer;
+            color: #a09890; padding: 6px; border-radius: 8px;
+            display: flex; align-items: center; transition: color 0.15s;
+        }
+        #gw-back-btn:hover { color: #5C7A2A; }
+        .gw-header-center { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+        .gw-step-label { font-size: 11px; font-weight: 700; letter-spacing: 0.8px; color: #5C7A2A; text-transform: uppercase; }
+        .gw-progress-rail { width: 100%; height: 3px; background: #e8e4db; border-radius: 99px; overflow: hidden; }
+        .gw-progress-fill { height: 100%; background: #5C7A2A; border-radius: 99px; transition: width 0.4s ease; }
+        .gw-step-count { font-size: 12px; font-weight: 600; color: #b0a898; min-width: 28px; text-align: right; }
+
+        /* 콘텐츠 영역 */
+        .gw-content {
+            flex: 1; overflow-y: auto; padding: 20px 18px;
+            -webkit-overflow-scrolling: touch;
+        }
+        .gw-content::-webkit-scrollbar { display: none; }
+
+        /* 푸터 버튼 */
+        .gw-footer {
+            display: flex; gap: 10px;
+            padding: 12px 18px 18px;
+            border-top: 1px solid #e8e4db; flex-shrink: 0;
+            padding-bottom: max(18px, env(safe-area-inset-bottom));
+        }
+        .gw-prev-btn {
+            display: flex; align-items: center; gap: 4px;
+            background: #fff; color: #a09890; font-weight: 600;
+            border: 1.5px solid #e8e4db; border-radius: 999px;
+            padding: 12px 18px; font-size: 14px; cursor: pointer;
+            transition: all 0.15s;
+        }
+        .gw-prev-btn:hover { border-color: #5C7A2A; color: #5C7A2A; }
+        .gw-next-btn {
+            flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px;
+            background: #5C7A2A; color: #fff; font-weight: 700;
+            border: none; border-radius: 999px;
+            padding: 14px; font-size: 15px; cursor: pointer;
+            transition: background 0.2s, opacity 0.2s;
+        }
+        .gw-next-btn:hover:not(:disabled) { background: #4a6220; }
+        .gw-next-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+        /* 공통 텍스트 */
+        .gw-title { font-size: 20px; font-weight: 700; color: #2a2820; line-height: 1.45; margin-bottom: 6px; }
+        .gw-sub   { font-size: 13px; color: #a09890; line-height: 1.6; margin-bottom: 20px; }
+
+        /* 영역 선택 그리드 */
+        .gw-domain-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .gw-domain-card {
+            background: #fff; border-radius: 16px; padding: 18px;
+            border: 2px solid #e8e4db; cursor: pointer; position: relative;
+            text-align: left; transition: border-color 0.18s, background 0.18s, transform 0.12s;
+            display: flex; flex-direction: column; gap: 4px;
+        }
+        .gw-domain-card:active { transform: scale(0.97); }
+        .gw-domain-emoji { font-size: 26px; margin-bottom: 6px; display: block; }
+        .gw-domain-name  { font-size: 15px; font-weight: 700; color: #2a2820; display: block; }
+        .gw-domain-desc  { font-size: 11px; color: #a09890; line-height: 1.5; display: block; }
+        .gw-domain-check {
+            position: absolute; top: 10px; right: 10px;
+            width: 20px; height: 20px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 11px; font-weight: 900; color: #fff;
+        }
+
+        /* 섹션 헤더 (도메인 구분) */
+        .gw-section { margin-bottom: 22px; }
+        .gw-section-hd {
+            display: flex; align-items: center; gap: 7px;
+            margin-bottom: 10px;
+        }
+        .gw-section-hd-label {
+            font-size: 11px; font-weight: 700; letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+        .gw-count-badge {
+            margin-left: auto; background: #f0ede6; color: #a09890;
+            font-size: 11px; font-weight: 600; border-radius: 99px; padding: 2px 8px;
+        }
+
+        /* 선택 카드 (상태 / 목표) */
+        .gw-select-card {
+            display: flex; align-items: flex-start; gap: 10px;
+            background: #fff; border-radius: 12px; padding: 12px 13px;
+            margin-bottom: 6px; border: 1.5px solid #e8e4db;
+            cursor: pointer; transition: border-color 0.15s, background 0.15s;
+            width: 100%; text-align: left;
+        }
+        .gw-select-card.gw-sel { border-color: #5C7A2A; background: #f0f5e8; }
+        .gw-select-card.gw-dimmed { opacity: 0.38; cursor: not-allowed; }
+        .gw-check-circle {
+            width: 20px; height: 20px; border-radius: 50%; flex-shrink: 0;
+            border: 1.5px solid #c8c0b4; display: flex; align-items: center; justify-content: center;
+            font-size: 11px; font-weight: 900; color: #fff; margin-top: 1px;
+            transition: background 0.15s, border-color 0.15s;
+        }
+        .gw-check-circle.gw-cc-sel { background: #5C7A2A; border-color: #5C7A2A; }
+        .gw-card-text { font-size: 14px; color: #6b6558; line-height: 1.55; flex: 1; }
+        .gw-select-card.gw-sel .gw-card-text { color: #2a2820; }
+
+        /* 직접 입력 textarea */
+        .gw-custom-input {
+            width: calc(100% - 30px); margin-left: 30px;
+            padding: 10px 12px; background: #fff;
+            border: 1.5px solid #8BAD45; border-radius: 10px;
+            font-size: 14px; color: #2a2820; resize: none;
+            margin-bottom: 6px; min-height: 64px; outline: none;
+            transition: box-shadow 0.2s;
+        }
+        .gw-custom-input:focus { box-shadow: 0 0 0 3px rgba(92,122,42,0.14); }
+        .gw-custom-input::placeholder { color: #c8c0b4; }
+
+        /* 루틴 카드 */
+        .gw-routine-card {
+            display: flex; align-items: center; gap: 12px;
+            background: #fff; border-radius: 12px; padding: 13px;
+            margin-bottom: 7px; border: 1.5px solid #e8e4db;
+            cursor: pointer; transition: border-color 0.15s, background 0.15s;
+            width: 100%; text-align: left;
+        }
+        .gw-routine-card.gw-sel { border-color: #5C7A2A; background: #f0f5e8; }
+        .gw-routine-card.gw-dimmed { opacity: 0.38; cursor: not-allowed; }
+        .gw-routine-emoji { font-size: 20px; flex-shrink: 0; }
+        .gw-routine-text  { font-size: 14px; color: #6b6558; flex: 1; line-height: 1.5; }
+        .gw-routine-card.gw-sel .gw-routine-text { color: #2a2820; }
+        .gw-routine-check {
+            width: 24px; height: 24px; border-radius: 50%; flex-shrink: 0;
+            background: #eef5e4; display: flex; align-items: center; justify-content: center;
+            font-size: 12px; color: #5C7A2A; font-weight: 900;
+        }
+
+        /* 완료 화면 */
+        .gw-complete-wrap { text-align: center; padding: 12px 0 4px; }
+        .gw-complete-title { font-size: 22px; font-weight: 700; color: #2a2820; line-height: 1.4; margin-bottom: 8px; }
+        .gw-complete-sub   { font-size: 13px; color: #a09890; margin-bottom: 24px; line-height: 1.6; }
+        .gw-complete-list  { text-align: left; margin-bottom: 24px; }
+        .gw-complete-card {
+            display: flex; align-items: center; gap: 12px;
+            background: #eef5e4; border-radius: 12px; padding: 13px;
+            margin-bottom: 8px; border: 1.5px solid #c2d9a0;
+        }
+        .gw-complete-text { font-size: 14px; color: #2a2820; font-weight: 500; flex: 1; }
+        .gw-complete-btn {
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+            background: #5C7A2A; color: #fff; font-weight: 700; font-size: 15px;
+            border: none; border-radius: 999px; padding: 15px 36px;
+            cursor: pointer; transition: background 0.2s, transform 0.1s;
+            box-shadow: 0 6px 24px rgba(92,122,42,0.3);
+        }
+        .gw-complete-btn:hover  { background: #4a6220; transform: translateY(-1px); }
+        .gw-complete-btn:active { transform: scale(0.97); }
+
+        .gw-empty { font-size: 13px; color: #b0a898; text-align: center; padding: 24px 0; }
+
+        /* ══ 주간 체크인 (CI) ══════════════════════════════════════════════════════ */
+
+        /* 체크인 진입 카드 */
+        #ci-card {
+            border: 1.5px solid #c2d9a0;
+            background: linear-gradient(135deg, #f5f9f0 0%, #ffffff 100%);
+            cursor: pointer; transition: transform 0.15s, box-shadow 0.15s;
+        }
+        #ci-card:hover  { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(92,122,42,0.12); }
+        #ci-card:active { transform: scale(0.98); }
+
+        /* 체크인 모달 */
+        #ci-modal {
+            position: fixed; inset: 0; z-index: 510;
+            background: rgba(0,0,0,0.55); backdrop-filter: blur(3px);
+            display: flex; align-items: flex-end; justify-content: center;
+        }
+        #ci-modal.hidden { display: none; }
+        .ci-container {
+            background: #f7f5ef; width: 100%; max-width: 480px;
+            border-radius: 24px 24px 0 0; max-height: 90vh;
+            display: flex; flex-direction: column; overflow: hidden;
+            box-shadow: 0 -8px 48px rgba(0,0,0,0.22);
+            animation: gwSlideUp 0.3s cubic-bezier(0.22, 0.68, 0, 1.2) forwards;
+        }
+        .ci-content {
+            flex: 1; overflow-y: auto; padding: 20px 18px 24px;
+            -webkit-overflow-scrolling: touch;
+        }
+        .ci-content::-webkit-scrollbar { display: none; }
+
+        /* 4점 척도 버튼 */
+        .ci-score-btn {
+            width: 100%; padding: 16px 10px; border-radius: 14px;
+            border: 2px solid transparent; cursor: pointer;
+            text-align: center; transition: transform 0.12s, box-shadow 0.12s;
+        }
+        .ci-score-btn:hover  { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0,0,0,0.1); }
+        .ci-score-btn:active { transform: scale(0.96); }
+
+        /* 결과 섹션 */
+        .ci-result-section {
+            background: #fff; border-radius: 16px; padding: 18px;
+            margin-bottom: 14px; border: 1px solid #e8e4db;
+        }
+        .ci-section-q    { font-size: 15px; font-weight: 700; color: #2a2820; margin-bottom: 5px; }
+        .ci-section-desc { font-size: 13px; font-weight: 600; margin-bottom: 10px; }
+        .ci-leaf-row     { font-size: 20px; letter-spacing: 3px; margin-bottom: 10px; }
+        .ci-bar-track    { height: 8px; background: #e8e4db; border-radius: 99px; overflow: hidden; }
+        .ci-bar-fill     { height: 100%; border-radius: 99px; width: 0; }
     </style>
 </head>
 <body>
@@ -1839,6 +2097,28 @@
                 <button class="btn-primary mt-7" id="btn-save-mood" onclick="saveMoodLog()">
                     오늘 하루도 수고했어요
                 </button>
+            </div>
+
+            <!-- 주간 목표 체크인 (치료 목표 설정 후 표시) -->
+            <div class="card mb-4 hidden" id="ci-card" onclick="CI.open()" role="button" tabindex="0">
+                <div style="display:flex;align-items:center;gap:13px;">
+                    <div style="width:42px;height:42px;border-radius:13px;
+                                background:linear-gradient(135deg,#5C7A2A,#8BAD45);
+                                display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                        <span style="font-size:20px;">🎯</span>
+                    </div>
+                    <div style="flex:1;min-width:0;">
+                        <p style="font-size:11px;font-weight:700;color:#5C7A2A;letter-spacing:0.6px;
+                                  text-transform:uppercase;margin-bottom:2px;">주간 목표 점검</p>
+                        <p style="font-size:14px;font-weight:700;color:#2a2820;margin:0;">
+                            이번 주 치료 목표 돌아보기</p>
+                    </div>
+                    <i class="fas fa-chevron-right" style="color:#c2d9a0;font-size:13px;flex-shrink:0;"></i>
+                </div>
+                <p style="font-size:13px;color:#7a9060;margin-top:11px;line-height:1.65;">
+                    설정한 목표들을 얼마나 달성했는지 4단계로 평가해 보세요.
+                </p>
+                <p style="font-size:11px;color:#b0a898;margin-top:5px;" id="ci-goal-count"></p>
             </div>
 
             <!-- 오늘의 루틴 -->
@@ -3272,6 +3552,7 @@
 
         if (탭 === 'profile') { fetchMyTestHistory(); loadMoodStats(); }
         if (탭 === 'library') loadLibraryData();
+        if (탭 === 'home' && typeof CI !== 'undefined') CI.init();
 
         // 도구함 탭 이탈 시 열린 마음챙김 모달 닫기
         if (현재탭 === 'tools') {
@@ -5382,6 +5663,717 @@
         if (로그인표시) doLogin(); else doRegister();
     });
 </script>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+     주간 체크인 모달 (Check-In)
+     ══════════════════════════════════════════════════════════════════════ -->
+<div id="ci-modal" class="hidden" role="dialog" aria-modal="true" aria-label="주간 체크인">
+    <div class="ci-container">
+        <div class="gw-header">
+            <button id="ci-close-btn" onclick="CI.close()" aria-label="닫기"
+                    style="background:none;border:none;cursor:pointer;color:#a09890;
+                           padding:6px;border-radius:8px;display:flex;align-items:center;
+                           transition:color 0.15s;">
+                <i class="fas fa-times" style="font-size:16px;"></i>
+            </button>
+            <div class="gw-header-center">
+                <span class="gw-step-label" id="ci-step-label">목표 점검</span>
+                <div class="gw-progress-rail">
+                    <div class="gw-progress-fill" id="ci-progress-fill" style="width:0%"></div>
+                </div>
+            </div>
+            <span class="gw-step-count" id="ci-step-count">1/3</span>
+        </div>
+        <div class="ci-content" id="ci-content"></div>
+    </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+     목표 설정 마법사 (Goal Wizard) — FAB + 모달
+     ══════════════════════════════════════════════════════════════════════ -->
+
+<!-- FAB 트리거 -->
+<button id="gw-fab" onclick="GW.open()" aria-label="목표 설정">
+    <i class="fas fa-bullseye"></i>
+    목표 설정
+</button>
+
+<!-- 모달 -->
+<div id="gw-modal" class="hidden" role="dialog" aria-modal="true" aria-label="치료 목표 설정">
+    <div class="gw-container">
+
+        <!-- 헤더 -->
+        <div class="gw-header">
+            <button id="gw-back-btn" onclick="GW.prev()" aria-label="이전 단계">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <div class="gw-header-center">
+                <span class="gw-step-label" id="gw-step-label">영역 선택</span>
+                <div class="gw-progress-rail">
+                    <div class="gw-progress-fill" id="gw-progress-fill" style="width:20%"></div>
+                </div>
+            </div>
+            <span class="gw-step-count" id="gw-step-count">1/5</span>
+        </div>
+
+        <!-- 동적 콘텐츠 -->
+        <div class="gw-content" id="gw-content"></div>
+
+        <!-- 푸터 버튼 -->
+        <div class="gw-footer" id="gw-footer">
+            <button class="gw-prev-btn" id="gw-prev-btn" onclick="GW.prev()" style="display:none">
+                <i class="fas fa-chevron-left" style="font-size:12px"></i> 이전
+            </button>
+            <button class="gw-next-btn" id="gw-next-btn" onclick="GW.next()">
+                다음 <i class="fas fa-chevron-right" style="font-size:12px"></i>
+            </button>
+        </div>
+
+    </div>
+</div>
+
+<script>
+/* ══════════════════════════════════════════════════════════════════════
+   Goal Wizard (GW) — 5단계 온보딩 마법사
+   의존: goalData.js (userSession, getFilteredGoals, getRecommendedRoutines)
+   ══════════════════════════════════════════════════════════════════════ */
+
+const GW = (() => {
+    // ── 상수 ────────────────────────────────────────────────────────────────
+
+    const TOTAL_STEPS = 5;
+    const STEP_LABELS = ['영역 선택', '현재 상태', '목표 설정', '루틴 선택', '완료'];
+
+    const DOMAIN_META = {
+        symptom:  { emoji: '💭', color: '#5D7F9A', label: '증상',  desc: '불안·수면·무기력·감정 조절' },
+        function: { emoji: '⚡', color: '#5C7A2A', label: '기능',  desc: '일상·집중·식사·기상' },
+        relation: { emoji: '💬', color: '#C4956A', label: '관계',  desc: '가족·친구·동료와의 관계' },
+        meaning:  { emoji: '🌱', color: '#7A6FA8', label: '의미',  desc: '목적·가치·정체성·미래' },
+    };
+
+    // ── 내부 상태 ────────────────────────────────────────────────────────────
+
+    let _step = 1;
+    const _customInputs = {};
+
+    // ── 헬퍼 ────────────────────────────────────────────────────────────────
+
+    function _esc(str) {
+        return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    function _canProceed() {
+        const { selectedDomains, selectedStates, selectedGoals, selectedRoutines } = userSession;
+        switch (_step) {
+            case 1: return selectedDomains.length > 0;
+            case 2: return selectedDomains.some(d => (selectedStates[d] || []).length > 0);
+            case 3: return selectedDomains.some(d => (selectedGoals[d] || []).length > 0);
+            case 4: return selectedRoutines.length > 0;
+            default: return true;
+        }
+    }
+
+    // ── Step 렌더러 ──────────────────────────────────────────────────────────
+
+    function _renderStep1() {
+        const cards = goalData.domains.map(domain => {
+            const m   = DOMAIN_META[domain];
+            const sel = userSession.selectedDomains.includes(domain);
+            const selStyle = sel ? `border-color:${m.color};background:${m.color}18;` : '';
+            const checkBadge = sel
+                ? `<span class="gw-domain-check" style="background:${m.color}">✓</span>`
+                : '';
+            const nameStyle = sel ? `color:${m.color}` : '';
+            return `
+                <button class="gw-domain-card"
+                        style="${selStyle}"
+                        onclick="GW._toggleDomain('${domain}')">
+                    ${checkBadge}
+                    <span class="gw-domain-emoji">${m.emoji}</span>
+                    <span class="gw-domain-name" style="${nameStyle}">${m.label}</span>
+                    <span class="gw-domain-desc">${m.desc}</span>
+                </button>`;
+        }).join('');
+
+        return `
+            <h2 class="gw-title">어떤 부분을 개선하고 싶으신가요?</h2>
+            <p class="gw-sub">개선하고 싶은 영역을 모두 선택해 주세요</p>
+            <div class="gw-domain-grid">${cards}</div>`;
+    }
+
+    function _renderStep2() {
+        const sections = userSession.selectedDomains.map(domain => {
+            const m      = DOMAIN_META[domain];
+            const states = goalData.current_states[domain] || [];
+
+            const items = states.map(item => {
+                const domStates = userSession.selectedStates[domain] || [];
+                const sel       = domStates.includes(item.id);
+                const ccCls     = sel ? 'gw-check-circle gw-cc-sel' : 'gw-check-circle';
+                const cardCls   = sel ? 'gw-select-card gw-sel' : 'gw-select-card';
+                const textarea  = (item.is_custom && sel) ? `
+                    <textarea class="gw-custom-input"
+                        placeholder="어떤 어려움인지 직접 적어주세요"
+                        oninput="GW._setCustom('${_esc(item.id)}', this.value)"
+                    >${_esc(_customInputs[item.id] || '')}</textarea>` : '';
+
+                return `
+                    <div>
+                        <button class="${cardCls}"
+                                onclick="GW._toggleState('${domain}', '${_esc(item.id)}')">
+                            <span class="${ccCls}">${sel ? '✓' : ''}</span>
+                            <span class="gw-card-text">${_esc(item.is_custom ? '직접 입력' : item.text)}</span>
+                        </button>
+                        ${textarea}
+                    </div>`;
+            }).join('');
+
+            return `
+                <div class="gw-section">
+                    <div class="gw-section-hd">
+                        <span>${m.emoji}</span>
+                        <span class="gw-section-hd-label" style="color:${m.color}">${m.label}</span>
+                    </div>
+                    ${items}
+                </div>`;
+        }).join('');
+
+        return `
+            <h2 class="gw-title">지금 어떤 어려움을 겪고 계신가요?</h2>
+            <p class="gw-sub">해당하는 상황을 모두 선택해 주세요</p>
+            ${sections}`;
+    }
+
+    function _renderStep3() {
+        const { MAX_GOALS_PER_DOMAIN } = GOAL_CONSTRAINTS;
+
+        const sections = userSession.selectedDomains.map(domain => {
+            const m           = DOMAIN_META[domain];
+            const stateIds    = userSession.selectedStates[domain] || [];
+            const filtered    = getFilteredGoals(domain, stateIds);
+            const domainGoals = userSession.selectedGoals[domain] || [];
+
+            const items = filtered.map(goal => {
+                const sel   = domainGoals.includes(goal.id);
+                const maxed = !sel && domainGoals.length >= MAX_GOALS_PER_DOMAIN;
+                const ccCls = sel ? 'gw-check-circle gw-cc-sel' : 'gw-check-circle';
+                let cardCls = sel ? 'gw-select-card gw-sel' : 'gw-select-card';
+                if (maxed) cardCls += ' gw-dimmed';
+                const clickHandler = maxed ? '' : `onclick="GW._toggleGoal('${domain}', '${_esc(goal.id)}')"`;
+                const textarea = (goal.is_custom && sel) ? `
+                    <textarea class="gw-custom-input"
+                        placeholder="어떤 목표인지 직접 적어주세요"
+                        oninput="GW._setCustom('${_esc(goal.id)}', this.value)"
+                    >${_esc(_customInputs[goal.id] || '')}</textarea>` : '';
+
+                return `
+                    <div>
+                        <button class="${cardCls}" ${clickHandler}>
+                            <span class="${ccCls}">${sel ? '✓' : ''}</span>
+                            <span class="gw-card-text">${_esc(goal.is_custom ? '직접 입력' : goal.text)}</span>
+                        </button>
+                        ${textarea}
+                    </div>`;
+            }).join('');
+
+            return `
+                <div class="gw-section">
+                    <div class="gw-section-hd">
+                        <span>${m.emoji}</span>
+                        <span class="gw-section-hd-label" style="color:${m.color}">${m.label}</span>
+                        <span class="gw-count-badge">${domainGoals.length}/${MAX_GOALS_PER_DOMAIN}</span>
+                    </div>
+                    ${items}
+                </div>`;
+        }).join('');
+
+        return `
+            <h2 class="gw-title">어떻게 달라지고 싶으신가요?</h2>
+            <p class="gw-sub">영역당 최대 ${MAX_GOALS_PER_DOMAIN}개까지 선택 가능해요</p>
+            ${sections}`;
+    }
+
+    function _renderStep4() {
+        const { MAX_ROUTINES_TOTAL } = GOAL_CONSTRAINTS;
+        const allGoalIds  = userSession.selectedDomains.flatMap(d => userSession.selectedGoals[d] || []);
+        const recommended = getRecommendedRoutines(allGoalIds);
+        const selCount    = userSession.selectedRoutines.length;
+
+        if (!recommended.length) {
+            return `
+                <h2 class="gw-title">매일 어떤 루틴을 실천해 볼까요?</h2>
+                <p class="gw-sub">최대 ${MAX_ROUTINES_TOTAL}개 선택 가능해요</p>
+                <p class="gw-empty">앞 단계에서 목표를 먼저 선택해 주세요</p>`;
+        }
+
+        const cards = recommended.map(routine => {
+            const sel   = userSession.selectedRoutines.includes(routine.id);
+            const maxed = !sel && selCount >= MAX_ROUTINES_TOTAL;
+            let cls     = sel ? 'gw-routine-card gw-sel' : 'gw-routine-card';
+            if (maxed) cls += ' gw-dimmed';
+            const clickHandler = maxed ? '' : `onclick="GW._toggleRoutine('${_esc(routine.id)}')"`;
+            const check = sel ? `<span class="gw-routine-check">✓</span>` : '';
+            return `
+                <button class="${cls}" ${clickHandler}>
+                    <span class="gw-routine-emoji">${routine.emoji}</span>
+                    <span class="gw-routine-text">${_esc(routine.text)}</span>
+                    ${check}
+                </button>`;
+        }).join('');
+
+        return `
+            <h2 class="gw-title">매일 어떤 루틴을 실천해 볼까요?</h2>
+            <p class="gw-sub">최대 ${MAX_ROUTINES_TOTAL}개 선택 · 현재 ${selCount}개 선택됨</p>
+            ${cards}`;
+    }
+
+    function _renderStep5() {
+        const allRoutines = Object.values(goalData.routines).flat();
+        const selected    = userSession.selectedRoutines
+            .map(id => allRoutines.find(r => r.id === id))
+            .filter(Boolean);
+
+        const cards = selected.map(r => `
+            <div class="gw-complete-card">
+                <span style="font-size:20px">${r.emoji}</span>
+                <span class="gw-complete-text">${_esc(r.text)}</span>
+                <span style="color:#5C7A2A;font-weight:900;font-size:13px;">✓</span>
+            </div>`).join('');
+
+        return `
+            <div class="gw-complete-wrap">
+                <div style="font-size:48px;margin-bottom:12px;">🎉</div>
+                <h2 class="gw-complete-title">루틴 설정이 완료됐어요!</h2>
+                <p class="gw-complete-sub">선택한 루틴들을 매일 조금씩 실천해 보세요</p>
+                <div class="gw-complete-list">${cards}</div>
+                <button class="gw-complete-btn" onclick="GW.complete()">
+                    저장하고 홈으로 가기 <i class="fas fa-chevron-right" style="font-size:12px"></i>
+                </button>
+            </div>`;
+    }
+
+    // ── 렌더 & 상태 업데이트 ────────────────────────────────────────────────
+
+    function _render() {
+        // 헤더 업데이트
+        document.getElementById('gw-step-label').textContent  = STEP_LABELS[_step - 1];
+        document.getElementById('gw-step-count').textContent  = `${_step}/${TOTAL_STEPS}`;
+        document.getElementById('gw-progress-fill').style.width = `${(_step / TOTAL_STEPS) * 100}%`;
+
+        // 콘텐츠 렌더
+        const content = document.getElementById('gw-content');
+        content.style.opacity   = '0';
+        content.style.transform = 'translateY(12px)';
+        content.innerHTML = [_renderStep1, _renderStep2, _renderStep3, _renderStep4, _renderStep5][_step - 1]();
+
+        // 페이드인
+        requestAnimationFrame(() => {
+            content.style.transition = 'opacity 0.2s ease, transform 0.2s ease';
+            content.style.opacity    = '1';
+            content.style.transform  = 'translateY(0)';
+        });
+
+        // 푸터 버튼
+        const footer  = document.getElementById('gw-footer');
+        const prevBtn = document.getElementById('gw-prev-btn');
+        const nextBtn = document.getElementById('gw-next-btn');
+
+        if (_step === TOTAL_STEPS) {
+            footer.style.display = 'none';
+        } else {
+            footer.style.display = 'flex';
+            prevBtn.style.display = _step > 1 ? 'flex' : 'none';
+            nextBtn.textContent   = _step === 4 ? '완료 확인 →' : '다음 →';
+            nextBtn.disabled      = !_canProceed();
+        }
+
+        // 뒤로 버튼 (step 1에서는 모달 닫기)
+        document.getElementById('gw-back-btn').title = _step === 1 ? '닫기' : '이전 단계';
+    }
+
+    // ── 공개 액션 ────────────────────────────────────────────────────────────
+
+    function open() {
+        _step = 1;
+        document.getElementById('gw-modal').classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+        _render();
+    }
+
+    function close() {
+        document.getElementById('gw-modal').classList.add('hidden');
+        document.body.style.overflow = '';
+    }
+
+    function next() {
+        if (!_canProceed()) return;
+        if (_step < TOTAL_STEPS) { _step++; _render(); }
+    }
+
+    function prev() {
+        if (_step > 1) { _step--; _render(); }
+        else close();
+    }
+
+    async function complete() {
+        userSession.save();
+
+        try {
+            const { data: { session } } = await sb.auth.getSession();
+            if (session) {
+                const uid = session.user.id;
+
+                // ① 선택한 루틴 → routine_items upsert (중복 라벨 제외)
+                const allRoutines = Object.values(goalData.routines).flat();
+                const selObjs = userSession.selectedRoutines
+                    .map(id => allRoutines.find(r => r.id === id)).filter(Boolean);
+                const existingLabels = new Set((_rt.items || []).map(r => r.label));
+                const newOnes = selObjs.filter(r => !existingLabels.has(r.text));
+
+                if (newOnes.length) {
+                    const maxOrder = (_rt.items || []).length > 0
+                        ? Math.max(..._rt.items.map(r => r.order_index)) : -1;
+                    await sb.from('routine_items').insert(
+                        newOnes.map((r, i) => ({
+                            user_id: uid, label: r.text, emoji: r.emoji,
+                            target_count: 1, order_index: maxOrder + 1 + i, is_active: true,
+                        }))
+                    );
+                    await loadRoutines();
+                }
+
+                // ② 치료 목표 세션 → test_results (result_summary에 JSON 저장)
+                await sb.from('test_results').insert({
+                    user_id:        uid,
+                    test_type:      'treatment_goals',
+                    score:          0,
+                    result_summary: JSON.stringify({
+                        selectedDomains:  userSession.selectedDomains,
+                        selectedStates:   userSession.selectedStates,
+                        selectedGoals:    userSession.selectedGoals,
+                        goalPriority:     userSession.goalPriority,
+                        selectedRoutines: userSession.selectedRoutines,
+                    }),
+                });
+
+                // ③ 체크인 카드 갱신
+                if (typeof CI !== 'undefined') await CI.init();
+            }
+        } catch (e) {
+            console.warn('목표 저장 실패:', e.message);
+        }
+
+        close();
+        showToast('목표 & 루틴이 설정됐어요! 🌿');
+    }
+
+    // ── 내부 상태 변이 (onclick에서 호출) ────────────────────────────────────
+
+    function _toggleDomain(domain) {
+        userSession.toggleDomain(domain);
+        _render();
+    }
+
+    function _toggleState(domain, id) {
+        userSession.toggleState(domain, id);
+        _render();
+    }
+
+    function _toggleGoal(domain, id) {
+        userSession.toggleGoal(domain, id);
+        _render();
+    }
+
+    function _toggleRoutine(id) {
+        userSession.toggleRoutine(id);
+        _render();
+    }
+
+    function _setCustom(id, text) {
+        _customInputs[id] = text;
+    }
+
+    // 모달 외부 클릭 시 닫기
+    document.getElementById('gw-modal').addEventListener('click', function(e) {
+        if (e.target === this) close();
+    });
+
+    return { open, close, next, prev, complete, _toggleDomain, _toggleState, _toggleGoal, _toggleRoutine, _setCustom };
+})();
+
+/* ══════════════════════════════════════════════════════════════════════
+   Check-In (CI) — 주간 목표 점검 & 결과 요약
+   ══════════════════════════════════════════════════════════════════════ */
+
+const CI = (() => {
+    // ── 상수 ────────────────────────────────────────────────────────────────
+
+    const SCORE_OPTS = [
+        { score: 1, emoji: '😔', label: '아직 안됨',   color: '#9e9e9e', bg: '#f5f5f5' },
+        { score: 2, emoji: '🌱', label: '조금 나아짐', color: '#C4956A', bg: '#fff8f0' },
+        { score: 3, emoji: '🌿', label: '꽤 달라짐',   color: '#5C7A2A', bg: '#f0f7e8' },
+        { score: 4, emoji: '🌳', label: '거의 달성',   color: '#3a5c1a', bg: '#e4f0d4' },
+    ];
+
+    const DOMAIN_META = {
+        symptom:  { emoji: '💭', color: '#5D7F9A', label: '증상' },
+        function: { emoji: '⚡', color: '#5C7A2A', label: '기능' },
+        relation: { emoji: '💬', color: '#C4956A', label: '관계' },
+        meaning:  { emoji: '🌱', color: '#7A6FA8', label: '의미' },
+    };
+
+    // ── 내부 상태 ────────────────────────────────────────────────────────────
+
+    let _goals   = [];  // [{domain, goalId, text}]
+    let _current = 0;
+    let _scores  = {}; // {goalId: score}
+
+    function _esc(s) {
+        return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    // ── 초기화: 홈 진입 시 치료 목표 로드 → 카드 표시 ────────────────────────
+
+    async function init() {
+        try {
+            const { data: { session } } = await sb.auth.getSession();
+            if (!session) return;
+
+            const { data } = await sb.from('test_results')
+                .select('result_summary')
+                .eq('user_id', session.user.id)
+                .eq('test_type', 'treatment_goals')
+                .order('created_at', { ascending: false })
+                .limit(1)
+                .maybeSingle();
+
+            if (!data?.result_summary) return;
+            const saved = JSON.parse(data.result_summary);
+
+            _goals = [];
+            for (const domain of (saved.selectedDomains || [])) {
+                for (const goalId of (saved.selectedGoals?.[domain] || [])) {
+                    const goalObj = (goalData.goals[domain] || []).find(g => g.id === goalId);
+                    if (goalObj && !goalObj.is_custom) {
+                        _goals.push({ domain, goalId, text: goalObj.text });
+                    }
+                }
+            }
+
+            const card = document.getElementById('ci-card');
+            const cnt  = document.getElementById('ci-goal-count');
+            if (card) {
+                card.classList.toggle('hidden', _goals.length === 0);
+                if (cnt) cnt.textContent = _goals.length > 0
+                    ? `${_goals.length}개의 목표를 점검할 수 있어요`
+                    : '';
+            }
+        } catch (e) {
+            console.warn('체크인 초기화 실패:', e.message);
+        }
+    }
+
+    // ── 모달 열기 ────────────────────────────────────────────────────────────
+
+    function open() {
+        if (!_goals.length) { showToast('먼저 목표를 설정해 주세요.'); return; }
+        _current = 0;
+        _scores  = {};
+        document.getElementById('ci-modal').classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+        _renderGoal();
+    }
+
+    function close() {
+        document.getElementById('ci-modal').classList.add('hidden');
+        document.body.style.overflow = '';
+    }
+
+    // ── 목표별 평가 렌더 ─────────────────────────────────────────────────────
+
+    function _renderGoal() {
+        const goal = _goals[_current];
+        const m    = DOMAIN_META[goal.domain] || { emoji: '🎯', color: '#5C7A2A', label: '' };
+        const pct  = Math.round((_current / _goals.length) * 100);
+
+        document.getElementById('ci-progress-fill').style.width = pct + '%';
+        document.getElementById('ci-step-count').textContent    = `${_current + 1} / ${_goals.length}`;
+        document.getElementById('ci-step-label').textContent    = '목표 점검';
+
+        const content = document.getElementById('ci-content');
+        content.style.opacity   = '0';
+        content.style.transform = 'translateY(10px)';
+
+        content.innerHTML = `
+            <div style="text-align:center;padding-bottom:4px;">
+                <span style="font-size:11px;font-weight:700;color:${m.color};letter-spacing:0.6px;text-transform:uppercase;">
+                    ${m.emoji} ${m.label}
+                </span>
+                <p style="font-size:12px;color:#a09890;margin:7px 0 14px;">이번 주 동안...</p>
+                <h2 style="font-size:18px;font-weight:700;color:#2a2820;line-height:1.65;
+                           margin-bottom:28px;padding:0 4px;">
+                    ${_esc(goal.text)}
+                </h2>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                ${SCORE_OPTS.map(s => `
+                    <button class="ci-score-btn"
+                            style="background:${s.bg};border-color:${s.color}40;"
+                            onclick="CI._score(${s.score})">
+                        <span style="font-size:26px;display:block;margin-bottom:7px;">${s.emoji}</span>
+                        <span style="font-size:13px;font-weight:700;color:${s.color};">${s.label}</span>
+                    </button>`).join('')}
+            </div>`;
+
+        requestAnimationFrame(() => {
+            content.style.transition = 'opacity 0.2s ease, transform 0.2s ease';
+            content.style.opacity    = '1';
+            content.style.transform  = 'translateY(0)';
+        });
+    }
+
+    // ── 점수 선택 ────────────────────────────────────────────────────────────
+
+    function _score(val) {
+        _scores[_goals[_current].goalId] = val;
+        _current++;
+        if (_current >= _goals.length) _saveAndShowResult();
+        else _renderGoal();
+    }
+
+    // ── 저장 + 결과 표시 ─────────────────────────────────────────────────────
+
+    async function _saveAndShowResult() {
+        const evals    = _goals.map(g => ({ goalId: g.goalId, score: _scores[g.goalId] || 1 }));
+        const avgScore = evals.reduce((s, e) => s + e.score, 0) / evals.length;
+
+        try {
+            const { data: { session } } = await sb.auth.getSession();
+            if (session) {
+                await sb.from('test_results').insert({
+                    user_id:        session.user.id,
+                    test_type:      'goal_checkin',
+                    score:          Math.round(avgScore * 10) / 10,
+                    result_summary: JSON.stringify({ evaluations: evals, date: _todayKey() }),
+                });
+            }
+        } catch (e) {
+            console.warn('체크인 저장 실패:', e.message);
+        }
+
+        _showResult(evals);
+    }
+
+    // ── 결과 요약 화면 ───────────────────────────────────────────────────────
+
+    function _showResult(evals) {
+        // 도메인별 평균 계산
+        const domainScore = (domains) => {
+            const gs = _goals.filter(g => domains.includes(g.domain));
+            if (!gs.length) return null;
+            return gs.reduce((s, g) => s + (_scores[g.goalId] || 1), 0) / gs.length;
+        };
+
+        const symptomAvg = domainScore(['symptom']);
+        const lifeAvg    = domainScore(['function', 'relation', 'meaning']);
+
+        const scoreInfo = (avg) => {
+            if (avg === null) return null;
+            if (avg < 1.75) return { text: '아직 변화가 느껴지지 않는 것 같아요', color: '#9e9e9e' };
+            if (avg < 2.5)  return { text: '조금씩 나아지고 있어요', color: '#C4956A' };
+            if (avg < 3.25) return { text: '꽤 많이 달라졌어요', color: '#5C7A2A' };
+            return            { text: '거의 달성에 가까워졌어요! 🎉', color: '#3a5c1a' };
+        };
+
+        const leaves = (avg) => {
+            if (avg === null) return '';
+            const n = Math.round(avg);
+            return Array.from({ length: 4 }, (_, i) => i < n ? '🍃' : '🩶').join(' ');
+        };
+
+        const pct = (avg) => avg === null ? 0 : Math.round((avg / 4) * 100);
+
+        const mkSection = (q, avg) => {
+            const info = scoreInfo(avg);
+            if (!info) return '';
+            const barColor = avg >= 2.5 ? '#5C7A2A' : avg >= 1.75 ? '#C4956A' : '#9e9e9e';
+            return `
+                <div class="ci-result-section">
+                    <p class="ci-section-q">${q}</p>
+                    <p class="ci-section-desc" style="color:${info.color};">${info.text}</p>
+                    <div class="ci-leaf-row">${leaves(avg)}</div>
+                    <div class="ci-bar-track">
+                        <div class="ci-bar-fill" style="background:${barColor};"
+                             data-target="${pct(avg)}"></div>
+                    </div>
+                </div>`;
+        };
+
+        // 헤더 업데이트
+        document.getElementById('ci-progress-fill').style.width = '100%';
+        document.getElementById('ci-step-count').textContent    = '완료';
+        document.getElementById('ci-step-label').textContent    = '이번 주 결과';
+
+        const content = document.getElementById('ci-content');
+        content.style.opacity = '0';
+
+        content.innerHTML = `
+            <div style="text-align:center;margin-bottom:26px;">
+                <div style="font-size:44px;margin-bottom:10px;">🌿</div>
+                <h2 style="font-size:21px;font-weight:700;color:#2a2820;margin-bottom:5px;">
+                    이번 주 나의 변화
+                </h2>
+                <p style="font-size:13px;color:#a09890;line-height:1.6;">
+                    체크인을 완료했어요. 잘 하셨어요!
+                </p>
+            </div>
+
+            ${mkSection('덜 괴로워지고 있나요?', symptomAvg)}
+            ${mkSection('더 잘 살아가고 있나요?', lifeAvg)}
+
+            ${(!symptomAvg && !lifeAvg) ? `
+                <div style="text-align:center;color:#a09890;padding:16px 0 24px;">
+                    모든 영역을 점검했어요. 계속 화이팅!
+                </div>` : ''}
+
+            <button style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px;
+                           background:#5C7A2A;color:#fff;font-size:15px;font-weight:700;
+                           border:none;border-radius:999px;padding:15px;cursor:pointer;
+                           box-shadow:0 6px 24px rgba(92,122,42,0.3);margin-top:20px;
+                           transition:background 0.2s;"
+                    onmouseover="this.style.background='#4a6220'"
+                    onmouseout="this.style.background='#5C7A2A'"
+                    onclick="CI.close()">
+                홈으로 돌아가기
+                <i class="fas fa-chevron-right" style="font-size:12px;"></i>
+            </button>`;
+
+        requestAnimationFrame(() => {
+            content.style.transition = 'opacity 0.35s ease';
+            content.style.opacity    = '1';
+
+            // 프로그레스 바 애니메이션
+            setTimeout(() => {
+                content.querySelectorAll('.ci-bar-fill').forEach(bar => {
+                    bar.style.transition = 'width 1s cubic-bezier(0.22, 0.68, 0, 1.2)';
+                    bar.style.width      = (bar.dataset.target || '0') + '%';
+                });
+            }, 250);
+        });
+    }
+
+    // 외부 클릭 닫기
+    document.getElementById('ci-modal').addEventListener('click', function(e) {
+        if (e.target === this) close();
+    });
+
+    return { init, open, close, _score };
+})();
+
+// 로그인 직후 홈 화면에서 CI 카드를 표시하기 위해 지연 초기화
+window.addEventListener('load', () => {
+    setTimeout(() => { if (typeof CI !== 'undefined') CI.init(); }, 1500);
+});
 
 </body>
 </html>
