@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>이완 도구함 · 올리브마인드</title>
+
+    <!-- Supabase JS SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <!-- Noto Sans KR -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* ── 기본 초기화 ───────────────────────────────── */
+        * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; margin: 0; padding: 0; }
+
+        html, body {
+            height: 100%;
+            background: #f7f5ef;
+        }
+        body {
+            font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont,
+                         'Segoe UI', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+            background: #f7f5ef;
+            color: #2a2820;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ── 앱 래퍼 ───────────────────────────────────── */
+        #app-root {
+            max-width: 480px;
+            margin: 0 auto;
+            min-height: 100vh;
+            background: #f7f5ef;
+            position: relative;
+        }
+
+        /* ── 헤더 ──────────────────────────────────────── */
+        .page-header {
+            position: sticky; top: 0; z-index: 100;
+            background: rgba(247, 245, 239, 0.95);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid #e8e4db;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 12px 16px;
+            padding-top: max(12px, env(safe-area-inset-top, 12px));
+        }
+        .back-btn {
+            width: 40px; height: 40px; border-radius: 50%;
+            border: none; background: #f0ede6; color: #4a4438;
+            font-size: 15px; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: background 0.15s; flex-shrink: 0;
+        }
+        .back-btn:hover { background: #e4dbc9; }
+        .back-btn:active { transform: scale(0.93); }
+        .header-title {
+            font-size: 16px; font-weight: 700; color: #2a2820;
+            letter-spacing: -0.1px;
+        }
+
+        /* ── 콘텐츠 ────────────────────────────────────── */
+        .content {
+            padding: 24px 16px 48px;
+        }
+        .page-title {
+            font-size: 20px; font-weight: 700; color: #2a2820;
+            letter-spacing: -0.3px; margin-bottom: 5px;
+        }
+        .page-sub {
+            font-size: 13px; color: #8a8070; line-height: 1.65;
+            margin-bottom: 24px;
+        }
+
+        /* ── 카드 그리드 ────────────────────────────────── */
+        .tools-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+            margin-bottom: 32px;
+        }
+
+        /* ── 이완 도구 카드 ─────────────────────────────── */
+        .relax-card {
+            display: flex; flex-direction: column;
+            border-radius: 22px; border-width: 1px; border-style: solid;
+            padding: 18px; cursor: pointer; text-align: left;
+            transition: transform 0.14s, opacity 0.14s;
+            background: none; min-height: 186px;
+            font-family: inherit;
+            -webkit-appearance: none; outline: none;
+        }
+        .relax-card:active { transform: scale(0.95); opacity: 0.88; }
+
+        .relax-card-icon {
+            width: 52px; height: 52px; border-radius: 26px;
+            border-width: 1px; border-style: solid;
+            display: flex; align-items: center; justify-content: center;
+            margin-bottom: 14px; font-size: 24px; flex-shrink: 0;
+        }
+        .relax-card-title {
+            font-size: 15px; font-weight: 600; color: #e7e1d6;
+            margin-bottom: 5px; letter-spacing: -0.2px;
+        }
+        .relax-card-cat {
+            font-size: 12px; color: rgba(200, 195, 185, 0.68);
+            line-height: 1.65; flex: 1;
+        }
+        .relax-card-footer {
+            border-top-width: 1px; border-top-style: solid;
+            padding-top: 10px; margin-top: 12px;
+        }
+        .relax-card-duration {
+            font-size: 11px; font-weight: 500; letter-spacing: 0.2px;
+        }
+
+        /* ── 스켈레톤 로딩 ──────────────────────────────── */
+        .skeleton-card {
+            border-radius: 22px; min-height: 186px;
+            background: linear-gradient(110deg, #e4dbc9 30%, #ede8da 50%, #e4dbc9 70%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite linear;
+        }
+        @keyframes shimmer {
+            from { background-position: 200% center; }
+            to   { background-position: -200% center; }
+        }
+
+        /* ── 빈 상태 ────────────────────────────────────── */
+        .empty-state {
+            text-align: center; padding: 64px 0; color: #a09890;
+        }
+        .empty-emoji { font-size: 44px; margin-bottom: 14px; }
+        .empty-text  { font-size: 14px; }
+
+        /* ── 오디오 플레이어 모달 ───────────────────────── */
+        #audio-modal {
+            position: fixed; inset: 0; z-index: 700;
+            background: #1a2118;
+            display: none; flex-direction: column;
+            padding-top: env(safe-area-inset-top, 0px);
+            padding-bottom: env(safe-area-inset-bottom, 0px);
+        }
+        #audio-modal.open { display: flex; }
+
+        /* 모달 상단 바 */
+        .audio-topbar {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 20px 20px 8px; flex-shrink: 0;
+        }
+        .audio-topbar-label { font-size: 13px; font-weight: 500; color: #6b7a68; }
+        .audio-close-btn {
+            width: 40px; height: 40px; border-radius: 50%;
+            border: none; background: rgba(255, 255, 255, 0.07); color: #8a9386;
+            font-size: 16px; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: background 0.15s;
+        }
+        .audio-close-btn:hover  { background: rgba(255, 255, 255, 0.13); }
+        .audio-close-btn:active { transform: scale(0.92); }
+
+        /* 모달 콘텐츠 */
+        .audio-content {
+            flex: 1; display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            padding: 0 32px; text-align: center; overflow: hidden;
+        }
+        .audio-icon-big  { font-size: 80px; margin-bottom: 28px; line-height: 1; }
+        .audio-title {
+            font-size: 26px; font-weight: 700; color: #e7e1d6;
+            letter-spacing: -0.4px; margin-bottom: 12px; line-height: 1.3;
+        }
+        .audio-meta-pill {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: rgba(155, 173, 128, 0.15);
+            border-radius: 20px; padding: 6px 16px; margin-bottom: 22px;
+        }
+        .audio-meta-dot  { width: 4px; height: 4px; border-radius: 50%; background: #9bad80; }
+        .audio-meta-text { font-size: 13px; font-weight: 500; color: #9bad80; }
+        .audio-desc {
+            font-size: 14px; color: #6b7a68;
+            line-height: 1.8; word-break: keep-all; max-width: 320px;
+        }
+
+        /* 플레이어 컨트롤 */
+        .audio-player-section {
+            padding: 0 32px 36px; flex-shrink: 0;
+            display: flex; flex-direction: column; align-items: center; width: 100%;
+        }
+
+        /* 진행 바 */
+        .progress-track {
+            width: 100%; height: 4px;
+            background: #2c3728; border-radius: 2px;
+            margin-bottom: 10px; cursor: pointer;
+            position: relative; overflow: hidden;
+        }
+        /* 터치 hitbox 확장 */
+        .progress-track::before {
+            content: ''; position: absolute;
+            inset: -10px 0; /* 위아래 터치 영역 확장 */
+        }
+        .progress-fill {
+            height: 4px; background: #9bad80;
+            border-radius: 2px; width: 0%;
+            pointer-events: none;
+        }
+
+        /* 시간 표시 */
+        .time-row {
+            display: flex; justify-content: space-between;
+            width: 100%; margin-bottom: 32px;
+        }
+        .time-text { font-size: 12px; color: #6b7a68; }
+
+        /* 재생 버튼 */
+        .play-btn {
+            width: 80px; height: 80px; border-radius: 50%;
+            border: none; background: #788a58; color: #fff;
+            font-size: 28px; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: background 0.15s, transform 0.12s;
+        }
+        .play-btn:hover  { background: #6a7c4e; }
+        .play-btn:active { transform: scale(0.93); }
+        .play-btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
+
+        /* 로딩 스피너 */
+        .spin { animation: spinAnim 0.75s linear infinite; }
+        @keyframes spinAnim { to { transform: rotate(360deg); } }
+
+        /* ── 반응형 ─────────────────────────────────────── */
+        @media (min-width: 768px) {
+            #app-root {
+                max-width: 640px;
+                box-shadow: 0 0 48px rgba(42, 40, 32, 0.07);
+            }
+            .tools-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+    </style>
+</head>
+<body>
+<div id="app-root">
+
+    <!-- ── 헤더 ── -->
+    <header class="page-header">
+        <button class="back-btn" onclick="goBack()" aria-label="뒤로가기">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+        <span class="header-title">이완 도구함</span>
+        <div style="width:40px;"></div>
+    </header>
+
+    <!-- ── 콘텐츠 ── -->
+    <main class="content">
+        <p class="page-title">가이드 명상 오디오</p>
+        <p class="page-sub">
+            언제든 틀어두고 마음을 고요하게<br>만들어주는 오디오 가이드예요.
+        </p>
+
+        <!-- 로딩 스켈레톤 -->
+        <div id="loading-grid" class="tools-grid">
+            <div class="skeleton-card"></div>
+            <div class="skeleton-card"></div>
+            <div class="skeleton-card"></div>
+            <div class="skeleton-card"></div>
+        </div>
+
+        <!-- 카드 그리드 (JS로 채움) -->
+        <div id="tools-grid" class="tools-grid" style="display:none;"></div>
+
+        <!-- 빈 상태 -->
+        <div id="empty-state" class="empty-state" style="display:none;">
+            <div class="empty-emoji">🎧</div>
+            <p class="empty-text">아직 등록된 도구가 없어요.</p>
+        </div>
+    </main>
+
+</div><!-- /app-root -->
+
+
+<!-- ══════════════════════════════════════════
+     오디오 플레이어 모달
+     ══════════════════════════════════════════ -->
+<div id="audio-modal" role="dialog" aria-modal="true" aria-label="오디오 플레이어">
+
+    <!-- 상단 바 -->
+    <div class="audio-topbar">
+        <span class="audio-topbar-label">이완 도구함</span>
+        <button class="audio-close-btn" onclick="closeAudioModal()" aria-label="닫기">
+            <i class="fas fa-xmark"></i>
+        </button>
+    </div>
+
+    <!-- 정보 영역 -->
+    <div class="audio-content">
+        <div class="audio-icon-big" id="modal-icon">🎧</div>
+        <h2 class="audio-title" id="modal-title"></h2>
+        <div class="audio-meta-pill">
+            <span class="audio-meta-text" id="modal-category"></span>
+            <div class="audio-meta-dot"></div>
+            <span class="audio-meta-text" id="modal-duration-text"></span>
+        </div>
+        <p class="audio-desc" id="modal-desc"></p>
+    </div>
+
+    <!-- 플레이어 컨트롤 -->
+    <div class="audio-player-section">
+        <!-- 진행 바 -->
+        <div class="progress-track" id="progress-track"
+             onclick="seekAudio(event)"
+             ontouchstart="seekAudio(event)">
+            <div class="progress-fill" id="progress-fill"></div>
+        </div>
+
+        <!-- 시간 표시 -->
+        <div class="time-row">
+            <span class="time-text" id="time-current">0:00</span>
+            <span class="time-text" id="time-total">—</span>
+        </div>
+
+        <!-- 재생 / 일시정지 버튼 -->
+        <button class="play-btn" id="play-btn"
+                onclick="togglePlay()" disabled aria-label="재생">
+            <i class="fas fa-circle-notch spin" id="play-icon"></i>
+        </button>
+    </div>
+
+    <!-- 숨겨진 오디오 엘리먼트 -->
+    <audio id="audio-player" preload="none"></audio>
+</div>
+
+
+<script>
+// ════════════════════════════════════════════════════════════
+//  Supabase 초기화
+// ════════════════════════════════════════════════════════════
+const SUPABASE_URL      = 'https://pmdwqeknvcesjeaglnma.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBtZHdxZWtudmNlc2plYWdsbm1hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyMDU5MTQsImV4cCI6MjA5Njc4MTkxNH0.0hnS6xA7gsUakOCVf14yz_NwKADv2k7jy6hPZZ-cEQE';
+const STORAGE_BASE_URL  = 'https://pmdwqeknvcesjeaglnma.supabase.co/storage/v1/object/public/relaxation-audio/';
+
+const { createClient } = window.supabase;
+const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// ════════════════════════════════════════════════════════════
+//  카테고리 → 색상 매핑 (index.html 기존 도구 카드와 동일 팔레트)
+// ════════════════════════════════════════════════════════════
+const CATEGORY_STYLE = {
+    '마음챙김': {
+        bg: '#0C2220', border: '#1E4840', accent: '#52BEA8',
+        iconBg: 'rgba(82,190,168,0.14)', iconBorder: 'rgba(82,190,168,0.22)',
+    },
+    '신체이완': {
+        bg: '#231A0C', border: '#483218', accent: '#D4956A',
+        iconBg: 'rgba(212,149,106,0.14)', iconBorder: 'rgba(212,149,106,0.22)',
+    },
+    '수면': {
+        bg: '#140E22', border: '#2C1E50', accent: '#9A85D4',
+        iconBg: 'rgba(154,133,212,0.14)', iconBorder: 'rgba(154,133,212,0.22)',
+    },
+};
+const DEFAULT_STYLE = {
+    bg: '#0C1C18', border: '#1A3028', accent: '#9BAD80',
+    iconBg: 'rgba(155,173,128,0.14)', iconBorder: 'rgba(155,173,128,0.22)',
+};
+
+// ════════════════════════════════════════════════════════════
+//  DOM 참조
+// ════════════════════════════════════════════════════════════
+const audio    = document.getElementById('audio-player');
+const playBtn  = document.getElementById('play-btn');
+const playIcon = document.getElementById('play-icon');
+const progFill = document.getElementById('progress-fill');
+const timeCur  = document.getElementById('time-current');
+const timeTot  = document.getElementById('time-total');
+
+// ════════════════════════════════════════════════════════════
+//  상태
+// ════════════════════════════════════════════════════════════
+let currentTool = null;
+let hasLogged   = false;
+
+// ════════════════════════════════════════════════════════════
+//  뒤로가기
+// ════════════════════════════════════════════════════════════
+function goBack() {
+    if (history.length > 1) {
+        history.back();
+    } else {
+        window.location.href = 'index.html';
+    }
+}
+
+// ════════════════════════════════════════════════════════════
+//  도구 목록 로드 & 렌더링
+// ════════════════════════════════════════════════════════════
+async function loadTools() {
+    const { data, error } = await sb
+        .from('relaxation_tools')
+        .select('*')
+        .order('order', { ascending: true });
+
+    document.getElementById('loading-grid').style.display = 'none';
+
+    if (error || !data || data.length === 0) {
+        document.getElementById('empty-state').style.display = 'block';
+        return;
+    }
+
+    const grid = document.getElementById('tools-grid');
+    grid.style.display = 'grid';
+
+    data.forEach(tool => {
+        const st   = CATEGORY_STYLE[tool.category] || DEFAULT_STYLE;
+        const card = document.createElement('button');
+        card.className   = 'relax-card';
+        card.style.cssText = `background:${st.bg};border-color:${st.border};`;
+        card.onclick = () => openAudioModal(tool);
+        card.innerHTML = `
+            <div class="relax-card-icon"
+                 style="background:${st.iconBg};border-color:${st.iconBorder};">
+                ${escHtml(tool.icon || '🎧')}
+            </div>
+            <p class="relax-card-title">${escHtml(tool.title)}</p>
+            <p class="relax-card-cat">${escHtml(tool.category)}</p>
+            <div class="relax-card-footer" style="border-top-color:${st.border};">
+                <p class="relax-card-duration" style="color:${st.accent};">
+                    ${tool.duration_min}분 가이드
+                </p>
+            </div>
+        `;
+        grid.appendChild(card);
+    });
+}
+
+// ════════════════════════════════════════════════════════════
+//  오디오 모달 열기
+// ════════════════════════════════════════════════════════════
+function openAudioModal(tool) {
+    currentTool = tool;
+    hasLogged   = false;
+
+    // 메타 정보
+    document.getElementById('modal-icon').textContent          = tool.icon || '🎧';
+    document.getElementById('modal-title').textContent         = tool.title;
+    document.getElementById('modal-category').textContent      = tool.category;
+    document.getElementById('modal-duration-text').textContent = `${tool.duration_min}분`;
+    document.getElementById('modal-desc').textContent          = tool.description || '';
+
+    // 오디오 소스 리셋
+    audio.pause();
+    audio.src = STORAGE_BASE_URL + tool.storage_path;
+    audio.currentTime = 0;
+    audio.load();
+
+    // UI 초기화
+    progFill.style.width = '0%';
+    timeCur.textContent  = '0:00';
+    timeTot.textContent  = fmtTime(tool.duration_min * 60); // 임시 전체 시간
+    setPlayerState('loading');
+
+    // 모달 오픈
+    document.getElementById('audio-modal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+}
+
+// ════════════════════════════════════════════════════════════
+//  오디오 모달 닫기
+// ════════════════════════════════════════════════════════════
+function closeAudioModal() {
+    audio.pause();
+    document.getElementById('audio-modal').classList.remove('open');
+    document.body.style.overflow = '';
+}
+
+// ════════════════════════════════════════════════════════════
+//  재생 / 일시정지
+// ════════════════════════════════════════════════════════════
+function togglePlay() {
+    if (audio.paused) {
+        audio.play().catch(err => console.warn('[audio] play error:', err));
+    } else {
+        audio.pause();
+    }
+}
+
+// ════════════════════════════════════════════════════════════
+//  진행 바 클릭/터치 → seek
+// ════════════════════════════════════════════════════════════
+function seekAudio(e) {
+    if (!audio.duration) return;
+    e.preventDefault();
+
+    const track   = document.getElementById('progress-track');
+    const rect    = track.getBoundingClientRect();
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    const ratio   = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+
+    // 즉시 시각 업데이트 (transition 없이)
+    progFill.style.transition = 'none';
+    progFill.style.width      = (ratio * 100) + '%';
+    timeCur.textContent       = fmtTime(ratio * audio.duration);
+
+    audio.currentTime = ratio * audio.duration;
+
+    // transition 복원
+    requestAnimationFrame(() => { progFill.style.transition = ''; });
+}
+
+// ════════════════════════════════════════════════════════════
+//  플레이어 상태 UI
+// ════════════════════════════════════════════════════════════
+function setPlayerState(state) {
+    if (state === 'loading') {
+        playBtn.disabled       = true;
+        playIcon.className     = 'fas fa-circle-notch spin';
+        playBtn.setAttribute('aria-label', '불러오는 중');
+    } else if (state === 'playing') {
+        playBtn.disabled       = false;
+        playIcon.className     = 'fas fa-pause';
+        playBtn.setAttribute('aria-label', '일시정지');
+    } else { // paused
+        playBtn.disabled       = false;
+        playIcon.className     = 'fas fa-play';
+        playBtn.setAttribute('aria-label', '재생');
+    }
+}
+
+// ════════════════════════════════════════════════════════════
+//  시간 포맷 (초 → "M:SS")
+// ════════════════════════════════════════════════════════════
+function fmtTime(sec) {
+    const s = Math.floor(sec || 0);
+    return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+}
+
+// ════════════════════════════════════════════════════════════
+//  완료 로그 기록
+// ════════════════════════════════════════════════════════════
+async function logCompletion(toolId) {
+    try {
+        const { data: { session } } = await sb.auth.getSession();
+        if (!session) return;
+        await sb.from('relaxation_logs').insert({
+            user_id:      session.user.id,
+            tool_id:      toolId,
+            completed_at: new Date().toISOString(),
+        });
+    } catch { /* ignore */ }
+}
+
+// ════════════════════════════════════════════════════════════
+//  HTML 이스케이프
+// ════════════════════════════════════════════════════════════
+function escHtml(str) {
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+}
+
+// ════════════════════════════════════════════════════════════
+//  오디오 이벤트 핸들러
+// ════════════════════════════════════════════════════════════
+
+// 메타데이터 로드 완료 → 전체 시간 업데이트
+audio.addEventListener('loadedmetadata', () => {
+    if (audio.duration) timeTot.textContent = fmtTime(audio.duration);
+});
+
+// 재생 가능 → 버튼 활성화
+audio.addEventListener('canplay', () => {
+    if (audio.paused) setPlayerState('paused');
+});
+
+// 재생 시작
+audio.addEventListener('play',    () => setPlayerState('playing'));
+
+// 일시정지
+audio.addEventListener('pause',   () => setPlayerState('paused'));
+
+// 버퍼링 중
+audio.addEventListener('waiting', () => setPlayerState('loading'));
+
+// 버퍼링 후 재생 재개
+audio.addEventListener('playing', () => setPlayerState('playing'));
+
+// 진행 업데이트 (약 250ms 간격)
+audio.addEventListener('timeupdate', () => {
+    if (!audio.duration) return;
+    const pct = (audio.currentTime / audio.duration) * 100;
+    progFill.style.width = pct + '%';
+    timeCur.textContent  = fmtTime(audio.currentTime);
+    if (audio.duration) timeTot.textContent = fmtTime(audio.duration);
+});
+
+// 재생 완료 → 로그 기록
+audio.addEventListener('ended', () => {
+    progFill.style.width = '100%';
+    setPlayerState('paused');
+    if (!hasLogged && currentTool) {
+        hasLogged = true;
+        logCompletion(currentTool.id);
+    }
+});
+
+// 오류
+audio.addEventListener('error', () => {
+    setPlayerState('paused');
+    console.warn('[audio] 로드 실패:', audio.src);
+});
+
+// ════════════════════════════════════════════════════════════
+//  Android 백 버튼 → 모달 먼저 닫기
+// ════════════════════════════════════════════════════════════
+history.pushState(null, '');
+window.addEventListener('popstate', () => {
+    const modal = document.getElementById('audio-modal');
+    if (modal.classList.contains('open')) {
+        closeAudioModal();
+        history.pushState(null, '');
+    } else {
+        goBack();
+    }
+});
+
+// ════════════════════════════════════════════════════════════
+//  초기화
+// ════════════════════════════════════════════════════════════
+loadTools();
+</script>
+</body>
+</html>
