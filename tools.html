@@ -216,7 +216,7 @@
         /* 시간 표시 */
         .time-row {
             display: flex; justify-content: space-between;
-            width: 100%; margin-bottom: 32px;
+            width: 100%; margin-bottom: 18px;
         }
         .time-text { font-size: 12px; color: #6b7a68; }
 
@@ -235,6 +235,55 @@
         /* 로딩 스피너 */
         .spin { animation: spinAnim 0.75s linear infinite; }
         @keyframes spinAnim { to { transform: rotate(360deg); } }
+
+        /* ── 아이콘 펄스 (재생 중) ─────────────────────── */
+        @keyframes iconPulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.1)} }
+        .audio-icon-big.playing { animation: iconPulse 4s ease-in-out infinite; }
+
+        /* ── 앰비언트 배경음 섹션 ───────────────────────── */
+        .ambient-section { width:100%; margin-bottom:16px; }
+        .ambient-label {
+            font-size:10px; font-weight:600; color:#4a5748;
+            letter-spacing:.1em; text-transform:uppercase;
+            margin-bottom:8px; display:block;
+        }
+        .ambient-chips  { display:flex; gap:6px; flex-wrap:wrap; }
+        .ambient-chip {
+            padding:6px 12px; border-radius:20px;
+            border:1.5px solid #2c3728; background:none;
+            color:#6b7a68; font-size:12px; cursor:pointer;
+            transition:all .16s; font-family:inherit; white-space:nowrap;
+        }
+        .ambient-chip.active { background:#2c3728; color:#9bad80; border-color:#3a4e34; }
+        .ambient-vol-row {
+            display:none; align-items:center;
+            gap:10px; width:100%; margin-top:10px;
+        }
+
+        /* ── 볼륨 슬라이더 ──────────────────────────────── */
+        .vol-block { width:100%; margin-bottom:16px; }
+        .vol-label {
+            display:block; font-size:10px; font-weight:600;
+            color:#4a5748; letter-spacing:.08em;
+            text-transform:uppercase; margin-bottom:6px;
+        }
+        .vol-row   { display:flex; align-items:center; gap:10px; }
+        .vol-ico   { font-size:13px; color:#6b7a68; flex-shrink:0; width:18px; text-align:center; }
+        .vol-range {
+            flex:1; -webkit-appearance:none; appearance:none;
+            height:3px; border-radius:2px; outline:none; cursor:pointer;
+            background:linear-gradient(to right,#9bad80 var(--pct,100%),#2c3728 var(--pct,100%));
+        }
+        .vol-range::-webkit-slider-thumb {
+            -webkit-appearance:none; width:16px; height:16px;
+            border-radius:50%; background:#9bad80; cursor:pointer;
+            box-shadow:0 2px 8px rgba(0,0,0,.4);
+        }
+        .vol-range::-moz-range-thumb {
+            width:16px; height:16px; border-radius:50%;
+            background:#9bad80; cursor:pointer; border:none;
+            box-shadow:0 2px 8px rgba(0,0,0,.4);
+        }
 
         /* ── 반응형 ─────────────────────────────────────── */
         @media (min-width: 768px) {
@@ -324,6 +373,37 @@
         <div class="time-row">
             <span class="time-text" id="time-current">0:00</span>
             <span class="time-text" id="time-total">—</span>
+        </div>
+
+        <!-- ─ 앰비언트 배경음 ─ -->
+        <div class="ambient-section">
+            <span class="ambient-label">배경음</span>
+            <div class="ambient-chips">
+                <button class="ambient-chip active" onclick="setAmbient(this,null)">없음</button>
+                <button class="ambient-chip" onclick="setAmbient(this,'brown')">🌧️ 빗소리</button>
+                <button class="ambient-chip" onclick="setAmbient(this,'ocean')">🌊 파도</button>
+                <button class="ambient-chip" onclick="setAmbient(this,'pink')">🌲 숲소리</button>
+                <button class="ambient-chip" onclick="setAmbient(this,'white')">⬜ 화이트노이즈</button>
+            </div>
+            <div class="ambient-vol-row" id="ambient-vol-row">
+                <span class="vol-ico">🔈</span>
+                <input type="range" class="vol-range" id="ambient-vol"
+                       min="0" max="1" step="0.01" value="0.3"
+                       oninput="onAmbientVol(this)">
+                <span class="vol-ico">🔊</span>
+            </div>
+        </div>
+
+        <!-- ─ 가이드 음성 볼륨 ─ -->
+        <div class="vol-block">
+            <span class="vol-label">가이드 음성</span>
+            <div class="vol-row">
+                <span class="vol-ico">🔈</span>
+                <input type="range" class="vol-range" id="guide-vol"
+                       min="0" max="1" step="0.01" value="1"
+                       oninput="onGuideVol(this)">
+                <span class="vol-ico">🎙️</span>
+            </div>
         </div>
 
         <!-- 재생 / 일시정지 버튼 -->
@@ -463,8 +543,17 @@ function openAudioModal(tool) {
     // UI 초기화
     progFill.style.width = '0%';
     timeCur.textContent  = '0:00';
-    timeTot.textContent  = fmtTime(tool.duration_min * 60); // 임시 전체 시간
+    timeTot.textContent  = fmtTime(tool.duration_min * 60);
     setPlayerState('loading');
+
+    // 볼륨 슬라이더 리셋
+    const gv = document.getElementById('guide-vol');
+    gv.value = 1; setRangePct(gv);
+    audio.volume = 1;
+
+    // 앰비언트 슬라이더 눈금 색상 동기화
+    const av = document.getElementById('ambient-vol');
+    setRangePct(av);
 
     // 모달 오픈
     document.getElementById('audio-modal').classList.add('open');
@@ -476,6 +565,13 @@ function openAudioModal(tool) {
 // ════════════════════════════════════════════════════════════
 function closeAudioModal() {
     audio.pause();
+    ambient.stop();
+    // 앰비언트 칩 리셋
+    document.querySelectorAll('.ambient-chip').forEach(c => c.classList.remove('active'));
+    document.querySelector('.ambient-chip').classList.add('active');
+    document.getElementById('ambient-vol-row').style.display = 'none';
+    // 아이콘 펄스 중지
+    document.getElementById('modal-icon').classList.remove('playing');
     document.getElementById('audio-modal').classList.remove('open');
     document.body.style.overflow = '';
 }
@@ -582,10 +678,16 @@ audio.addEventListener('canplay', () => {
 });
 
 // 재생 시작
-audio.addEventListener('play',    () => setPlayerState('playing'));
+audio.addEventListener('play', () => {
+    setPlayerState('playing');
+    document.getElementById('modal-icon').classList.add('playing');
+});
 
 // 일시정지
-audio.addEventListener('pause',   () => setPlayerState('paused'));
+audio.addEventListener('pause', () => {
+    setPlayerState('paused');
+    document.getElementById('modal-icon').classList.remove('playing');
+});
 
 // 버퍼링 중
 audio.addEventListener('waiting', () => setPlayerState('loading'));
@@ -631,6 +733,102 @@ window.addEventListener('popstate', () => {
         goBack();
     }
 });
+
+// ════════════════════════════════════════════════════════════
+//  앰비언트 노이즈 생성기 (Web Audio API — 파일 불필요)
+// ════════════════════════════════════════════════════════════
+const ambient = {
+    ctx: null, gain: null, src: null,
+
+    play(type, vol) {
+        this.stop();
+        const Ctx = window.AudioContext || window.webkitAudioContext;
+        if (!Ctx) return;
+        this.ctx  = new Ctx();
+        this.gain = this.ctx.createGain();
+        this.gain.gain.value = vol;
+        this.gain.connect(this.ctx.destination);
+
+        const r   = this.ctx.sampleRate;
+        const n   = r * 4;                  // 4초 루프 버퍼
+        const buf = this.ctx.createBuffer(2, n, r);
+
+        for (let ch = 0; ch < 2; ch++) {
+            const d = buf.getChannelData(ch);
+            if (type === 'white') {
+                for (let i = 0; i < n; i++) d[i] = Math.random() * 2 - 1;
+
+            } else if (type === 'brown') {  // 빗소리·폭포수
+                let s = 0;
+                for (let i = 0; i < n; i++) {
+                    s = (s + 0.02 * (Math.random() * 2 - 1)) / 1.02;
+                    d[i] = s * 3.5;
+                }
+            } else if (type === 'pink') {   // 숲속 바람
+                const b = new Float32Array(7);
+                for (let i = 0; i < n; i++) {
+                    const w = Math.random() * 2 - 1;
+                    b[0] = 0.99886*b[0]+w*0.0555179; b[1] = 0.99332*b[1]+w*0.0750759;
+                    b[2] = 0.96900*b[2]+w*0.1538520; b[3] = 0.86650*b[3]+w*0.3104856;
+                    b[4] = 0.55000*b[4]+w*0.5329522; b[5] =-0.7616 *b[5]-w*0.0168980;
+                    d[i] = (b[0]+b[1]+b[2]+b[3]+b[4]+b[5]+b[6]+w*0.5362) * 0.11;
+                    b[6] = w * 0.115926;
+                }
+            } else if (type === 'ocean') {  // 파도 (LFO 변조)
+                let s = 0;
+                for (let i = 0; i < n; i++) {
+                    s = (s + 0.02 * (Math.random() * 2 - 1)) / 1.02;
+                    const lfo = 0.5 + 0.5 * Math.sin(2 * Math.PI * i / (r * 6));
+                    d[i] = s * 3.5 * lfo;
+                }
+            }
+        }
+
+        this.src = this.ctx.createBufferSource();
+        this.src.buffer = buf;
+        this.src.loop   = true;
+        this.src.connect(this.gain);
+        this.src.start();
+    },
+
+    setVol(v) {
+        if (this.gain && this.ctx)
+            this.gain.gain.setTargetAtTime(v, this.ctx.currentTime, 0.12);
+    },
+
+    stop() {
+        try { this.src?.stop(); } catch {}
+        try { this.ctx?.close(); } catch {}
+        this.ctx = this.gain = this.src = null;
+    }
+};
+
+function setAmbient(btn, type) {
+    document.querySelectorAll('.ambient-chip').forEach(c => c.classList.remove('active'));
+    btn.classList.add('active');
+    const row = document.getElementById('ambient-vol-row');
+    if (!type) { ambient.stop(); row.style.display = 'none'; return; }
+    const vol = parseFloat(document.getElementById('ambient-vol').value);
+    ambient.play(type, vol);
+    row.style.display = 'flex';
+    setRangePct(document.getElementById('ambient-vol'));
+}
+
+function onAmbientVol(input) {
+    ambient.setVol(parseFloat(input.value));
+    setRangePct(input);
+}
+
+function onGuideVol(input) {
+    audio.volume = parseFloat(input.value);
+    setRangePct(input);
+}
+
+// CSS 커스텀 속성으로 슬라이더 채움 비율 업데이트
+function setRangePct(input) {
+    const pct = ((+input.value - +input.min) / (+input.max - +input.min) * 100).toFixed(1) + '%';
+    input.style.setProperty('--pct', pct);
+}
 
 // ════════════════════════════════════════════════════════════
 //  초기화
