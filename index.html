@@ -27,12 +27,12 @@
                 extend: {
                     colors: {
                         olive: {
-                            50: '#f5f7ee', 100: '#e8efd3', 200: '#d1dfa8',
-                            300: '#b3c872', 400: '#8BAD45', 500: '#5C7A2A',
-                            600: '#4a6220', 700: '#3a4f18', 800: '#2e3e14', 900: '#232f0f',
+                            50: '#f5f2ec', 100: '#e8e1d2', 200: '#d1c8b0',
+                            300: '#b3a882', 400: '#8B8B6B', 500: '#637746',
+                            600: '#45582F', 700: '#344228', 800: '#263018', 900: '#1a2010',
                         },
                         warm: {
-                            50: '#faf8f3', 100: '#f2ede3', 200: '#e4dbc9',
+                            50: '#F4E8D6', 100: '#f2ede3', 200: '#e4dbc9',
                             300: '#d0c4a8', 400: '#b8a882', 500: '#a08c62',
                             600: '#887048', 700: '#6e5a38', 800: '#5a4830', 900: '#4a3c28',
                         },
@@ -48,13 +48,13 @@
         /* ── 기본 초기화 ─────────────────────────────── */
         * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
 
-        html { height: 100%; background-color: #f7f5ef; }
+        html { height: 100%; background-color: #F4E8D6; }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Apple SD Gothic Neo',
                          'Noto Sans KR', 'Malgun Gothic', sans-serif;
-            background-color: #f7f5ef;
-            color: #2a2820;
+            background-color: #F4E8D6;
+            color: #34372C;
             min-height: 100vh;
             overflow-x: hidden;
         }
@@ -66,19 +66,19 @@
             margin-right: auto;
             min-height: 100vh;
             position: relative;
-            background-color: #f7f5ef;
+            background-color: #F4E8D6;
         }
 
         /* ── 입력 필드 ───────────────────────────────── */
         .input-field {
             width: 100%; padding: 12px 16px;
             border: 1.5px solid #e4dbc9; border-radius: 12px;
-            background: #ffffff; font-size: 15px; color: #2a2820;
+            background: #ffffff; font-size: 15px; color: #34372C;
             outline: none; transition: border-color 0.2s, box-shadow 0.2s;
         }
         .input-field::placeholder { color: #c8c0b4; }
         .input-field:focus {
-            border-color: #5C7A2A;
+            border-color: #637746;
             box-shadow: 0 0 0 3px rgba(92,122,42,0.12);
         }
         .input-field.error {
@@ -93,14 +93,15 @@
             cursor: pointer; border-bottom: 2px solid transparent;
             transition: color 0.2s, border-color 0.2s;
         }
-        .auth-tab.active { color: #5C7A2A; border-bottom-color: #5C7A2A; font-weight: 700; }
+        .auth-tab.active { color: #637746; border-bottom-color: #637746; font-weight: 700; }
 
         /* ── 카드 ─────────────────────────────────────── */
         .card {
-            background: #ffffff;
-            border-radius: 18px;
+            background: rgba(255,255,255,0.82);
+            border-radius: 24px;
             padding: 18px;
-            box-shadow: 0 2px 16px rgba(42,40,32,0.07), 0 1px 3px rgba(42,40,32,0.04);
+            border: 1px solid rgba(231,221,203,0.85);
+            box-shadow: 0 4px 14px rgba(99,119,70,0.10), 0 1px 3px rgba(99,119,70,0.06);
         }
 
         /* ── 배지 ─────────────────────────────────────── */
@@ -112,12 +113,12 @@
         /* ── 주 버튼 ─────────────────────────────────── */
         .btn-primary {
             width: 100%; padding: 14px;
-            background: #5C7A2A; color: white;
+            background: #637746; color: white;
             border: none; border-radius: 12px;
             font-size: 16px; font-weight: 600;
             cursor: pointer; transition: background 0.2s, transform 0.1s, opacity 0.2s;
         }
-        .btn-primary:hover  { background: #4a6220; }
+        .btn-primary:hover  { background: #45582F; }
         .btn-primary:active { transform: scale(0.98); }
         .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
 
@@ -166,7 +167,7 @@
             color: #b0a898; font-size: 10px; gap: 4px;
             border: none; background: none; transition: color 0.2s;
         }
-        .nav-item.active { color: #5C7A2A; }
+        .nav-item.active { color: #637746; }
         .nav-item i { font-size: 20px; }
 
         /* ── 콘텐츠 영역 ─────────────────────────────── */
@@ -198,7 +199,7 @@
         .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
 
         /* ── 검사 카드 강조선 ────────────────────────── */
-        .test-card-phq  { border-left: 4px solid #5C7A2A; cursor: pointer; transition: transform 0.15s ease, box-shadow 0.15s ease; }
+        .test-card-phq  { border-left: 4px solid #637746; cursor: pointer; transition: transform 0.15s ease, box-shadow 0.15s ease; }
         .test-card-phq:active  { transform: scale(0.98); box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
         .test-card-gad  { border-left: 4px solid #C4956A; cursor: pointer; transition: transform 0.15s ease, box-shadow 0.15s ease; }
         .test-card-gad:active  { transform: scale(0.98); box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
@@ -232,8 +233,8 @@
             cursor: pointer; transition: background 0.2s, color 0.2s;
             display: flex; align-items: center; gap: 6px;
         }
-        .desktop-nav-btn:hover  { background: #f0ede6; color: #5C7A2A; }
-        .desktop-nav-btn.active { background: #eef2e6; color: #5C7A2A; font-weight: 700; }
+        .desktop-nav-btn:hover  { background: #f0ede6; color: #637746; }
+        .desktop-nav-btn.active { background: #eef2e6; color: #637746; font-weight: 700; }
 
         /* ── 자료 카드 hover ─────────────────────────── */
         .library-item { transition: transform 0.15s ease, box-shadow 0.15s ease; }
@@ -253,7 +254,7 @@
         }
         .splash-logo-ring {
             width: 88px; height: 88px; border-radius: 50%;
-            background: linear-gradient(135deg, #5C7A2A, #8BAD45);
+            background: linear-gradient(135deg, #637746, #8BAD45);
             display: flex; align-items: center; justify-content: center;
             margin-bottom: 24px;
             box-shadow: 0 10px 40px rgba(92,122,42,0.35);
@@ -268,7 +269,7 @@
         }
         .splash-dots span {
             width: 7px; height: 7px; border-radius: 50%;
-            background: #5C7A2A; opacity: 0.35;
+            background: #637746; opacity: 0.35;
             animation: dotBounce 1.2s ease-in-out infinite;
         }
         .splash-dots span:nth-child(2) { animation-delay: 0.2s; }
@@ -282,7 +283,7 @@
         .history-spinner {
             width: 18px; height: 18px;
             border: 2px solid #d8d0c4;
-            border-top-color: #5C7A2A;
+            border-top-color: #637746;
             border-radius: 50%;
             animation: histSpin 0.8s linear infinite;
             flex-shrink: 0;
@@ -303,7 +304,7 @@
             transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s;
         }
         .input-field:focus {
-            border-color: #5C7A2A;
+            border-color: #637746;
             box-shadow: 0 0 0 3px rgba(92,122,42,0.14), 0 2px 8px rgba(92,122,42,0.08);
             transform: translateY(-1px);
         }
@@ -322,12 +323,12 @@
             transform: scale(0.97) !important;
         }
         .btn-primary:hover:not(:disabled) {
-            background: #4a6220;
+            background: #45582F;
             box-shadow: 0 4px 16px rgba(92,122,42,0.28);
             transform: translateY(-1px);
         }
         /* auth-tab 강화 */
-        .auth-tab:hover { color: #5C7A2A; }
+        .auth-tab:hover { color: #637746; }
 
         /* ══════════════════════════════════════════════════
            반응형: 데스크톱 (768px 이상)
@@ -362,7 +363,7 @@
                 align-items: center;
                 justify-content: center;
                 padding: 48px 40px;
-                background: linear-gradient(155deg, #1e2e0e 0%, #3a5c12 50%, #5C7A2A 100%);
+                background: linear-gradient(155deg, #1e2e0e 0%, #3a5c12 50%, #637746 100%);
                 color: white;
                 min-height: 100vh;
                 position: relative;
@@ -428,7 +429,7 @@
             border-radius: 3px;
             background: linear-gradient(
                 to right,
-                var(--slider-color, #5C7A2A) var(--slider-pct, 44%),
+                var(--slider-color, #637746) var(--slider-pct, 44%),
                 #e4dbc9 var(--slider-pct, 44%)
             );
         }
@@ -440,7 +441,7 @@
         .mood-range::-moz-range-progress {
             height: 6px;
             border-radius: 3px 0 0 3px;
-            background: var(--slider-color, #5C7A2A);
+            background: var(--slider-color, #637746);
         }
         .mood-range::-webkit-slider-thumb {
             -webkit-appearance: none;
@@ -448,7 +449,7 @@
             height: 28px;
             border-radius: 50%;
             background: #ffffff;
-            border: 2.5px solid var(--slider-color, #5C7A2A);
+            border: 2.5px solid var(--slider-color, #637746);
             box-shadow: 0 2px 8px rgba(0,0,0,0.18);
             margin-top: -11px;
             cursor: grab;
@@ -460,7 +461,7 @@
             height: 28px;
             border-radius: 50%;
             background: #ffffff;
-            border: 2.5px solid var(--slider-color, #5C7A2A);
+            border: 2.5px solid var(--slider-color, #637746);
             box-shadow: 0 2px 8px rgba(0,0,0,0.18);
             cursor: grab;
         }
@@ -507,7 +508,7 @@
             display: flex; align-items: center; justify-content: center;
             transition: border-color 0.2s, background 0.2s;
         }
-        .routine-check-btn.done { border-color: #5C7A2A; background: #5C7A2A; }
+        .routine-check-btn.done { border-color: #637746; background: #637746; }
         .routine-check-btn.done i { color: #fff; font-size: 11px; }
         .routine-check-btn:active { transform: scale(0.9); }
 
@@ -522,9 +523,9 @@
         .routine-counter-btn:active { transform: scale(0.88); }
         .routine-counter-val {
             font-size: 13px; font-weight: 700; min-width: 34px;
-            text-align: center; color: #2a2820;
+            text-align: center; color: #34372C;
         }
-        .routine-label { flex: 1; font-size: 14px; color: #2a2820; transition: color 0.2s; }
+        .routine-label { flex: 1; font-size: 14px; color: #34372C; transition: color 0.2s; }
         .routine-label.done { color: #b0a898; text-decoration: line-through; }
 
         #routine-progress-track {
@@ -533,7 +534,7 @@
         }
         #routine-progress-fill {
             height: 100%; border-radius: 2px; width: 0%;
-            background: linear-gradient(to right, #5C7A2A, #8BAD45);
+            background: linear-gradient(to right, #637746, #8BAD45);
             transition: width 0.35s ease;
         }
 
@@ -578,7 +579,7 @@
         .sheet-section-label {
             font-size: 11px; font-weight: 700;
             letter-spacing: 0.06em; text-transform: uppercase;
-            color: #a09890; margin: 18px 0 8px;
+            color: #84826E; margin: 18px 0 8px;
         }
         .sheet-routine-row {
             display: flex; align-items: center; gap: 8px;
@@ -598,12 +599,12 @@
             display: inline-flex; align-items: center; gap: 4px;
             padding: 6px 12px; border-radius: 20px;
             font-size: 12px; font-weight: 600;
-            background: #eef2e6; color: #5C7A2A;
+            background: #eef2e6; color: #637746;
             border: 1.5px solid transparent;
             cursor: pointer; transition: all 0.15s; white-space: nowrap;
         }
         .preset-chip:active { transform: scale(0.94); }
-        .preset-chip.active { background: #5C7A2A; color: #fff; border-color: #5C7A2A; }
+        .preset-chip.active { background: #637746; color: #fff; border-color: #637746; }
 
         .sheet-add-row { display: flex; gap: 8px; margin-bottom: 8px; }
         .sheet-emoji-input {
@@ -611,13 +612,13 @@
             border: 1.5px solid #e4dbc9; border-radius: 10px;
             font-size: 16px; background: #fff; outline: none;
         }
-        .sheet-emoji-input:focus { border-color: #5C7A2A; }
+        .sheet-emoji-input:focus { border-color: #637746; }
         .sheet-label-input {
             flex: 1; padding: 10px 12px;
             border: 1.5px solid #e4dbc9; border-radius: 10px;
-            font-size: 14px; color: #2a2820; background: #fff; outline: none;
+            font-size: 14px; color: #34372C; background: #fff; outline: none;
         }
-        .sheet-label-input:focus { border-color: #5C7A2A; }
+        .sheet-label-input:focus { border-color: #637746; }
         .sheet-target-row {
             display: flex; align-items: center; gap: 10px; margin-bottom: 12px;
         }
@@ -709,13 +710,13 @@
         .sleep-time-wrap { position: relative; }
         .sleep-time-label {
             font-size: 11px; font-weight: 700; letter-spacing: 0.04em;
-            color: #a09890; text-transform: uppercase; margin-bottom: 7px; display: block;
+            color: #84826E; text-transform: uppercase; margin-bottom: 7px; display: block;
         }
         .sleep-time-input {
             width: 100%; padding: 13px 16px;
             border: 1.5px solid #e4dbc9; border-radius: 14px;
-            font-size: 26px; font-weight: 700; color: #2a2820;
-            background: #faf8f3; text-align: center; outline: none;
+            font-size: 26px; font-weight: 700; color: #34372C;
+            background: #F4E8D6; text-align: center; outline: none;
             font-family: inherit; cursor: pointer; box-sizing: border-box;
         }
         .sleep-time-input:focus { border-color: #6A8CA0; background: #fff; }
@@ -732,7 +733,7 @@
             background: #fff; top: 3px; left: 3px;
             transition: transform 0.22s; box-shadow: 0 1px 4px rgba(0,0,0,0.22);
         }
-        #sleep-notif-toggle.on { background: #5C7A2A; }
+        #sleep-notif-toggle.on { background: #637746; }
         #sleep-notif-toggle.on::after { transform: translateX(22px); }
 
         /* 저장 버튼 */
@@ -740,7 +741,7 @@
             width: 100%; padding: 15px;
             border: none; border-radius: 16px; cursor: pointer;
             font-size: 15px; font-weight: 700;
-            background: #5C7A2A; color: #fff;
+            background: #637746; color: #fff;
             transition: opacity 0.15s;
         }
         #sleep-save-btn:active { opacity: 0.82; }
@@ -752,11 +753,17 @@
             display: flex; flex-direction: column;
             border-radius: 22px; border-width: 1px; border-style: solid;
             padding: 18px; cursor: pointer; text-align: left;
-            transition: transform 0.15s, opacity 0.15s;
+            transition: transform 0.15s, box-shadow 0.15s;
             background: none; min-height: 186px;
-            font-family: inherit;
+            font-family: inherit; position: relative; overflow: hidden;
+            box-shadow: 0 4px 16px rgba(42,40,32,0.08);
         }
-        .tool-dash-card:active { transform: scale(0.95); opacity: 0.88; }
+        .tool-dash-card::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+            background: rgba(255,255,255,0.85);
+        }
+        .tool-dash-card:hover  { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(42,40,32,0.13); }
+        .tool-dash-card:active { transform: scale(0.95); box-shadow: none; }
         .tool-dash-icon {
             width: 52px; height: 52px; border-radius: 26px;
             border-width: 1px; border-style: solid;
@@ -764,11 +771,11 @@
             margin-bottom: 14px; flex-shrink: 0;
         }
         .tool-dash-title {
-            font-size: 15px; font-weight: 600; color: #e7e1d6;
+            font-size: 15px; font-weight: 600; color: #34372C;
             margin-bottom: 5px; letter-spacing: -0.2px;
         }
         .tool-dash-tagline {
-            font-size: 12px; color: rgba(200,195,185,0.7);
+            font-size: 12px; color: #8a8070;
             line-height: 1.65; flex: 1;
         }
         .tool-dash-footer {
@@ -816,7 +823,7 @@
         }
         #breath-close-btn {
             width: 44px; height: 44px; border-radius: 50%; border: none;
-            background: rgba(255,255,255,0.22); color: #2a2820;
+            background: rgba(255,255,255,0.22); color: #34372C;
             font-size: 18px; cursor: pointer;
             display: flex; align-items: center; justify-content: center;
             transition: background 0.15s;
@@ -870,7 +877,7 @@
             width: 100%; margin-bottom: 16px;
         }
         #breath-today-badge {
-            font-size: 12px; font-weight: 600; color: #5C7A2A;
+            font-size: 12px; font-weight: 600; color: #637746;
         }
         #breath-session-time {
             font-size: 12px; font-weight: 600; color: #8a8070;
@@ -895,7 +902,7 @@
         }
         .breath-tempo-btn span { font-size: 11px; opacity: 0.75; }
         .breath-tempo-btn.active {
-            background: #ffffff; color: #4a6220; font-weight: 600;
+            background: #ffffff; color: #45582F; font-weight: 600;
             box-shadow: 0 1px 4px rgba(0,0,0,0.12);
         }
         .breath-tempo-btn:disabled { opacity: 0.4; cursor: default; }
@@ -908,7 +915,7 @@
             transition: background 0.35s, transform 0.35s;
         }
         .breath-dot.done {
-            background: #5C7A2A;
+            background: #637746;
             transform: scale(1.18);
         }
 
@@ -935,7 +942,7 @@
         /* ── PMR 모달 ─────────────────────────────────── */
         #pmr-modal {
             position: fixed; inset: 0; z-index: 600;
-            background: #f7f5ef;
+            background: #F4E8D6;
             display: none; flex-direction: column;
         }
         #pmr-modal.open { display: flex; }
@@ -954,7 +961,7 @@
         }
         .mindful-back-btn:hover { background: #e4dbc9; }
         .mindful-header-title {
-            font-size: 16px; font-weight: 600; color: #2a2820;
+            font-size: 16px; font-weight: 600; color: #34372C;
             letter-spacing: -0.1px;
         }
 
@@ -968,7 +975,7 @@
         }
         .pmr-step-dot.active {
             width: 14px; height: 14px; border-radius: 7px;
-            background: #5C7A2A;
+            background: #637746;
         }
         .pmr-step-dot.done { background: #4A6A44; }
 
@@ -1006,11 +1013,11 @@
             pointer-events: none;
         }
         #pmr-guide-msg {
-            font-size: 15px; color: #2a2820; line-height: 1.7;
+            font-size: 15px; color: #34372C; line-height: 1.7;
             margin-bottom: 20px; font-weight: 400;
         }
         #pmr-timer-num {
-            font-size: 72px; font-weight: 700; color: #2a2820; line-height: 1;
+            font-size: 72px; font-weight: 700; color: #34372C; line-height: 1;
         }
         #pmr-timer-unit {
             font-size: 18px; color: rgba(42,40,32,0.45); margin-top: 4px;
@@ -1020,7 +1027,7 @@
             border-top: 1px solid #ede8dc; text-align: center;
             flex-shrink: 0;
         }
-        #pmr-footer-step { font-size: 13px; color: #5C7A2A; font-weight: 500; margin-bottom: 5px; }
+        #pmr-footer-step { font-size: 13px; color: #637746; font-weight: 500; margin-bottom: 5px; }
         #pmr-footer-hint { font-size: 13px; color: #8a8070; line-height: 1.5; }
 
         /* PMR 진행 화면 */
@@ -1037,7 +1044,7 @@
         #pmr-complete.show { display: flex; }
         #pmr-complete-emoji { font-size: 60px; margin-bottom: 24px; }
         #pmr-complete-title {
-            font-size: 22px; font-weight: 600; color: #2a2820;
+            font-size: 22px; font-weight: 600; color: #34372C;
             text-align: center; margin-bottom: 14px; letter-spacing: -0.2px; line-height: 1.4;
         }
         #pmr-complete-desc {
@@ -1055,7 +1062,7 @@
         /* ── 그라운딩 모달 ────────────────────────────── */
         #grounding-modal {
             position: fixed; inset: 0; z-index: 600;
-            background: #f7f5ef;
+            background: #F4E8D6;
             display: none; flex-direction: column;
         }
         #grounding-modal.open { display: flex; }
@@ -1070,7 +1077,7 @@
             display: flex; align-items: center; justify-content: center;
             transition: all 0.3s;
         }
-        .gr-step-pill.active { background: #304E28; border-color: #5C7A2A; }
+        .gr-step-pill.active { background: #304E28; border-color: #637746; }
         .gr-step-pill.done { background: #243820; border-color: #4A6A44; }
         .gr-step-pill span { font-size: 17px; font-weight: 600; color: #4A6A44; }
         .gr-step-pill.active span { color: #fff; font-size: 20px; }
@@ -1088,7 +1095,7 @@
             margin-bottom: 24px; font-size: 48px; flex-shrink: 0;
         }
         #grounding-step-title {
-            font-size: 20px; font-weight: 600; color: #2a2820;
+            font-size: 20px; font-weight: 600; color: #34372C;
             text-align: center; margin-bottom: 12px;
             line-height: 1.45; letter-spacing: -0.2px;
         }
@@ -1103,14 +1110,14 @@
         }
         .gr-circle-btn {
             width: 52px; height: 52px; border-radius: 50%;
-            border: 2px solid #3A5A34; background: #f7f5ef;
+            border: 2px solid #3A5A34; background: #F4E8D6;
             display: flex; align-items: center; justify-content: center;
             cursor: pointer; transition: border-color 0.2s, transform 0.15s;
             font-size: 16px; font-weight: 600; color: #4A6A44;
             position: relative; overflow: hidden; flex-shrink: 0;
         }
         .gr-circle-btn.checked {
-            border-color: #5C7A2A;
+            border-color: #637746;
             background: #486E38; color: #fff;
         }
         .gr-circle-btn.checked::after {
@@ -1121,7 +1128,7 @@
         .gr-circle-btn.checked span { display: none; }
         .gr-circle-btn:active:not(.checked) { transform: scale(0.9); }
         #grounding-progress-hint {
-            font-size: 14px; color: #5C7A2A; font-weight: 500;
+            font-size: 14px; color: #637746; font-weight: 500;
             text-align: center; margin-bottom: 12px; line-height: 1.5;
         }
         #grounding-step-counter {
@@ -1225,22 +1232,22 @@
             transition: background 0.17s, color 0.17s;
             white-space: nowrap;
         }
-        .lib-filter-chip.active   { background: #5C7A2A; color: #fff; }
-        .lib-filter-chip:not(.active):hover { background: #eef2e6; color: #5C7A2A; }
+        .lib-filter-chip.active   { background: #637746; color: #fff; }
+        .lib-filter-chip:not(.active):hover { background: #eef2e6; color: #637746; }
 
         .lib-search-wrap { position: relative; margin-bottom: 14px; }
         .lib-search-icon {
             position: absolute; left: 14px; top: 50%;
             transform: translateY(-50%);
-            color: #a09890; font-size: 14px; pointer-events: none;
+            color: #84826E; font-size: 14px; pointer-events: none;
         }
         #lib-search-input {
             width: 100%; padding: 13px 14px 13px 40px; box-sizing: border-box;
             border: 1.5px solid #e4dbc9; border-radius: 16px;
-            background: #faf8f3; font-size: 14px; color: #2a2820;
+            background: #F4E8D6; font-size: 14px; color: #34372C;
             outline: none; font-family: inherit; -webkit-appearance: none;
         }
-        #lib-search-input:focus { border-color: #5C7A2A; background: #fff; }
+        #lib-search-input:focus { border-color: #637746; background: #fff; }
         #lib-search-input::placeholder { color: #b0a898; }
 
         .cond-card {
@@ -1262,7 +1269,7 @@
             padding: 2px 8px; border-radius: 10px; display: inline-block;
         }
         .lib-loading { display: flex; flex-direction: column; align-items: center; padding: 56px 0; }
-        .lib-empty   { text-align: center; padding: 56px 0; color: #a09890; font-size: 14px; }
+        .lib-empty   { text-align: center; padding: 56px 0; color: #84826E; font-size: 14px; }
 
         /* 슬라이드 상세 패널 */
         #condition-panel-backdrop {
@@ -1299,7 +1306,7 @@
         #condition-panel-back:hover { background: #e4dbc9; }
         #condition-panel-emoji-hd { font-size: 22px; flex-shrink: 0; }
         #condition-panel-title {
-            font-size: 16px; font-weight: 700; color: #2a2820;
+            font-size: 16px; font-weight: 700; color: #34372C;
             white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1;
         }
         #condition-panel-body {
@@ -1310,7 +1317,7 @@
         /* 아코디언 */
         .acc-section-title {
             font-size: 11px; font-weight: 800; letter-spacing: 0.08em;
-            color: #a09890; text-transform: uppercase;
+            color: #84826E; text-transform: uppercase;
             margin: 24px 0 10px; padding-bottom: 7px;
             border-bottom: 1px solid #ede8dc;
         }
@@ -1322,12 +1329,12 @@
             width: 100%; padding: 14px 16px;
             display: flex; align-items: flex-start; justify-content: space-between; gap: 10px;
             background: none; border: none; cursor: pointer; text-align: left;
-            font-size: 13px; font-weight: 600; color: #2a2820; line-height: 1.5;
+            font-size: 13px; font-weight: 600; color: #34372C; line-height: 1.5;
             font-family: inherit;
         }
-        .acc-trigger:active { background: #faf8f3; }
+        .acc-trigger:active { background: #F4E8D6; }
         .acc-icon {
-            flex-shrink: 0; font-size: 11px; color: #a09890;
+            flex-shrink: 0; font-size: 11px; color: #84826E;
             transition: transform 0.25s ease; margin-top: 3px;
         }
         .acc-icon.open { transform: rotate(180deg); }
@@ -1344,7 +1351,7 @@
         /* 질환 히어로 */
         .cond-hero { text-align: center; padding-bottom: 22px; border-bottom: 1px solid #ede8dc; }
         .cond-hero-emoji { font-size: 60px; display: block; margin-bottom: 10px; }
-        .cond-hero-title { font-size: 21px; font-weight: 800; color: #2a2820; margin-bottom: 8px; }
+        .cond-hero-title { font-size: 21px; font-weight: 800; color: #34372C; margin-bottom: 8px; }
         .cond-hero-summary { font-size: 14px; color: #8a8070; line-height: 1.68; word-break: keep-all; }
         .cond-hero-keywords { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin-top: 14px; }
         .symptom-chip {
@@ -1372,10 +1379,10 @@
         /* ── 기분 통계 차트 ──────────────────────────── */
         .stat-mini-card {
             flex: 1; padding: 10px 6px; border-radius: 14px;
-            text-align: center; background: #faf8f3;
+            text-align: center; background: #F4E8D6;
             border: 1px solid #ede8dc;
         }
-        .stat-mini-label { font-size: 10px; color: #a09890; margin-bottom: 3px; }
+        .stat-mini-label { font-size: 10px; color: #84826E; margin-bottom: 3px; }
         .stat-mini-value { font-size: 20px; font-weight: 800; line-height: 1; }
         .chart-legend-item {
             display: flex; align-items: center; gap: 5px;
@@ -1406,24 +1413,24 @@
         /* 감정 태그 선택 버튼 (기분 기록 카드) */
         .mood-tag-btn {
             font-size: 12px; padding: 4px 11px; border-radius: 20px;
-            border: 1.5px solid #e4dbc9; background: #faf8f3;
+            border: 1.5px solid #e4dbc9; background: #F4E8D6;
             color: #6b6558; cursor: pointer; transition: all 0.15s;
         }
         .mood-tag-btn.selected {
-            background: #5C7A2A; border-color: #5C7A2A; color: #fff; font-weight: 600;
+            background: #637746; border-color: #637746; color: #fff; font-weight: 600;
         }
         #mood-memo-input {
             width: 100%; padding: 10px 12px; border-radius: 12px;
-            border: 1.5px solid #e4dbc9; background: #faf8f3;
-            font-size: 13px; color: #2a2820; resize: none;
+            border: 1.5px solid #e4dbc9; background: #F4E8D6;
+            font-size: 13px; color: #34372C; resize: none;
             font-family: inherit; line-height: 1.6; outline: none;
             box-sizing: border-box; transition: border-color 0.15s;
         }
-        #mood-memo-input:focus { border-color: #5C7A2A; }
+        #mood-memo-input:focus { border-color: #637746; }
         #mood-memo-input::placeholder { color: #b0a898; }
         #mood-load-more {
             width: 100%; padding: 13px; border-radius: 14px; margin-top: 4px;
-            border: 1.5px solid #e4dbc9; background: #faf8f3;
+            border: 1.5px solid #e4dbc9; background: #F4E8D6;
             font-size: 13px; font-weight: 600; color: #6b6558; cursor: pointer;
             transition: background 0.15s;
         }
@@ -1446,7 +1453,7 @@
 
         /* 모달 컨테이너 */
         .gw-container {
-            background: #f7f5ef; width: 100%; max-width: 480px;
+            background: #F4E8D6; width: 100%; max-width: 480px;
             border-radius: 24px 24px 0 0;
             max-height: 92vh; display: flex; flex-direction: column;
             overflow: hidden;
@@ -1466,14 +1473,14 @@
         }
         #gw-back-btn {
             background: none; border: none; cursor: pointer;
-            color: #a09890; padding: 6px; border-radius: 8px;
+            color: #84826E; padding: 6px; border-radius: 8px;
             display: flex; align-items: center; transition: color 0.15s;
         }
-        #gw-back-btn:hover { color: #5C7A2A; }
+        #gw-back-btn:hover { color: #637746; }
         .gw-header-center { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; }
-        .gw-step-label { font-size: 11px; font-weight: 700; letter-spacing: 0.8px; color: #5C7A2A; text-transform: uppercase; }
+        .gw-step-label { font-size: 11px; font-weight: 700; letter-spacing: 0.8px; color: #637746; text-transform: uppercase; }
         .gw-progress-rail { width: 100%; height: 3px; background: #e8e4db; border-radius: 99px; overflow: hidden; }
-        .gw-progress-fill { height: 100%; background: #5C7A2A; border-radius: 99px; transition: width 0.4s ease; }
+        .gw-progress-fill { height: 100%; background: #637746; border-radius: 99px; transition: width 0.4s ease; }
         .gw-step-count { font-size: 12px; font-weight: 600; color: #b0a898; min-width: 28px; text-align: right; }
 
         /* 콘텐츠 영역 */
@@ -1492,25 +1499,25 @@
         }
         .gw-prev-btn {
             display: flex; align-items: center; gap: 4px;
-            background: #fff; color: #a09890; font-weight: 600;
+            background: #fff; color: #84826E; font-weight: 600;
             border: 1.5px solid #e8e4db; border-radius: 999px;
             padding: 12px 18px; font-size: 14px; cursor: pointer;
             transition: all 0.15s;
         }
-        .gw-prev-btn:hover { border-color: #5C7A2A; color: #5C7A2A; }
+        .gw-prev-btn:hover { border-color: #637746; color: #637746; }
         .gw-next-btn {
             flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px;
-            background: #5C7A2A; color: #fff; font-weight: 700;
+            background: #637746; color: #fff; font-weight: 700;
             border: none; border-radius: 999px;
             padding: 14px; font-size: 15px; cursor: pointer;
             transition: background 0.2s, opacity 0.2s;
         }
-        .gw-next-btn:hover:not(:disabled) { background: #4a6220; }
+        .gw-next-btn:hover:not(:disabled) { background: #45582F; }
         .gw-next-btn:disabled { opacity: 0.45; cursor: not-allowed; }
 
         /* 공통 텍스트 */
-        .gw-title { font-size: 20px; font-weight: 700; color: #2a2820; line-height: 1.45; margin-bottom: 6px; }
-        .gw-sub   { font-size: 13px; color: #a09890; line-height: 1.6; margin-bottom: 20px; }
+        .gw-title { font-size: 20px; font-weight: 700; color: #34372C; line-height: 1.45; margin-bottom: 6px; }
+        .gw-sub   { font-size: 13px; color: #84826E; line-height: 1.6; margin-bottom: 20px; }
 
         /* 영역 선택 그리드 */
         .gw-domain-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
@@ -1522,8 +1529,8 @@
         }
         .gw-domain-card:active { transform: scale(0.97); }
         .gw-domain-emoji { font-size: 26px; margin-bottom: 6px; display: block; }
-        .gw-domain-name  { font-size: 15px; font-weight: 700; color: #2a2820; display: block; }
-        .gw-domain-desc  { font-size: 11px; color: #a09890; line-height: 1.5; display: block; }
+        .gw-domain-name  { font-size: 15px; font-weight: 700; color: #34372C; display: block; }
+        .gw-domain-desc  { font-size: 11px; color: #84826E; line-height: 1.5; display: block; }
         .gw-domain-check {
             position: absolute; top: 10px; right: 10px;
             width: 20px; height: 20px; border-radius: 50%;
@@ -1542,7 +1549,7 @@
             text-transform: uppercase;
         }
         .gw-count-badge {
-            margin-left: auto; background: #f0ede6; color: #a09890;
+            margin-left: auto; background: #f0ede6; color: #84826E;
             font-size: 11px; font-weight: 600; border-radius: 99px; padding: 2px 8px;
         }
 
@@ -1554,7 +1561,7 @@
             cursor: pointer; transition: border-color 0.15s, background 0.15s;
             width: 100%; text-align: left;
         }
-        .gw-select-card.gw-sel { border-color: #5C7A2A; background: #f0f5e8; }
+        .gw-select-card.gw-sel { border-color: #637746; background: #f0f5e8; }
         .gw-select-card.gw-dimmed { opacity: 0.38; cursor: not-allowed; }
         .gw-check-circle {
             width: 20px; height: 20px; border-radius: 50%; flex-shrink: 0;
@@ -1562,16 +1569,16 @@
             font-size: 11px; font-weight: 900; color: #fff; margin-top: 1px;
             transition: background 0.15s, border-color 0.15s;
         }
-        .gw-check-circle.gw-cc-sel { background: #5C7A2A; border-color: #5C7A2A; }
+        .gw-check-circle.gw-cc-sel { background: #637746; border-color: #637746; }
         .gw-card-text { font-size: 14px; color: #6b6558; line-height: 1.55; flex: 1; }
-        .gw-select-card.gw-sel .gw-card-text { color: #2a2820; }
+        .gw-select-card.gw-sel .gw-card-text { color: #34372C; }
 
         /* 직접 입력 textarea */
         .gw-custom-input {
             width: calc(100% - 30px); margin-left: 30px;
             padding: 10px 12px; background: #fff;
             border: 1.5px solid #8BAD45; border-radius: 10px;
-            font-size: 14px; color: #2a2820; resize: none;
+            font-size: 14px; color: #34372C; resize: none;
             margin-bottom: 6px; min-height: 64px; outline: none;
             transition: box-shadow 0.2s;
         }
@@ -1586,42 +1593,42 @@
             cursor: pointer; transition: border-color 0.15s, background 0.15s;
             width: 100%; text-align: left;
         }
-        .gw-routine-card.gw-sel { border-color: #5C7A2A; background: #f0f5e8; }
+        .gw-routine-card.gw-sel { border-color: #637746; background: #f0f5e8; }
         .gw-routine-card.gw-dimmed { opacity: 0.38; cursor: not-allowed; }
         .gw-routine-emoji { font-size: 20px; flex-shrink: 0; }
         .gw-routine-text  { font-size: 14px; color: #6b6558; flex: 1; line-height: 1.5; }
-        .gw-routine-card.gw-sel .gw-routine-text { color: #2a2820; }
+        .gw-routine-card.gw-sel .gw-routine-text { color: #34372C; }
         .gw-routine-check {
             width: 24px; height: 24px; border-radius: 50%; flex-shrink: 0;
             background: #eef5e4; display: flex; align-items: center; justify-content: center;
-            font-size: 12px; color: #5C7A2A; font-weight: 900;
+            font-size: 12px; color: #637746; font-weight: 900;
         }
         .gw-routine-swap {
             background: none; border: none; cursor: pointer; color: #b8b0a8;
             font-size: 17px; padding: 4px 6px; flex-shrink: 0; border-radius: 6px;
             transition: color 0.15s; line-height: 1;
         }
-        .gw-routine-swap:hover { color: #5C7A2A; }
+        .gw-routine-swap:hover { color: #637746; }
 
         /* 완료 화면 */
         .gw-complete-wrap { text-align: center; padding: 12px 0 4px; }
-        .gw-complete-title { font-size: 22px; font-weight: 700; color: #2a2820; line-height: 1.4; margin-bottom: 8px; }
-        .gw-complete-sub   { font-size: 13px; color: #a09890; margin-bottom: 24px; line-height: 1.6; }
+        .gw-complete-title { font-size: 22px; font-weight: 700; color: #34372C; line-height: 1.4; margin-bottom: 8px; }
+        .gw-complete-sub   { font-size: 13px; color: #84826E; margin-bottom: 24px; line-height: 1.6; }
         .gw-complete-list  { text-align: left; margin-bottom: 24px; }
         .gw-complete-card {
             display: flex; align-items: center; gap: 12px;
             background: #eef5e4; border-radius: 12px; padding: 13px;
             margin-bottom: 8px; border: 1.5px solid #c2d9a0;
         }
-        .gw-complete-text { font-size: 14px; color: #2a2820; font-weight: 500; flex: 1; }
+        .gw-complete-text { font-size: 14px; color: #34372C; font-weight: 500; flex: 1; }
         .gw-complete-btn {
             display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-            background: #5C7A2A; color: #fff; font-weight: 700; font-size: 15px;
+            background: #637746; color: #fff; font-weight: 700; font-size: 15px;
             border: none; border-radius: 999px; padding: 15px 36px;
             cursor: pointer; transition: background 0.2s, transform 0.1s;
             box-shadow: 0 6px 24px rgba(92,122,42,0.3);
         }
-        .gw-complete-btn:hover  { background: #4a6220; transform: translateY(-1px); }
+        .gw-complete-btn:hover  { background: #45582F; transform: translateY(-1px); }
         .gw-complete-btn:active { transform: scale(0.97); }
 
         .gw-empty { font-size: 13px; color: #b0a898; text-align: center; padding: 24px 0; }
@@ -1642,7 +1649,7 @@
             width: 100%;
         }
         .gw-subcat-card:active { transform: scale(0.97); }
-        .gw-subcat-name { font-size: 13px; font-weight: 600; color: #2a2820; flex: 1; line-height: 1.4; }
+        .gw-subcat-name { font-size: 13px; font-weight: 600; color: #34372C; flex: 1; line-height: 1.4; }
         .gw-subcat-check {
             width: 20px; height: 20px; border-radius: 50%;
             border: 2px solid #dcd8d0;
@@ -1650,7 +1657,7 @@
             font-size: 11px; flex-shrink: 0; color: transparent;
             transition: background 0.15s, border-color 0.15s;
         }
-        .gw-subcat-check.gw-cc-sel { background: #5C7A2A; border-color: #5C7A2A; color: #fff; }
+        .gw-subcat-check.gw-cc-sel { background: #637746; border-color: #637746; color: #fff; }
 
         /* 목표 사다리 선택 카드 (step 3) */
         .gw-state-block { margin-bottom: 22px; }
@@ -1668,7 +1675,7 @@
             text-align: left; width: 100%;
         }
         .gw-ladder-card:active { transform: scale(0.98); }
-        .gw-ladder-card.gw-sel  { border-color: #5C7A2A; background: #f0f5e8; }
+        .gw-ladder-card.gw-sel  { border-color: #637746; background: #f0f5e8; }
         .gw-ladder-card.gw-dimmed { opacity: 0.38; cursor: not-allowed; pointer-events: none; }
         .gw-ladder-badge {
             font-size: 10px; font-weight: 700; letter-spacing: 0.4px;
@@ -1678,7 +1685,7 @@
         }
         .gw-ladder-card.gw-sel .gw-ladder-badge { background: #d0e6b8; color: #3a6018; }
         .gw-ladder-text { font-size: 14px; color: #6b6558; line-height: 1.65; flex: 1; }
-        .gw-ladder-card.gw-sel .gw-ladder-text { color: #2a2820; }
+        .gw-ladder-card.gw-sel .gw-ladder-text { color: #34372C; }
         .gw-blank-select {
             display: inline; font-size: 13px; font-weight: 600;
             color: #3a6a18; background: #e4f2d0;
@@ -1687,16 +1694,12 @@
             max-width: 130px;
         }
 
-        /* ══ 주간 체크인 (CI) ══════════════════════════════════════════════════════ */
+        /* ══ 치료 목표 허브 카드 ════════════════════════════════════════════════════ */
 
-        /* 체크인 진입 카드 */
-        #ci-card {
-            border: 1.5px solid #c2d9a0;
-            background: linear-gradient(135deg, #f5f9f0 0%, #ffffff 100%);
-            cursor: pointer; transition: transform 0.15s, box-shadow 0.15s;
-        }
-        #ci-card:hover  { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(92,122,42,0.12); }
-        #ci-card:active { transform: scale(0.98); }
+        #goal-hub-ci-row:hover { background: #fafaf7; }
+        #goal-hub-ci-row:active { background: #f2f5ee; }
+
+        /* ══ 주간 체크인 (CI) ══════════════════════════════════════════════════════ */
 
         /* 체크인 모달 */
         #ci-modal {
@@ -1706,7 +1709,7 @@
         }
         #ci-modal.hidden { display: none; }
         .ci-container {
-            background: #f7f5ef; width: 100%; max-width: 480px;
+            background: #F4E8D6; width: 100%; max-width: 480px;
             border-radius: 24px 24px 0 0; max-height: 90vh;
             display: flex; flex-direction: column; overflow: hidden;
             box-shadow: 0 -8px 48px rgba(0,0,0,0.22);
@@ -1732,16 +1735,126 @@
             background: #fff; border-radius: 16px; padding: 18px;
             margin-bottom: 14px; border: 1px solid #e8e4db;
         }
-        .ci-section-q    { font-size: 15px; font-weight: 700; color: #2a2820; margin-bottom: 5px; }
+        .ci-section-q    { font-size: 15px; font-weight: 700; color: #34372C; margin-bottom: 5px; }
         .ci-section-desc { font-size: 13px; font-weight: 600; margin-bottom: 10px; }
         .ci-leaf-row     { font-size: 20px; letter-spacing: 3px; margin-bottom: 10px; }
         .ci-bar-track    { height: 8px; background: #e8e4db; border-radius: 99px; overflow: hidden; }
         .ci-bar-fill     { height: 100%; border-radius: 99px; width: 0; }
+
+        /* ════════════════════════════════════════════════════════
+           새벽(Dawn) 테마 — olive-mind-dawn-theme
+           ════════════════════════════════════════════════════════ */
+        [data-theme="dawn"] {
+            --om-bg:          #F4E8D6;
+            --om-card:        rgba(255,255,255,0.55);
+            --om-card-raised: rgba(255,255,255,0.66);
+            --om-olive:       #637746;
+            --om-olive-dark:  #45582F;
+            --om-olive-faded: rgba(99,119,70,0.15);
+            --om-text:        #34372C;
+            --om-text-muted:  #84826E;
+            --om-dim:         #ABA897;
+            --om-border:      #E7DDCB;
+            --om-phq9:        #5C7C97;
+            --om-gad7:        #B07F4E;
+            --om-danger:      #BF6B6B;
+            --om-accent:      #7A6FA8;
+            --om-shadow-sm:   0 1px 6px rgba(99,119,70,0.08), 0 1px 2px rgba(99,119,70,0.04);
+            --om-shadow-md:   0 4px 20px rgba(99,119,70,0.12), 0 1px 4px rgba(99,119,70,0.06);
+            --om-shadow-lg:   0 8px 32px rgba(99,119,70,0.16), 0 2px 8px rgba(99,119,70,0.08);
+            color: #34372C;
+        }
+        .om-dawn-bg {
+            background: linear-gradient(178deg, #F6EAD8 0%, #EFE0CC 52%, #E9DCC8 100%) !important;
+            background-attachment: fixed !important;
+        }
+
+        /* 배경 */
+        [data-theme="dawn"] html { background: #F4E8D6 !important; }
+        [data-theme="dawn"] body { background: transparent !important; color: #34372C !important; }
+        [data-theme="dawn"] #app-root { background: transparent !important; }
+
+        /* 카드 — 프로스티드 글라스 */
+        [data-theme="dawn"] .card {
+            background: rgba(255,255,255,0.62);
+            backdrop-filter: blur(20px) saturate(150%);
+            -webkit-backdrop-filter: blur(20px) saturate(150%);
+            border: 1px solid rgba(255,255,255,0.72);
+            box-shadow: 0 4px 20px rgba(99,119,70,0.10), 0 1px 4px rgba(99,119,70,0.06);
+        }
+
+        /* 하단 탭 바 — 프로스티드 */
+        [data-theme="dawn"] #bottom-nav {
+            background: rgba(255,255,255,0.72);
+            backdrop-filter: blur(24px) saturate(140%);
+            -webkit-backdrop-filter: blur(24px) saturate(140%);
+            border-top: 1px solid rgba(255,255,255,0.80);
+            box-shadow: 0 -2px 20px rgba(99,119,70,0.08);
+        }
+        [data-theme="dawn"] .nav-item              { color: #ABA897; }
+        [data-theme="dawn"] .nav-item.active       { color: #637746; }
+
+        /* 버튼 */
+        [data-theme="dawn"] .btn-primary           { background: #637746; }
+        [data-theme="dawn"] .btn-primary:hover:not(:disabled) {
+            background: #45582F;
+            box-shadow: 0 4px 16px rgba(99,119,70,0.28);
+        }
+
+        /* 입력 필드 */
+        [data-theme="dawn"] .input-field {
+            background: rgba(255,255,255,0.72);
+            border-color: #E7DDCB;
+            color: #34372C;
+        }
+        [data-theme="dawn"] .input-field::placeholder { color: #C2B8A8; }
+        [data-theme="dawn"] .input-field:focus {
+            border-color: #637746;
+            box-shadow: 0 0 0 3px rgba(99,119,70,0.12), 0 2px 8px rgba(99,119,70,0.08);
+            transform: translateY(-1px);
+        }
+
+        /* 인증 탭 */
+        [data-theme="dawn"] .auth-tab             { color: #ABA897; }
+        [data-theme="dawn"] .auth-tab.active      { color: #637746; border-bottom-color: #637746; }
+        [data-theme="dawn"] .auth-tab:hover       { color: #637746; }
+
+        /* 인증 · 스플래시 화면 배경 */
+        [data-theme="dawn"] #auth-screen   { background: linear-gradient(160deg, #F6EAD8 0%, #EFE0CC 100%); }
+        [data-theme="dawn"] #splash-screen { background: linear-gradient(160deg, #F6EAD8 0%, #EFE0CC 100%); }
+        [data-theme="dawn"] .splash-logo-ring {
+            background: linear-gradient(135deg, #637746, #8BAD65);
+            box-shadow: 0 10px 40px rgba(99,119,70,0.35);
+        }
+        [data-theme="dawn"] .splash-dots span { background: #637746; }
+        @keyframes splashPulseDawn {
+            0%, 100% { box-shadow: 0 10px 40px rgba(99,119,70,0.35); }
+            50%       { box-shadow: 0 10px 56px rgba(99,119,70,0.55); }
+        }
+        [data-theme="dawn"] .splash-logo-ring { animation: splashPulseDawn 1.8s ease-in-out infinite; }
+
+        /* 데스크톱 네비 */
+        [data-theme="dawn"] .desktop-nav-btn        { color: #84826E; }
+        [data-theme="dawn"] .desktop-nav-btn:hover  { background: rgba(99,119,70,0.08); color: #637746; }
+        [data-theme="dawn"] .desktop-nav-btn.active { background: rgba(99,119,70,0.12); color: #637746; }
+
+        /* 검사 카드 강조선 */
+        [data-theme="dawn"] .test-card-phq  { border-left-color: #5C7C97; }
+        [data-theme="dawn"] .test-card-gad  { border-left-color: #B07F4E; }
+        [data-theme="dawn"] .test-card-diva { border-left-color: #7A6FA8; }
+        [data-theme="dawn"] .test-card-comprehensive:hover { box-shadow: 0 14px 40px rgba(99,119,70,0.32) !important; }
+
+        /* 스피너 · 토스트 · 기타 */
+        [data-theme="dawn"] .history-spinner { border-color: #E7DDCB; border-top-color: #637746; }
+        [data-theme="dawn"] #toast           { background: rgba(52,55,44,0.88); }
+        [data-theme="dawn"] .btn-logout      { background: rgba(191,107,107,0.08); color: #BF6B6B; }
+        [data-theme="dawn"] .btn-logout:hover{ background: rgba(191,107,107,0.14); }
+        [data-theme="dawn"] .ci-bar-track    { background: rgba(99,119,70,0.12); }
     </style>
 </head>
-<body>
+<body data-theme="dawn">
 
-<div id="app-root">
+<div id="app-root" class="om-dawn-bg">
 
 <!-- ══════════════════════════════════════════
      스플래시 스크린 (세션 확인 중)
@@ -1750,7 +1863,7 @@
     <div class="splash-logo-ring">
         <i class="fas fa-leaf" style="font-size: 34px; color: white;"></i>
     </div>
-    <h1 style="font-size: 20px; font-weight: 800; color: #2a2820; letter-spacing: -0.3px;">내 마음, 올리브나무</h1>
+    <h1 style="font-size: 20px; font-weight: 800; color: #34372C; letter-spacing: -0.3px;">내 마음, 올리브나무</h1>
     <p style="font-size: 13px; color: #8a8070; margin-top: 6px;">잠시만 기다려 주세요</p>
     <div class="splash-dots">
         <span></span><span></span><span></span>
@@ -1821,10 +1934,10 @@
         <!-- 모바일 전용: 로고 -->
         <div id="auth-mobile-logo" class="flex flex-col items-center pt-16 pb-8 px-6">
             <div class="w-20 h-20 rounded-full flex items-center justify-center mb-4"
-                 style="background: linear-gradient(135deg, #5C7A2A, #8BAD45);">
+                 style="background: linear-gradient(135deg, #637746, #8BAD45);">
                 <i class="fas fa-leaf text-white text-3xl"></i>
             </div>
-            <h1 class="text-2xl font-bold text-center" style="color: #2a2820;">내 마음, 올리브나무</h1>
+            <h1 class="text-2xl font-bold text-center" style="color: #34372C;">내 마음, 올리브나무</h1>
             <p class="text-sm mt-1.5 text-center" style="color: #8a8070;">당신의 마음을 위한 안전한 공간</p>
         </div>
 
@@ -1832,10 +1945,10 @@
         <div id="auth-desktop-header"
              style="display:none; text-align:center; margin-bottom:28px; width:100%; max-width:400px;">
             <div class="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4"
-                 style="background: linear-gradient(135deg, #5C7A2A, #8BAD45);">
+                 style="background: linear-gradient(135deg, #637746, #8BAD45);">
                 <i class="fas fa-leaf text-white text-xl"></i>
             </div>
-            <h2 class="text-2xl font-bold" style="color: #2a2820;">환영합니다</h2>
+            <h2 class="text-2xl font-bold" style="color: #34372C;">환영합니다</h2>
             <p class="text-sm mt-1.5" style="color: #8a8070;">로그인하거나 새 계정을 만드세요</p>
         </div>
 
@@ -1866,7 +1979,7 @@
                         <p class="text-center text-xs mt-2" style="color: #b0a898;">
                             아직 회원이 아니신가요?
                             <button onclick="authTabSwitch('register')"
-                                    class="underline font-semibold" style="color: #5C7A2A;">회원가입</button>
+                                    class="underline font-semibold" style="color: #637746;">회원가입</button>
                         </p>
                     </div>
                 </div>
@@ -1901,7 +2014,7 @@
                         <p class="text-center text-xs mt-2" style="color: #b0a898;">
                             이미 회원이신가요?
                             <button onclick="authTabSwitch('login')"
-                                    class="underline font-semibold" style="color: #5C7A2A;">로그인</button>
+                                    class="underline font-semibold" style="color: #637746;">로그인</button>
                         </p>
                     </div>
                 </div>
@@ -1932,12 +2045,12 @@
         <!-- 좌측: 로고 + 브랜드 -->
         <div class="flex items-center gap-2.5 flex-shrink-0">
             <div class="w-8 h-8 rounded-full flex items-center justify-center"
-                 style="background: linear-gradient(135deg, #5C7A2A, #8BAD45);">
+                 style="background: linear-gradient(135deg, #637746, #8BAD45);">
                 <i class="fas fa-leaf text-white" style="font-size: 13px;"></i>
             </div>
             <div class="leading-tight">
-                <p class="font-bold text-sm leading-none" style="color: #2a2820;">내 마음, 올리브나무</p>
-                <p class="text-xs leading-none mt-0.5" style="color: #a09890;">마음 건강 플랫폼</p>
+                <p class="font-bold text-sm leading-none" style="color: #34372C;">내 마음, 올리브나무</p>
+                <p class="text-xs leading-none mt-0.5" style="color: #84826E;">마음 건강 플랫폼</p>
             </div>
         </div>
 
@@ -2031,16 +2144,127 @@
                 </div>
             </div>
 
+            <!-- ── 치료 목표 & 루틴 허브 카드 ───────────────────────────────── -->
+            <div id="goal-hub-card" class="mb-5">
+
+                <!-- 목표 미설정 상태 -->
+                <div id="goal-hub-empty"
+                     style="background: linear-gradient(148deg, #1e2e0e 0%, #2e4a10 28%, #4a7018 58%, #7aad40 100%);
+                            border-radius: 22px; padding: 24px;
+                            box-shadow: 0 8px 32px rgba(42,78,16,0.28);">
+                    <div style="display:flex; align-items:center; gap:14px; margin-bottom:16px;">
+                        <div style="width:54px;height:54px;border-radius:16px;
+                                    background:rgba(255,255,255,0.14);
+                                    border:1.5px solid rgba(255,255,255,0.22);
+                                    display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                            <span style="font-size:28px;line-height:1;">🎯</span>
+                        </div>
+                        <div>
+                            <p style="font-size:10px;font-weight:700;color:rgba(255,255,255,0.58);
+                                      letter-spacing:0.9px;text-transform:uppercase;margin-bottom:5px;">
+                                치료 목표 &amp; 오늘의 루틴
+                            </p>
+                            <p style="font-size:17px;font-weight:800;color:#fff;line-height:1.3;margin:0;">
+                                나만의 회복 경로를<br>함께 설계해요
+                            </p>
+                        </div>
+                    </div>
+                    <p style="font-size:13px;color:rgba(255,255,255,0.72);line-height:1.85;margin-bottom:22px;">
+                        목표를 설정하면 주간 점검과<br>오늘의 맞춤 루틴이 생겨요.
+                    </p>
+                    <button onclick="GW.open()"
+                            style="width:100%;padding:14px;border:none;border-radius:14px;
+                                   background:rgba(255,255,255,0.95);color:#2e4a10;
+                                   font-size:14px;font-weight:800;cursor:pointer;
+                                   box-shadow:0 4px 16px rgba(0,0,0,0.15);
+                                   display:flex;align-items:center;justify-content:center;gap:8px;
+                                   transition:all 0.18s;"
+                            onmouseover="this.style.background='#ffffff'"
+                            onmouseout="this.style.background='rgba(255,255,255,0.95)'">
+                        <span style="font-size:16px;">🎯</span>
+                        치료 목표 설정하기
+                        <i class="fas fa-arrow-right" style="font-size:12px;margin-left:2px;"></i>
+                    </button>
+                </div>
+
+                <!-- 목표 설정 완료 상태 -->
+                <div id="goal-hub-active" class="hidden"
+                     style="background:#fff;border-radius:22px;overflow:hidden;
+                            box-shadow:0 2px 24px rgba(42,78,16,0.11);border:1px solid #dce8cc;">
+
+                    <!-- 헤더 -->
+                    <div style="background:linear-gradient(135deg,#2e4a10 0%,#637746 100%);padding:18px 20px 16px;">
+                        <div style="display:flex;align-items:center;justify-content:space-between;">
+                            <div style="display:flex;align-items:center;gap:11px;">
+                                <span style="font-size:22px;line-height:1;">🎯</span>
+                                <div>
+                                    <p style="font-size:10px;color:rgba(255,255,255,0.58);font-weight:600;
+                                              letter-spacing:0.7px;text-transform:uppercase;margin-bottom:3px;">
+                                        나의 치료 목표
+                                    </p>
+                                    <p style="font-size:15px;font-weight:800;color:#fff;margin:0;line-height:1.2;">
+                                        오늘도 함께 나아가요 🌿
+                                    </p>
+                                </div>
+                            </div>
+                            <button onclick="GW.open()"
+                                    style="background:rgba(255,255,255,0.14);border:1px solid rgba(255,255,255,0.28);
+                                           color:rgba(255,255,255,0.88);font-size:11px;font-weight:700;
+                                           padding:6px 14px;border-radius:20px;cursor:pointer;
+                                           transition:background 0.15s;letter-spacing:0.2px;"
+                                    onmouseover="this.style.background='rgba(255,255,255,0.22)'"
+                                    onmouseout="this.style.background='rgba(255,255,255,0.14)'">
+                                수정하기
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 설정된 목표 목록 -->
+                    <div id="goal-hub-goals" style="padding:15px 18px 14px;border-bottom:1px solid #f0ebe0;"></div>
+
+                    <!-- 주간 체크인 버튼 -->
+                    <div id="goal-hub-ci-row" onclick="CI.open()" role="button" tabindex="0"
+                         style="padding:13px 18px;border-bottom:1px solid #f0ebe0;
+                                display:flex;align-items:center;gap:12px;cursor:pointer;
+                                transition:background 0.15s;">
+                        <div style="width:38px;height:38px;border-radius:12px;
+                                    background:linear-gradient(135deg,#eef2e6,#dce8cc);
+                                    display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                            <i class="fas fa-calendar-check" style="color:#637746;font-size:14px;"></i>
+                        </div>
+                        <div style="flex:1;min-width:0;">
+                            <p style="font-size:13px;font-weight:700;color:#34372C;margin:0 0 2px;">주간 목표 체크인</p>
+                            <p style="font-size:11px;color:#9aab88;margin:0;" id="goal-hub-ci-hint">
+                                이번 주 달성도를 점검해 보세요
+                            </p>
+                        </div>
+                        <i class="fas fa-chevron-right" style="color:#c2d9a0;font-size:11px;flex-shrink:0;"></i>
+                    </div>
+
+                    <!-- 오늘의 미니 루틴 -->
+                    <div style="padding:15px 18px 20px;">
+                        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:11px;">
+                            <p style="font-size:12px;font-weight:700;color:#637746;margin:0;letter-spacing:0.3px;">
+                                ✨ 오늘의 미니 루틴
+                            </p>
+                            <span id="goal-hub-routine-count"
+                                  style="font-size:10px;color:#b0a898;"></span>
+                        </div>
+                        <div id="goal-hub-routines" style="display:flex;flex-direction:column;gap:7px;"></div>
+                    </div>
+                </div>
+            </div>
+
             <!-- 오늘의 한마디 -->
             <div class="card mb-5 flex items-start gap-3.5"
-                 style="background: linear-gradient(135deg, #faf8f3 0%, #f4f0e8 100%);
+                 style="background: linear-gradient(135deg, #F4E8D6 0%, #f4f0e8 100%);
                         border: 1px solid #ede8dc;">
                 <div class="w-10 h-10 rounded-xl flex-shrink-0 flex items-center justify-center mt-0.5"
                      style="background: #eef2e6;">
-                    <i class="fas fa-quote-left text-sm" style="color: #5C7A2A;"></i>
+                    <i class="fas fa-quote-left text-sm" style="color: #637746;"></i>
                 </div>
                 <div>
-                    <p class="text-xs font-bold mb-1.5 tracking-wide" style="color: #5C7A2A;">오늘의 한마디</p>
+                    <p class="text-xs font-bold mb-1.5 tracking-wide" style="color: #637746;">오늘의 한마디</p>
                     <p class="text-sm leading-relaxed" style="color: #4a4438;">
                         "치유는 직선이 아닙니다. 천천히, 당신만의 속도로 걸어가도 괜찮습니다."
                     </p>
@@ -2049,17 +2273,15 @@
 
             <!-- 오늘의 기분 기록 -->
             <div class="card mb-5" id="mood-log-card">
-                <div class="flex items-center justify-between mb-4">
-                    <div>
-                        <p class="font-bold text-xs tracking-wide uppercase mb-0.5" style="color: #5C7A2A;">오늘의 기분 기록</p>
-                        <p class="text-xs" id="mood-saved-date" style="color: #a09890;"></p>
-                    </div>
+                <div class="flex items-center justify-between" style="margin-bottom:4px;">
+                    <p style="font-size:16px;font-weight:600;color:#34372C;letter-spacing:-0.1px;">오늘의 기분 기록</p>
                     <div class="w-9 h-9 rounded-xl flex items-center justify-center" style="background: #eef2e6;">
-                        <i class="fas fa-heart-pulse" style="color: #5C7A2A; font-size: 15px;"></i>
+                        <i class="fas fa-heart-pulse" style="color: #637746; font-size: 15px;"></i>
                     </div>
                 </div>
+                <p class="text-xs" id="mood-saved-date" style="color:#84826E;margin-bottom:16px;"></p>
 
-                <p class="text-sm mb-6 mt-2" style="color: #6e7e5a; line-height: 1.85;">
+                <p class="text-sm mb-6" style="color: #6e7e5a; line-height: 1.85;">
                     오늘 당신의 마음에 어떤 바람이 불었나요?
                 </p>
 
@@ -2068,7 +2290,7 @@
                     <div>
                         <div class="flex items-center justify-between mb-2">
                             <span class="text-sm font-semibold" style="color: #484840;">😊 기분</span>
-                            <span class="text-xs" style="color: #a09890;">매우 나쁨 · 매우 좋음</span>
+                            <span class="text-xs" style="color: #84826E;">매우 나쁨 · 매우 좋음</span>
                         </div>
                         <div class="mood-slider-wrap">
                             <input type="range" class="mood-range" id="slider-mood"
@@ -2081,7 +2303,7 @@
                     <div>
                         <div class="flex items-center justify-between mb-2">
                             <span class="text-sm font-semibold" style="color: #484840;">😰 불안</span>
-                            <span class="text-xs" style="color: #a09890;">전혀 없음 · 매우 심함</span>
+                            <span class="text-xs" style="color: #84826E;">전혀 없음 · 매우 심함</span>
                         </div>
                         <div class="mood-slider-wrap">
                             <input type="range" class="mood-range" id="slider-anxiety"
@@ -2094,7 +2316,7 @@
                     <div>
                         <div class="flex items-center justify-between mb-2">
                             <span class="text-sm font-semibold" style="color: #484840;">😤 예민도</span>
-                            <span class="text-xs" style="color: #a09890;">전혀 없음 · 매우 심함</span>
+                            <span class="text-xs" style="color: #84826E;">전혀 없음 · 매우 심함</span>
                         </div>
                         <div class="mood-slider-wrap">
                             <input type="range" class="mood-range" id="slider-irritability"
@@ -2107,7 +2329,7 @@
                     <div>
                         <div class="flex items-center justify-between mb-2">
                             <span class="text-sm font-semibold" style="color: #484840;">😴 수면</span>
-                            <span class="text-xs" style="color: #a09890;">매우 나쁨 · 매우 좋음</span>
+                            <span class="text-xs" style="color: #84826E;">매우 나쁨 · 매우 좋음</span>
                         </div>
                         <div class="mood-slider-wrap">
                             <input type="range" class="mood-range" id="slider-sleep"
@@ -2131,7 +2353,7 @@
 
                 <!-- 감정 태그 선택 -->
                 <div class="mt-7">
-                    <p class="text-xs font-semibold mb-1.5" style="color:#5C7A2A;">오늘의 감정 태그</p>
+                    <p class="text-xs font-semibold mb-1.5" style="color:#637746;">오늘의 감정 태그</p>
                     <p class="text-xs mb-4" style="color:#9aab88; line-height: 1.75;">
                         천천히, 편안하게 지금의 감정을 골라주세요.
                     </p>
@@ -2140,7 +2362,7 @@
 
                 <!-- 한마디 메모 -->
                 <div class="mt-6 mb-1">
-                    <p class="text-xs font-semibold mb-2" style="color:#5C7A2A;">
+                    <p class="text-xs font-semibold mb-2" style="color:#637746;">
                         한마디 메모
                         <span style="color:#b0a898;font-weight:400;">(선택)</span>
                     </p>
@@ -2153,45 +2375,31 @@
                 </button>
             </div>
 
-            <!-- 주간 목표 체크인 (치료 목표 설정 후 표시) -->
-            <div class="card mb-4 hidden" id="ci-card" onclick="CI.open()" role="button" tabindex="0">
-                <div style="display:flex;align-items:center;gap:13px;">
-                    <div style="width:42px;height:42px;border-radius:13px;
-                                background:linear-gradient(135deg,#5C7A2A,#8BAD45);
-                                display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-                        <span style="font-size:20px;">🎯</span>
-                    </div>
-                    <div style="flex:1;min-width:0;">
-                        <p style="font-size:11px;font-weight:700;color:#5C7A2A;letter-spacing:0.6px;
-                                  text-transform:uppercase;margin-bottom:2px;">주간 목표 점검</p>
-                        <p style="font-size:14px;font-weight:700;color:#2a2820;margin:0;">
-                            이번 주 치료 목표 돌아보기</p>
-                    </div>
-                    <i class="fas fa-chevron-right" style="color:#c2d9a0;font-size:13px;flex-shrink:0;"></i>
-                </div>
-                <p style="font-size:13px;color:#7a9060;margin-top:11px;line-height:1.65;">
-                    설정한 목표들을 얼마나 달성했는지 4단계로 평가해 보세요.
-                </p>
-                <p style="font-size:11px;color:#b0a898;margin-top:5px;" id="ci-goal-count"></p>
-            </div>
-
-            <!-- 오늘의 루틴 -->
+            <!-- 오늘의 미니 루틴 -->
             <div class="card mb-5" id="routine-card">
-                <div class="flex items-center justify-between mb-4">
-                    <div>
-                        <p class="font-bold text-xs tracking-wide uppercase mb-1" style="color: #5C7A2A;">오늘의 루틴</p>
-                        <p class="text-xs" style="color: #a09890; line-height: 1.6;">작은 행동 하나가 회복의 시작입니다.</p>
+                <div class="flex items-center justify-between" style="margin-bottom:4px;">
+                    <p style="font-size:16px;font-weight:600;color:#34372C;letter-spacing:-0.1px;">오늘의 미니 루틴</p>
+                    <div style="display:flex;align-items:center;gap:6px;">
+                        <button onclick="GW.open()"
+                                style="display:flex;align-items:center;gap:5px;
+                                       padding:5px 10px;border-radius:12px;
+                                       background:#eef2e6;border:1px solid rgba(92,122,42,0.33);
+                                       cursor:pointer;font-family:inherit;
+                                       font-size:12px;font-weight:600;color:#45582F;line-height:1;">
+                            🎯 목표 설정
+                        </button>
+                        <button onclick="openRoutineSheet()"
+                                class="w-8 h-8 rounded-full flex items-center justify-center"
+                                style="background:#f5f2ec;border:none;cursor:pointer;flex-shrink:0;">
+                            <i class="fas fa-cog" style="color:#8a8070;font-size:13px;"></i>
+                        </button>
                     </div>
-                    <button onclick="openRoutineSheet()"
-                            class="w-8 h-8 rounded-full flex items-center justify-center"
-                            style="background: #eef2e6; border: none; cursor: pointer; flex-shrink: 0;">
-                        <i class="fas fa-cog" style="color: #5C7A2A; font-size: 13px;"></i>
-                    </button>
                 </div>
+                <p style="font-size:13px;color:#84826E;line-height:1.6;margin-bottom:16px;">작은 행동 하나가 회복의 시작입니다.</p>
 
                 <!-- 진행률 바 -->
                 <div id="routine-progress-track"><div id="routine-progress-fill"></div></div>
-                <p class="text-xs mb-3 mt-1.5" id="routine-progress-label" style="color: #a09890; line-height: 1.6;">0 / 0 완료</p>
+                <p class="text-xs mb-3 mt-1.5" id="routine-progress-label" style="color: #84826E; line-height: 1.6;">0 / 0 완료</p>
 
                 <!-- 루틴 아이템 목록 -->
                 <div id="routine-list"></div>
@@ -2213,7 +2421,7 @@
                     <div style="display:flex;flex-direction:column;align-items:center;gap:10px;margin-top:20px;">
                         <button onclick="GW.open()"
                                 style="display:flex;align-items:center;gap:8px;
-                                       background:linear-gradient(135deg,#5C7A2A,#4a6220);
+                                       background:linear-gradient(135deg,#637746,#45582F);
                                        color:#fff;font-size:14px;font-weight:700;
                                        border:none;border-radius:999px;padding:13px 22px;
                                        cursor:pointer;letter-spacing:-0.2px;
@@ -2225,7 +2433,7 @@
                                 style="background:transparent;color:#9aab88;font-size:12px;
                                        border:none;cursor:pointer;letter-spacing:-0.1px;
                                        padding:4px 8px;transition:color 0.18s;"
-                                onmouseover="this.style.color='#5C7A2A'"
+                                onmouseover="this.style.color='#637746'"
                                 onmouseout="this.style.color='#9aab88'">
                             직접 루틴 추가하기
                         </button>
@@ -2262,8 +2470,8 @@
                             <i class="fas fa-moon" style="color: #6A8CA0; font-size: 13px;"></i>
                         </div>
                         <div>
-                            <p class="text-xs" style="color: #a09890;">취침</p>
-                            <p class="text-base font-bold" id="sleep-bed-time" style="color: #2a2820;">22:30</p>
+                            <p class="text-xs" style="color: #84826E;">취침</p>
+                            <p class="text-base font-bold" id="sleep-bed-time" style="color: #34372C;">22:30</p>
                         </div>
                     </div>
                     <div style="width: 1px; height: 36px; background: #e8e2d9; margin: 0 16px;"></div>
@@ -2273,33 +2481,33 @@
                             <i class="fas fa-sun" style="color: #C4956A; font-size: 13px;"></i>
                         </div>
                         <div>
-                            <p class="text-xs" style="color: #a09890;">기상</p>
-                            <p class="text-base font-bold" id="sleep-wake-time" style="color: #2a2820;">07:00</p>
+                            <p class="text-xs" style="color: #84826E;">기상</p>
+                            <p class="text-base font-bold" id="sleep-wake-time" style="color: #34372C;">07:00</p>
                         </div>
                     </div>
                     <span id="sleep-notif-badge"
-                          style="background: #f5f2ec; color: #a09890;">알림 꺼짐</span>
+                          style="background: #f5f2ec; color: #84826E;">알림 꺼짐</span>
                 </div>
             </div>
 
             <!-- 빠른 메뉴 -->
-            <h3 class="font-bold text-xs mb-3 tracking-widest uppercase" style="color: #a09890;">빠른 메뉴</h3>
+            <h3 class="font-bold text-xs mb-3 tracking-widest uppercase" style="color: #84826E;">빠른 메뉴</h3>
             <div id="home-quick-menu" class="grid grid-cols-3 gap-3 mb-6">
                 <button onclick="window.location.href='./Qmain.html'"
                         class="card flex flex-col items-center py-5 gap-2.5 active:scale-95 transition-transform">
                     <div class="w-12 h-12 rounded-2xl flex items-center justify-center"
                          style="background: linear-gradient(135deg, #eef2e6, #dce8cc);">
-                        <i class="fas fa-layer-group text-xl" style="color: #5C7A2A;"></i>
+                        <i class="fas fa-layer-group text-xl" style="color: #637746;"></i>
                     </div>
-                    <span class="text-xs font-bold text-center leading-tight" style="color: #2a2820;">종합<br>심리검사</span>
+                    <span class="text-xs font-bold text-center leading-tight" style="color: #34372C;">종합<br>심리검사</span>
                 </button>
                 <button onclick="switchPage('library')"
                         class="card flex flex-col items-center py-5 gap-2.5 active:scale-95 transition-transform">
                     <div class="w-12 h-12 rounded-2xl flex items-center justify-center"
                          style="background: linear-gradient(135deg, #eef2e6, #dce8cc);">
-                        <i class="fas fa-book-open text-xl" style="color: #5C7A2A;"></i>
+                        <i class="fas fa-book-open text-xl" style="color: #637746;"></i>
                     </div>
-                    <span class="text-xs font-bold text-center leading-tight" style="color: #2a2820;">마음<br>자료실</span>
+                    <span class="text-xs font-bold text-center leading-tight" style="color: #34372C;">마음<br>자료실</span>
                 </button>
                 <button onclick="switchPage('tests')"
                         class="card flex flex-col items-center py-5 gap-2.5 active:scale-95 transition-transform">
@@ -2307,19 +2515,19 @@
                          style="background: linear-gradient(135deg, #fdf4e6, #f5dba0);">
                         <i class="fas fa-clipboard-list text-xl" style="color: #C4956A;"></i>
                     </div>
-                    <span class="text-xs font-bold text-center leading-tight" style="color: #2a2820;">개별<br>심리검사</span>
+                    <span class="text-xs font-bold text-center leading-tight" style="color: #34372C;">개별<br>심리검사</span>
                 </button>
             </div>
 
             <!-- 서비스 안내 -->
-            <h3 class="font-bold text-xs mb-3 tracking-widest uppercase" style="color: #a09890;">서비스 안내</h3>
+            <h3 class="font-bold text-xs mb-3 tracking-widest uppercase" style="color: #84826E;">서비스 안내</h3>
             <div class="card mb-5"
-                 style="background: linear-gradient(135deg, #faf8f3, #f2ede3); border: 1px solid #ede8dc;">
+                 style="background: linear-gradient(135deg, #F4E8D6, #f2ede3); border: 1px solid #ede8dc;">
                 <div class="grid grid-cols-3 gap-4">
                     <div class="flex flex-col items-center text-center gap-2">
                         <div class="w-10 h-10 rounded-xl flex items-center justify-center"
                              style="background: #eef2e6;">
-                            <i class="fas fa-shield-heart text-sm" style="color: #5C7A2A;"></i>
+                            <i class="fas fa-shield-heart text-sm" style="color: #637746;"></i>
                         </div>
                         <p class="text-xs font-semibold leading-tight" style="color: #3a3830;">표준화된<br>검사 도구</p>
                     </div>
@@ -2341,16 +2549,16 @@
             </div>
 
             <!-- 추천 자료 -->
-            <h3 class="font-bold text-xs mb-3 tracking-widest uppercase" style="color: #a09890;">추천 자료</h3>
+            <h3 class="font-bold text-xs mb-3 tracking-widest uppercase" style="color: #84826E;">추천 자료</h3>
             <div id="home-recommended" class="space-y-3">
                 <div class="card flex items-center gap-3">
                     <div class="w-11 h-11 rounded-xl flex-shrink-0 flex items-center justify-center"
                          style="background: #eef2e6;">
-                        <i class="fas fa-sun" style="color: #5C7A2A;"></i>
+                        <i class="fas fa-sun" style="color: #637746;"></i>
                     </div>
                     <div class="flex-1 min-w-0">
-                        <span class="badge" style="background: #eef2e6; color: #5C7A2A;">우울증</span>
-                        <p class="text-sm font-semibold truncate mt-0.5" style="color: #2a2820;">우울증 극복을 위한 첫걸음</p>
+                        <span class="badge" style="background: #eef2e6; color: #637746;">우울증</span>
+                        <p class="text-sm font-semibold truncate mt-0.5" style="color: #34372C;">우울증 극복을 위한 첫걸음</p>
                     </div>
                     <i class="fas fa-chevron-right text-xs flex-shrink-0" style="color: #d0c8bc;"></i>
                 </div>
@@ -2361,7 +2569,7 @@
                     </div>
                     <div class="flex-1 min-w-0">
                         <span class="badge" style="background: #eef4fa; color: #5A8FBC;">수면</span>
-                        <p class="text-sm font-semibold truncate mt-0.5" style="color: #2a2820;">수면 위생 가이드</p>
+                        <p class="text-sm font-semibold truncate mt-0.5" style="color: #34372C;">수면 위생 가이드</p>
                     </div>
                     <i class="fas fa-chevron-right text-xs flex-shrink-0" style="color: #d0c8bc;"></i>
                 </div>
@@ -2372,7 +2580,7 @@
                     </div>
                     <div class="flex-1 min-w-0">
                         <span class="badge" style="background: #fdf4e6; color: #C4956A;">불안</span>
-                        <p class="text-sm font-semibold truncate mt-0.5" style="color: #2a2820;">불안한 마음을 다스리는 호흡법</p>
+                        <p class="text-sm font-semibold truncate mt-0.5" style="color: #34372C;">불안한 마음을 다스리는 호흡법</p>
                     </div>
                     <i class="fas fa-chevron-right text-xs flex-shrink-0" style="color: #d0c8bc;"></i>
                 </div>
@@ -2383,7 +2591,7 @@
                     </div>
                     <div class="flex-1 min-w-0">
                         <span class="badge" style="background: #f0eefa; color: #6D5BA3;">스트레스</span>
-                        <p class="text-sm font-semibold truncate mt-0.5" style="color: #2a2820;">만성 스트레스와 몸의 신호</p>
+                        <p class="text-sm font-semibold truncate mt-0.5" style="color: #34372C;">만성 스트레스와 몸의 신호</p>
                     </div>
                     <i class="fas fa-chevron-right text-xs flex-shrink-0" style="color: #d0c8bc;"></i>
                 </div>
@@ -2396,7 +2604,7 @@
              ━━━━━━━━━━━━━━━━━━━━━━━━ -->
         <section id="page-library" class="page-section hidden">
 
-            <h2 class="text-xl font-bold mb-0.5" style="color: #2a2820;">마음 자료실</h2>
+            <h2 class="text-xl font-bold mb-0.5" style="color: #34372C;">마음 자료실</h2>
             <p class="text-sm mb-4" style="color: #8a8070;">정신건강 교육 자료 · 질환별 상세 안내</p>
 
             <!-- 검색창 -->
@@ -2418,7 +2626,7 @@
             <div id="lib-condition-list">
                 <div class="lib-loading">
                     <i class="fas fa-spinner fa-spin" style="font-size: 22px; color: #c0b8a8;"></i>
-                    <p style="color: #a09890; font-size: 13px; margin-top: 10px;">불러오는 중...</p>
+                    <p style="color: #84826E; font-size: 13px; margin-top: 10px;">불러오는 중...</p>
                 </div>
             </div>
 
@@ -2430,7 +2638,7 @@
              ━━━━━━━━━━━━━━━━━━━━━━━━ -->
         <section id="page-tests" class="page-section hidden">
 
-            <h2 class="text-xl font-bold mb-0.5" style="color: #2a2820;">심리검사</h2>
+            <h2 class="text-xl font-bold mb-0.5" style="color: #34372C;">심리검사</h2>
             <p class="text-sm mb-4" style="color: #8a8070;">표준화된 심리 척도로 현재 상태를 파악해 보세요.</p>
 
             <!-- 유의사항 배너 -->
@@ -2445,7 +2653,7 @@
 
             <!-- ★ 종합 심리검사 Hero Card ★ -->
             <div class="test-card-comprehensive rounded-2xl overflow-hidden mb-5"
-                 style="background: linear-gradient(135deg, #1e2e0e 0%, #3a5c12 38%, #5C7A2A 68%, #c8912a 100%);
+                 style="background: linear-gradient(135deg, #1e2e0e 0%, #3a5c12 38%, #637746 68%, #c8912a 100%);
                         box-shadow: 0 8px 28px rgba(92,122,42,0.32);"
                  onclick="window.location.href='./Qmain.html'"
                  role="button" tabindex="0"
@@ -2502,7 +2710,7 @@
             </div>
 
             <!-- 개별 검사 섹션 -->
-            <h3 class="font-bold text-xs mb-3 tracking-wide uppercase" style="color: #a09890;">
+            <h3 class="font-bold text-xs mb-3 tracking-wide uppercase" style="color: #84826E;">
                 <i class="fas fa-list-check mr-1.5"></i>개별 검사
             </h3>
 
@@ -2516,26 +2724,26 @@
                         <div class="flex items-center gap-3">
                             <div class="w-12 h-12 rounded-xl flex items-center justify-center"
                                  style="background: #eef2e6;">
-                                <i class="fas fa-brain text-xl" style="color: #5C7A2A;"></i>
+                                <i class="fas fa-brain text-xl" style="color: #637746;"></i>
                             </div>
                             <div>
-                                <h4 class="font-bold text-base" style="color: #2a2820;">PHQ-9</h4>
+                                <h4 class="font-bold text-base" style="color: #34372C;">PHQ-9</h4>
                                 <p class="text-xs" style="color: #8a8070;">우울증 검사</p>
                             </div>
                         </div>
-                        <span class="badge" style="background: #eef2e6; color: #5C7A2A;">9문항</span>
+                        <span class="badge" style="background: #eef2e6; color: #637746;">9문항</span>
                     </div>
                     <p class="text-xs leading-relaxed mb-4" style="color: #8a8070;">
                         Patient Health Questionnaire-9. 지난 2주 동안의 우울 증상을 측정하는
                         국제 표준 도구입니다. 약 3~5분 소요됩니다.
                     </p>
                     <div class="flex items-center gap-2">
-                        <span class="flex-1 flex items-center gap-1.5 text-xs" style="color: #a09890;">
+                        <span class="flex-1 flex items-center gap-1.5 text-xs" style="color: #84826E;">
                             <i class="fas fa-clock"></i> 약 5분 <span class="mx-1">·</span>
                             <i class="fas fa-user-check"></i> 42명 완료
                         </span>
                         <span class="flex items-center gap-1 px-5 py-2.5 rounded-xl text-sm font-bold text-white pointer-events-none"
-                              style="background: #5C7A2A;">
+                              style="background: #637746;">
                             검사 시작 <i class="fas fa-arrow-right ml-1 text-xs"></i>
                         </span>
                     </div>
@@ -2552,7 +2760,7 @@
                                 <i class="fas fa-heart-pulse text-xl" style="color: #C4956A;"></i>
                             </div>
                             <div>
-                                <h4 class="font-bold text-base" style="color: #2a2820;">GAD-7</h4>
+                                <h4 class="font-bold text-base" style="color: #34372C;">GAD-7</h4>
                                 <p class="text-xs" style="color: #8a8070;">불안 척도 검사</p>
                             </div>
                         </div>
@@ -2563,7 +2771,7 @@
                         자기보고식 척도입니다. 약 3분 소요됩니다.
                     </p>
                     <div class="flex items-center gap-2">
-                        <span class="flex-1 flex items-center gap-1.5 text-xs" style="color: #a09890;">
+                        <span class="flex-1 flex items-center gap-1.5 text-xs" style="color: #84826E;">
                             <i class="fas fa-clock"></i> 약 3분 <span class="mx-1">·</span>
                             <i class="fas fa-user-check"></i> 35명 완료
                         </span>
@@ -2585,7 +2793,7 @@
                                 <i class="fas fa-puzzle-piece text-xl" style="color: #6D5BA3;"></i>
                             </div>
                             <div>
-                                <h4 class="font-bold text-base leading-tight" style="color: #2a2820;">성인 ADHD 진단 면담</h4>
+                                <h4 class="font-bold text-base leading-tight" style="color: #34372C;">성인 ADHD 진단 면담</h4>
                                 <p class="text-xs mt-0.5" style="color: #8a8070;">DIVA 2.0 / 5.0</p>
                             </div>
                         </div>
@@ -2596,7 +2804,7 @@
                         아동기 및 성인기의 ADHD 증상을 체계적으로 평가하는 국제 표준 구조화 면담입니다.
                     </p>
                     <div class="flex items-center gap-2">
-                        <span class="flex-1 flex items-center gap-1.5 text-xs" style="color: #a09890;">
+                        <span class="flex-1 flex items-center gap-1.5 text-xs" style="color: #84826E;">
                             <i class="fas fa-clock"></i> 약 15~20분 <span class="mx-1">·</span>
                             <i class="fas fa-user-check"></i> ADHD 선별
                         </span>
@@ -2609,9 +2817,9 @@
 
                 <!-- 추가 예정 -->
                 <div class="card text-center py-6 test-more-card"
-                     style="border: 1.5px dashed #d8d0c4; background: #faf8f3;">
+                     style="border: 1.5px dashed #d8d0c4; background: #F4E8D6;">
                     <i class="fas fa-hourglass-half text-2xl mb-2" style="color: #c8c0b4;"></i>
-                    <p class="text-sm font-semibold" style="color: #a09890;">더 많은 개별 검사가 준비 중입니다</p>
+                    <p class="text-sm font-semibold" style="color: #84826E;">더 많은 개별 검사가 준비 중입니다</p>
                     <p class="text-xs mt-1" style="color: #c8c0b4;">PSS-10 (스트레스 척도) 등 업데이트 예정</p>
                 </div>
 
@@ -2627,17 +2835,17 @@
             <!-- 프로필 헤더 -->
             <div class="flex flex-col items-center py-6 mb-5">
                 <div class="w-20 h-20 rounded-full flex items-center justify-center mb-3"
-                     style="background: linear-gradient(135deg, #5C7A2A, #8BAD45);">
+                     style="background: linear-gradient(135deg, #637746, #8BAD45);">
                     <span id="profile-avatar" class="text-3xl font-bold text-white"></span>
                 </div>
-                <h3 class="text-lg font-bold" id="profile-username" style="color: #2a2820;">사용자</h3>
+                <h3 class="text-lg font-bold" id="profile-username" style="color: #34372C;">사용자</h3>
                 <p class="text-sm mt-0.5" style="color: #8a8070;">올리브나무 회원</p>
             </div>
 
             <!-- ── 기분 통계 차트 ── -->
             <div class="card mb-5" id="mood-chart-card">
                 <div class="flex items-center justify-between mb-3">
-                    <h3 class="font-bold text-xs tracking-widest uppercase" style="color: #a09890;">
+                    <h3 class="font-bold text-xs tracking-widest uppercase" style="color: #84826E;">
                         <i class="fas fa-chart-line mr-1.5"></i>최근 30일 기분 통계
                     </h3>
                     <i id="chart-loading" class="fas fa-spinner fa-spin hidden" style="color: #c0b8a8; font-size: 12px;"></i>
@@ -2682,7 +2890,7 @@
 
                 <!-- 빈 상태 -->
                 <div id="mood-chart-empty" class="hidden"
-                     style="text-align: center; padding: 24px 0; color: #a09890; font-size: 13px; line-height: 1.7;">
+                     style="text-align: center; padding: 24px 0; color: #84826E; font-size: 13px; line-height: 1.7;">
                     아직 기분 기록이 없어요.<br>홈 탭에서 첫 기록을 남겨 보세요 🌿
                 </div>
             </div>
@@ -2690,7 +2898,7 @@
             <!-- ── 히스토리 타임라인 ── -->
             <div class="mb-5">
                 <div class="flex items-center justify-between mb-3">
-                    <h3 class="font-bold text-xs tracking-widest uppercase" style="color: #a09890;">
+                    <h3 class="font-bold text-xs tracking-widest uppercase" style="color: #84826E;">
                         <i class="fas fa-calendar-days mr-1.5"></i>기분 기록 타임라인
                     </h3>
                 </div>
@@ -2703,32 +2911,32 @@
             <!-- 나의 마음 기록 -->
             <div class="mb-5">
                 <div class="flex items-center justify-between mb-3">
-                    <h3 class="font-bold text-xs tracking-widest uppercase" style="color: #a09890;">
+                    <h3 class="font-bold text-xs tracking-widest uppercase" style="color: #84826E;">
                         <i class="fas fa-chart-line mr-1.5"></i>나의 마음 기록
                     </h3>
                 </div>
                 <div id="test-history-list">
                     <!-- 로딩 플레이스홀더 (switchPage 호출 전 초기 상태) -->
                     <div class="card flex items-center justify-center gap-3 py-7"
-                         style="background: #faf8f3; border: 1px solid #ede8dc;">
+                         style="background: #F4E8D6; border: 1px solid #ede8dc;">
                         <div class="history-spinner"></div>
-                        <span class="text-sm" style="color: #a09890;">기록을 불러오는 중입니다...</span>
+                        <span class="text-sm" style="color: #84826E;">기록을 불러오는 중입니다...</span>
                     </div>
                 </div>
             </div>
 
             <!-- 계정 정보 -->
             <div class="card mb-4" style="border: 1px solid #ede8dc;">
-                <p class="text-xs font-bold mb-3 tracking-wide uppercase" style="color: #a09890;">계정 정보</p>
+                <p class="text-xs font-bold mb-3 tracking-wide uppercase" style="color: #84826E;">계정 정보</p>
                 <div class="flex items-center justify-between py-2.5"
                      style="border-bottom: 1px solid #f5f2ec;">
                     <span class="text-sm" style="color: #6b6558;">아이디</span>
-                    <span class="text-sm font-semibold" id="profile-id" style="color: #2a2820;">—</span>
+                    <span class="text-sm font-semibold" id="profile-id" style="color: #34372C;">—</span>
                 </div>
                 <div class="flex items-center justify-between py-2.5">
                     <span class="text-sm" style="color: #6b6558;">계정 유형</span>
                     <span class="text-xs font-bold px-2.5 py-1 rounded-full"
-                          style="background: #eef2e6; color: #5C7A2A;">올리브 회원</span>
+                          style="background: #eef2e6; color: #637746;">올리브 회원</span>
                 </div>
             </div>
 
@@ -2739,9 +2947,9 @@
                         style="border-bottom: 1px solid #f5f2ec;">
                     <div class="w-8 h-8 rounded-lg flex items-center justify-center"
                          style="background: #e8f0e6;">
-                        <i class="fas fa-pills text-sm" style="color: #5C7A2A;"></i>
+                        <i class="fas fa-pills text-sm" style="color: #637746;"></i>
                     </div>
-                    <span class="flex-1 text-sm font-medium" style="color: #2a2820;">내 약물 관리</span>
+                    <span class="flex-1 text-sm font-medium" style="color: #34372C;">내 약물 관리</span>
                     <i class="fas fa-chevron-right text-xs" style="color: #d0c8bc;"></i>
                 </button>
                 <button class="w-full flex items-center gap-3 px-4 py-3.5 text-left active:bg-warm-50"
@@ -2749,18 +2957,18 @@
                         style="border-bottom: 1px solid #f5f2ec;">
                     <div class="w-8 h-8 rounded-lg flex items-center justify-center"
                          style="background: #eef2e6;">
-                        <i class="fas fa-bell text-sm" style="color: #5C7A2A;"></i>
+                        <i class="fas fa-bell text-sm" style="color: #637746;"></i>
                     </div>
-                    <span class="flex-1 text-sm font-medium" style="color: #2a2820;">알림 설정</span>
+                    <span class="flex-1 text-sm font-medium" style="color: #34372C;">알림 설정</span>
                     <i class="fas fa-chevron-right text-xs" style="color: #d0c8bc;"></i>
                 </button>
                 <button class="w-full flex items-center gap-3 px-4 py-3.5 text-left active:bg-warm-50"
                         onclick="showToast('준비 중인 기능입니다')">
                     <div class="w-8 h-8 rounded-lg flex items-center justify-center"
                          style="background: #eef2e6;">
-                        <i class="fas fa-circle-question text-sm" style="color: #5C7A2A;"></i>
+                        <i class="fas fa-circle-question text-sm" style="color: #637746;"></i>
                     </div>
-                    <span class="flex-1 text-sm font-medium" style="color: #2a2820;">이용 안내</span>
+                    <span class="flex-1 text-sm font-medium" style="color: #34372C;">이용 안내</span>
                     <i class="fas fa-chevron-right text-xs" style="color: #d0c8bc;"></i>
                 </button>
             </div>
@@ -2793,7 +3001,7 @@
 
             <!-- 페이지 헤더 -->
             <div style="margin-bottom:24px;padding:2px 2px 0;">
-                <p style="font-size:21px;font-weight:700;color:#2a2820;letter-spacing:-0.3px;margin-bottom:6px;">
+                <p style="font-size:21px;font-weight:700;color:#34372C;letter-spacing:-0.3px;margin-bottom:6px;">
                     나를 위한 안정화 도구
                 </p>
                 <p style="font-size:13px;color:#8a8070;line-height:1.65;">
@@ -2806,56 +3014,60 @@
 
                 <!-- 복식 호흡 -->
                 <button class="tool-dash-card" onclick="openBreathingModal()"
-                        style="background:#0C2220;border-color:#1E4840;">
+                        style="background:linear-gradient(135deg,#ffffff 0%,rgba(82,190,168,0.14) 100%);
+                               border-color:rgba(82,190,168,0.40);">
                     <div class="tool-dash-icon"
-                         style="background:rgba(82,190,168,0.14);border-color:rgba(82,190,168,0.22);">
+                         style="background:rgba(82,190,168,0.13);border-color:rgba(82,190,168,0.28);">
                         <i class="fas fa-wind" style="color:#52BEA8;font-size:22px;"></i>
                     </div>
                     <p class="tool-dash-title">복식 호흡</p>
                     <p class="tool-dash-tagline">갑작스런 불안이<br>밀려올 때</p>
-                    <div class="tool-dash-footer" style="border-top-color:#1E4840;">
+                    <div class="tool-dash-footer" style="border-top-color:rgba(82,190,168,0.25);">
                         <p style="color:#52BEA8;font-size:11px;font-weight:500;letter-spacing:0.2px;">4-6 호흡 리듬</p>
                     </div>
                 </button>
 
                 <!-- 근육 이완 -->
                 <button class="tool-dash-card" onclick="openPmrModal()"
-                        style="background:#231A0C;border-color:#483218;">
+                        style="background:linear-gradient(135deg,#ffffff 0%,rgba(212,149,106,0.14) 100%);
+                               border-color:rgba(212,149,106,0.40);">
                     <div class="tool-dash-icon"
-                         style="background:rgba(212,149,106,0.14);border-color:rgba(212,149,106,0.22);">
+                         style="background:rgba(212,149,106,0.13);border-color:rgba(212,149,106,0.28);">
                         <i class="fas fa-person-praying" style="color:#D4956A;font-size:22px;"></i>
                     </div>
                     <p class="tool-dash-title">근육 이완</p>
                     <p class="tool-dash-tagline">온몸이 뻣뻣하게<br>굳어 있을 때</p>
-                    <div class="tool-dash-footer" style="border-top-color:#483218;">
+                    <div class="tool-dash-footer" style="border-top-color:rgba(212,149,106,0.25);">
                         <p style="color:#D4956A;font-size:11px;font-weight:500;letter-spacing:0.2px;">5부위 순차 이완</p>
                     </div>
                 </button>
 
                 <!-- 감각 그라운딩 -->
                 <button class="tool-dash-card" onclick="openGroundingModal()"
-                        style="background:#0C2114;border-color:#1A4228;">
+                        style="background:linear-gradient(135deg,#ffffff 0%,rgba(92,122,42,0.14) 100%);
+                               border-color:rgba(92,122,42,0.40);">
                     <div class="tool-dash-icon"
-                         style="background:rgba(125,196,106,0.14);border-color:rgba(125,196,106,0.22);">
-                        <i class="fas fa-crosshairs" style="color:#7DC46A;font-size:22px;"></i>
+                         style="background:rgba(92,122,42,0.11);border-color:rgba(92,122,42,0.28);">
+                        <i class="fas fa-crosshairs" style="color:#637746;font-size:22px;"></i>
                     </div>
                     <p class="tool-dash-title">감각 그라운딩</p>
                     <p class="tool-dash-tagline">생각이 너무 앞서<br>달려갈 때</p>
-                    <div class="tool-dash-footer" style="border-top-color:#1A4228;">
-                        <p style="color:#7DC46A;font-size:11px;font-weight:500;letter-spacing:0.2px;">5·4·3·2·1 기법</p>
+                    <div class="tool-dash-footer" style="border-top-color:rgba(92,122,42,0.22);">
+                        <p style="color:#637746;font-size:11px;font-weight:500;letter-spacing:0.2px;">5·4·3·2·1 기법</p>
                     </div>
                 </button>
 
                 <!-- STOP 기법 -->
                 <button class="tool-dash-card" onclick="openStopModal()"
-                        style="background:#140E22;border-color:#2C1E50;">
+                        style="background:linear-gradient(135deg,#ffffff 0%,rgba(154,133,212,0.14) 100%);
+                               border-color:rgba(154,133,212,0.40);">
                     <div class="tool-dash-icon"
-                         style="background:rgba(154,133,212,0.14);border-color:rgba(154,133,212,0.22);">
+                         style="background:rgba(154,133,212,0.13);border-color:rgba(154,133,212,0.28);">
                         <i class="fas fa-hand" style="color:#9A85D4;font-size:22px;"></i>
                     </div>
                     <p class="tool-dash-title">STOP 기법</p>
                     <p class="tool-dash-tagline">충동적으로 반응하기<br>전에 멈추고 싶을 때</p>
-                    <div class="tool-dash-footer" style="border-top-color:#2C1E50;">
+                    <div class="tool-dash-footer" style="border-top-color:rgba(154,133,212,0.25);">
                         <p style="color:#9A85D4;font-size:11px;font-weight:500;letter-spacing:0.2px;">Stop · Breathe · Observe</p>
                     </div>
                 </button>
@@ -2864,25 +3076,30 @@
 
             <!-- 이완 도구함 (오디오 명상) -->
             <a href="tools.html" style="display:block;margin-bottom:24px;text-decoration:none;">
-                <div style="background:#0C1C18;border:1px solid #1A3028;border-radius:22px;
+                <div style="background:linear-gradient(135deg,#ffffff 0%,rgba(92,122,42,0.12) 100%);
+                            border:1px solid rgba(92,122,42,0.35);border-radius:22px;
                             padding:18px 20px;display:flex;align-items:center;gap:16px;
-                            cursor:pointer;transition:opacity 0.15s;"
-                     onmouseenter="this.style.opacity='0.82'" onmouseleave="this.style.opacity='1'"
-                     ontouchstart="this.style.opacity='0.82'" ontouchend="this.style.opacity='1'">
+                            cursor:pointer;position:relative;overflow:hidden;
+                            box-shadow:0 4px 16px rgba(92,122,42,0.10);
+                            transition:transform 0.15s,box-shadow 0.15s;"
+                     onmouseenter="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 28px rgba(92,122,42,0.16)'"
+                     onmouseleave="this.style.transform='';this.style.boxShadow='0 4px 16px rgba(92,122,42,0.10)'"
+                     ontouchstart="this.style.transform='scale(0.97)'" ontouchend="this.style.transform=''">
+                    <div style="position:absolute;top:0;left:0;right:0;height:1px;background:rgba(255,255,255,0.85);"></div>
                     <div style="width:52px;height:52px;border-radius:26px;flex-shrink:0;
-                                background:rgba(155,173,128,0.16);border:1px solid rgba(155,173,128,0.26);
+                                background:rgba(92,122,42,0.11);border:1px solid rgba(92,122,42,0.28);
                                 display:flex;align-items:center;justify-content:center;">
-                        <i class="fas fa-headphones" style="color:#9BAD80;font-size:22px;"></i>
+                        <i class="fas fa-headphones" style="color:#637746;font-size:22px;"></i>
                     </div>
                     <div style="flex:1;min-width:0;">
-                        <p style="font-size:15px;font-weight:600;color:#e7e1d6;margin:0 0 4px;letter-spacing:-0.2px;">
+                        <p style="font-size:15px;font-weight:600;color:#34372C;margin:0 0 4px;letter-spacing:-0.2px;">
                             이완 도구함
                         </p>
-                        <p style="font-size:12px;color:rgba(200,195,185,0.65);line-height:1.5;margin:0;">
+                        <p style="font-size:12px;color:#8a8070;line-height:1.5;margin:0;">
                             가이드 오디오로 하는 마음챙김 명상
                         </p>
                     </div>
-                    <i class="fas fa-chevron-right" style="color:rgba(155,173,128,0.4);font-size:13px;flex-shrink:0;"></i>
+                    <i class="fas fa-chevron-right" style="color:rgba(92,122,42,0.45);font-size:13px;flex-shrink:0;"></i>
                 </div>
             </a>
 
@@ -2930,7 +3147,7 @@
     <div class="sheet-handle"></div>
 
     <div id="routine-sheet-header">
-        <h3 class="font-bold text-base" style="color: #2a2820;">루틴 편집</h3>
+        <h3 class="font-bold text-base" style="color: #34372C;">루틴 편집</h3>
         <button onclick="closeRoutineSheet()"
                 style="width:32px;height:32px;border-radius:50%;border:none;
                        background:#f5f2ec;cursor:pointer;font-size:16px;color:#8a8070;">
@@ -2955,7 +3172,7 @@
         <div class="sheet-target-row">
             <span class="text-sm font-medium" style="color: #6b6558; flex:1;">목표 횟수</span>
             <button class="sheet-target-btn" onclick="sheetTargetAdj(-1)">−</button>
-            <span id="sheet-target-val" class="text-sm font-bold" style="min-width:24px;text-align:center;color:#2a2820;">1</span>
+            <span id="sheet-target-val" class="text-sm font-bold" style="min-width:24px;text-align:center;color:#34372C;">1</span>
             <button class="sheet-target-btn" onclick="sheetTargetAdj(1)">+</button>
         </div>
         <button onclick="_addRoutineItem()"
@@ -2982,7 +3199,7 @@
                  style="background: #eef4fa;">
                 <i class="fas fa-bed" style="color: #6A8CA0; font-size: 14px;"></i>
             </div>
-            <h3 id="sleep-modal-title" class="font-bold" style="font-size: 17px; color: #2a2820;">수면 루틴 설정</h3>
+            <h3 id="sleep-modal-title" class="font-bold" style="font-size: 17px; color: #34372C;">수면 루틴 설정</h3>
         </div>
         <button onclick="closeSleepModal()"
                 style="width: 32px; height: 32px; border-radius: 50%; border: none;
@@ -3007,8 +3224,8 @@
     <!-- 알림 토글 -->
     <div class="flex items-center justify-between mb-6 px-1">
         <div>
-            <p class="font-bold text-sm" style="color: #2a2820;">알림 받기</p>
-            <p class="text-xs mt-0.5" style="color: #a09890;">취침·기상 시간에 브라우저 알림을 받아요</p>
+            <p class="font-bold text-sm" style="color: #34372C;">알림 받기</p>
+            <p class="text-xs mt-0.5" style="color: #84826E;">취침·기상 시간에 브라우저 알림을 받아요</p>
         </div>
         <button id="sleep-notif-toggle" onclick="_toggleSleepNotif()" aria-label="알림 토글"></button>
     </div>
@@ -3229,7 +3446,7 @@
     <!-- 완료 화면 -->
     <div id="grounding-complete">
         <p style="font-size:60px;margin-bottom:24px;">🌿</p>
-        <p style="font-size:22px;font-weight:600;color:#2a2820;text-align:center;margin-bottom:14px;letter-spacing:-0.2px;line-height:1.4;">
+        <p style="font-size:22px;font-weight:600;color:#34372C;text-align:center;margin-bottom:14px;letter-spacing:-0.2px;line-height:1.4;">
             완전히 현재로 돌아왔습니다.
         </p>
         <p style="font-size:15px;color:#8a8070;text-align:center;line-height:1.65;margin-bottom:40px;">
@@ -3663,11 +3880,11 @@
      * ───────────────────────────────────────── */
     function renderHistoryCard(r) {
         const palette = {
-            'PHQ-9':  { bg: '#eef2e6', color: '#5C7A2A', icon: 'fa-brain' },
+            'PHQ-9':  { bg: '#eef2e6', color: '#637746', icon: 'fa-brain' },
             'GAD-7':  { bg: '#fdf4e6', color: '#C4956A', icon: 'fa-heart-pulse' },
             'DIVA':   { bg: '#f0eefa', color: '#6D5BA3', icon: 'fa-puzzle-piece' },
             '종합':   { bg: '#e8f4e0', color: '#2e5c10', icon: 'fa-layer-group' },
-            '기분':   { bg: '#eef2e6', color: '#5C7A2A', icon: 'fa-face-smile' },     // survey1
+            '기분':   { bg: '#eef2e6', color: '#637746', icon: 'fa-face-smile' },     // survey1
             '음주':   { bg: '#fdf4e6', color: '#C4956A', icon: 'fa-wine-glass' },     // survey2
             '강박':   { bg: '#fdf8ef', color: '#B87014', icon: 'fa-repeat' },          // survey3
             '주의':   { bg: '#f0eefa', color: '#6D5BA3', icon: 'fa-crosshairs' },     // survey4
@@ -3710,7 +3927,7 @@
                     <div class="flex-1 min-w-0">
                         <div class="flex items-center justify-between mb-1.5">
                             <span class="badge" style="background:${bg}; color:${color};">${name}</span>
-                            <span class="text-xs" style="color: #a09890;">${dateStr}</span>
+                            <span class="text-xs" style="color: #84826E;">${dateStr}</span>
                         </div>
                         ${scoreHtml ? `<div class="mb-1.5">${scoreHtml}</div>` : ''}
                         ${chipsHtml ? `<div class="flex flex-wrap gap-1">${chipsHtml}</div>` : ''}
@@ -3727,9 +3944,9 @@
 
         container.innerHTML = `
             <div class="card flex items-center justify-center gap-3 py-7"
-                 style="background: #faf8f3; border: 1px solid #ede8dc;">
+                 style="background: #F4E8D6; border: 1px solid #ede8dc;">
                 <div class="history-spinner"></div>
-                <span class="text-sm" style="color: #a09890;">기록을 불러오는 중입니다...</span>
+                <span class="text-sm" style="color: #84826E;">기록을 불러오는 중입니다...</span>
             </div>`;
 
         try {
@@ -3747,7 +3964,7 @@
             if (!data || data.length === 0) {
                 container.innerHTML = `
                     <div class="card text-center py-9"
-                         style="border: 1.5px dashed #d8d0c4; background: #faf8f3;">
+                         style="border: 1.5px dashed #d8d0c4; background: #F4E8D6;">
                         <div class="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-3"
                              style="background: #eef2e6;">
                             <i class="fas fa-seedling text-2xl" style="color: #8BAD45;"></i>
@@ -3755,7 +3972,7 @@
                         <p class="font-semibold text-sm mb-1" style="color: #6b6558;">
                             아직 진행한 검사가 없습니다
                         </p>
-                        <p class="text-xs mb-5" style="color: #a09890;">
+                        <p class="text-xs mb-5" style="color: #84826E;">
                             첫 마음 검진을 시작해 보세요.
                         </p>
                         <button onclick="switchPage('tests')"
@@ -3777,7 +3994,7 @@
                     <i class="fas fa-circle-exclamation mb-2" style="color: #c05a5a; font-size: 20px;"></i>
                     <p class="text-sm mt-1" style="color: #c05a5a;">기록을 불러오지 못했습니다.</p>
                     <button onclick="fetchMyTestHistory()"
-                            class="text-xs mt-2.5 underline" style="color: #a09890;">
+                            class="text-xs mt-2.5 underline" style="color: #84826E;">
                         다시 시도
                     </button>
                 </div>`;
@@ -3799,9 +4016,9 @@
     function filterLibrary(카테고리, 버튼) {
         document.querySelectorAll('.filter-btn').forEach(btn => {
             btn.style.background = '#eef2e6';
-            btn.style.color      = '#5C7A2A';
+            btn.style.color      = '#637746';
         });
-        버튼.style.background = '#5C7A2A';
+        버튼.style.background = '#637746';
         버튼.style.color      = '#ffffff';
 
         document.querySelectorAll('.library-item').forEach(item => {
@@ -4143,7 +4360,7 @@
             // 치료 목표 배지: routineLabel → goalText 역방향 매핑
             const linkedGoal = (_rt.goalMap || {})[item.label];
             const goalBadge  = linkedGoal
-                ? `<span style="display:inline-block;font-size:10px;color:#5C7A2A;
+                ? `<span style="display:inline-block;font-size:10px;color:#637746;
                                background:#eef4e5;border:1px solid #cfe3b0;
                                border-radius:999px;padding:2px 8px;margin-top:4px;
                                line-height:1.5;letter-spacing:-0.1px;max-width:100%;
@@ -4252,14 +4469,14 @@
         const el = document.getElementById('sheet-routine-list');
         if (!el) return;
         if (_rt.items.length === 0) {
-            el.innerHTML = '<p class="text-xs py-2" style="color:#a09890;">아직 추가된 루틴이 없어요</p>';
+            el.innerHTML = '<p class="text-xs py-2" style="color:#84826E;">아직 추가된 루틴이 없어요</p>';
             return;
         }
         el.innerHTML = _rt.items.map(item => `
             <div class="sheet-routine-row">
                 <span style="font-size:16px;flex-shrink:0;">${item.emoji || '•'}</span>
-                <span class="flex-1 text-sm" style="color:#2a2820;">
-                    ${item.label}${item.target_count > 1 ? ' <span style="color:#a09890;">(×' + item.target_count + ')</span>' : ''}
+                <span class="flex-1 text-sm" style="color:#34372C;">
+                    ${item.label}${item.target_count > 1 ? ' <span style="color:#84826E;">(×' + item.target_count + ')</span>' : ''}
                 </span>
                 <button class="sheet-delete-btn" data-id="${item.id}"
                         onclick="_deleteRoutineItem(this.dataset.id)">
@@ -4531,7 +4748,7 @@
         if (badge) {
             badge.textContent       = _sleep.isActive ? '알림 켜짐' : '알림 꺼짐';
             badge.style.background  = _sleep.isActive ? '#eef2e6'  : '#f5f2ec';
-            badge.style.color       = _sleep.isActive ? '#5C7A2A'  : '#a09890';
+            badge.style.color       = _sleep.isActive ? '#637746'  : '#84826E';
         }
     }
 
@@ -5374,7 +5591,7 @@
     ];
 
     const CAT_STYLE = {
-        mood:      { bg: '#eef2e6', color: '#5C7A2A' },
+        mood:      { bg: '#eef2e6', color: '#637746' },
         anxiety:   { bg: '#fdf4e6', color: '#C4956A' },
         sleep:     { bg: '#eef4fa', color: '#5A8FBC' },
         cognitive: { bg: '#f0eefa', color: '#6D5BA3' },
@@ -5466,7 +5683,7 @@
                 <div class="cond-emoji-wrap" style="background:${s.bg};">${d.emoji}</div>
                 <div style="flex:1; min-width:0;">
                     <span class="cond-badge" style="background:${s.bg}; color:${s.color}; margin-bottom:4px; display:inline-block;">${lbl}</span>
-                    <p style="font-size:15px; font-weight:700; color:#2a2820; margin:0 0 3px;
+                    <p style="font-size:15px; font-weight:700; color:#34372C; margin:0 0 3px;
                                white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${d.title}</p>
                     <p style="font-size:12px; color:#8a8070; line-height:1.5; margin:0;
                                display:-webkit-box; -webkit-line-clamp:2;
@@ -5710,7 +5927,7 @@
                 scales: {
                     x: {
                         ticks: {
-                            font: { size: 10 }, color: '#a09890',
+                            font: { size: 10 }, color: '#84826E',
                             maxTicksLimit: 8, maxRotation: 0,
                         },
                         grid: { color: '#f0ede6' },
@@ -5718,7 +5935,7 @@
                     },
                     y: {
                         min: 1, max: 10,
-                        ticks: { stepSize: 3, font: { size: 10 }, color: '#a09890' },
+                        ticks: { stepSize: 3, font: { size: 10 }, color: '#84826E' },
                         grid: { color: '#f0ede6' },
                         border: { dash: [4, 4] },
                     },
@@ -5747,7 +5964,7 @@
 
         if (!data?.length && _moodHistPage === 0) {
             list.innerHTML =
-                '<p style="text-align:center;color:#a09890;font-size:13px;padding:24px 0;">아직 기분 기록이 없어요 🌿</p>';
+                '<p style="text-align:center;color:#84826E;font-size:13px;padding:24px 0;">아직 기분 기록이 없어요 🌿</p>';
             moreBtn.classList.add('hidden');
             return;
         }
@@ -5800,8 +6017,8 @@
         return `
         <div class="mood-history-card">
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
-                <span style="font-size:12px;font-weight:700;color:#5C7A2A;">${dateLbl}</span>
-                ${sc.mood != null ? `<span style="font-size:11px;color:#a09890;">기분 <b style="color:${MOOD_COLORS.mood};">${sc.mood}</b>/10</span>` : ''}
+                <span style="font-size:12px;font-weight:700;color:#637746;">${dateLbl}</span>
+                ${sc.mood != null ? `<span style="font-size:11px;color:#84826E;">기분 <b style="color:${MOOD_COLORS.mood};">${sc.mood}</b>/10</span>` : ''}
             </div>
             <div class="mood-score-row">${chips}</div>
             ${extra}
@@ -5823,7 +6040,7 @@
     <div class="ci-container">
         <div class="gw-header">
             <button id="ci-close-btn" onclick="CI.close()" aria-label="닫기"
-                    style="background:none;border:none;cursor:pointer;color:#a09890;
+                    style="background:none;border:none;cursor:pointer;color:#84826E;
                            padding:6px;border-radius:8px;display:flex;align-items:center;
                            transition:color 0.15s;">
                 <i class="fas fa-times" style="font-size:16px;"></i>
@@ -5892,7 +6109,7 @@ window.GW = (() => {
 
     const DOMAIN_META = {
         symptom:  { emoji: '💭', color: '#5D7F9A', label: '증상',  desc: '불안·수면·무기력·감정 조절' },
-        function: { emoji: '⚡', color: '#5C7A2A', label: '기능',  desc: '일상·집중·식사·기상' },
+        function: { emoji: '⚡', color: '#637746', label: '기능',  desc: '일상·집중·식사·기상' },
         relation: { emoji: '💬', color: '#C4956A', label: '관계',  desc: '가족·친구·동료와의 관계' },
         meaning:  { emoji: '🌱', color: '#7A6FA8', label: '의미',  desc: '목적·가치·정체성·미래' },
     };
@@ -6293,7 +6510,7 @@ window.GW = (() => {
             return `
                 <div class="gw-complete-card">
                     <span class="gw-complete-text">${_esc(text)}</span>
-                    <span style="color:#5C7A2A;font-weight:900;font-size:13px;">✓</span>
+                    <span style="color:#637746;font-weight:900;font-size:13px;">✓</span>
                 </div>`;
         }).filter(Boolean).join('');
 
@@ -6470,7 +6687,8 @@ window.GW = (() => {
                 // ③ 루틴 목록 + goalMap 즉시 갱신
                 await loadRoutines();
 
-                // ④ 체크인 카드 갱신
+                // ④ 목표 허브 카드 즉시 갱신
+                if (typeof renderGoalHub === 'function') renderGoalHub();
                 if (typeof CI !== 'undefined') await CI.init();
             }
         } catch (e) {
@@ -6613,6 +6831,103 @@ window.GW = (() => {
 })();
 
 /* ══════════════════════════════════════════════════════════════════════
+   renderGoalHub — 치료 목표 허브 카드 렌더
+   목표 설정 여부에 따라 빈 상태/활성 상태를 전환하고,
+   설정된 목표와 미니 루틴을 채워 넣는다.
+   ══════════════════════════════════════════════════════════════════════ */
+
+function renderGoalHub() {
+    const emptyEl  = document.getElementById('goal-hub-empty');
+    const activeEl = document.getElementById('goal-hub-active');
+    if (!emptyEl || !activeEl) return;
+
+    const hasGoals = userSession.selectedDomains.some(d =>
+        (userSession.selectedGoals[d] || []).length > 0
+    );
+
+    emptyEl.classList.toggle('hidden', hasGoals);
+    activeEl.classList.toggle('hidden', !hasGoals);
+    if (!hasGoals) return;
+
+    // ── 목표 목록 ────────────────────────────────────────────────────────
+    const DOMAIN_STYLE = {
+        symptom:  { bg: '#eef2e6', text: '#45582F' },
+        function: { bg: '#fdf4e6', text: '#8a5820' },
+        relation: { bg: '#eef4fa', text: '#3a6880' },
+        meaning:  { bg: '#f5f0fa', text: '#5a4890' },
+    };
+
+    const goalEntries = [];
+    for (const domain of userSession.selectedDomains) {
+        for (const entry of (userSession.selectedGoals[domain] || [])) {
+            if (!entry?.stateId) continue;
+            const goalDef = goalData.goals[entry.stateId];
+            if (!goalDef) continue;
+            const step = (goalDef.ladder || []).find(s => s.id === entry.goalId);
+            if (!step) continue;
+            const text = renderTemplate(step.template, step.blanks || {}, entry.filledBlanks || {}).text;
+            goalEntries.push({ text, domain, label: (goalData.domain_labels || {})[domain] || domain });
+        }
+    }
+
+    const goalsEl = document.getElementById('goal-hub-goals');
+    if (goalsEl) {
+        if (goalEntries.length === 0) {
+            goalsEl.innerHTML = '<p style="font-size:12px;color:#b0a898;margin:0;">설정된 목표가 없습니다</p>';
+        } else {
+            goalsEl.innerHTML = goalEntries.map((g, i) => {
+                const c = DOMAIN_STYLE[g.domain] || { bg: '#f0f0f0', text: '#666' };
+                return `<div style="display:flex;align-items:flex-start;gap:9px;${i < goalEntries.length - 1 ? 'margin-bottom:10px;' : ''}">
+                    <span style="font-size:10px;font-weight:700;padding:2px 9px;border-radius:10px;
+                                 background:${c.bg};color:${c.text};flex-shrink:0;margin-top:2px;white-space:nowrap;">
+                        ${g.label}
+                    </span>
+                    <p style="font-size:13px;color:#34372C;line-height:1.55;margin:0;flex:1;">${g.text}</p>
+                </div>`;
+            }).join('');
+        }
+    }
+
+    // ── 주간 체크인 힌트 ─────────────────────────────────────────────────
+    const ciHint = document.getElementById('goal-hub-ci-hint');
+    if (ciHint) {
+        ciHint.textContent = goalEntries.length > 0
+            ? `${goalEntries.length}개 목표 달성도를 점검해 보세요`
+            : '이번 주 달성도를 점검해 보세요';
+    }
+
+    // ── 오늘의 미니 루틴 ─────────────────────────────────────────────────
+    const allRoutineDefs = Object.values(goalData.routines).flat();
+    const miniRoutines = userSession.selectedRoutines.slice(0, 3).map(({ routineId, filledBlanks }) => {
+        const rt = allRoutineDefs.find(r => r.id === routineId);
+        if (!rt) return null;
+        return renderTemplate(rt.template, rt.blanks || {}, filledBlanks || {}).text;
+    }).filter(Boolean);
+
+    const countEl    = document.getElementById('goal-hub-routine-count');
+    const routinesEl = document.getElementById('goal-hub-routines');
+
+    if (countEl) {
+        countEl.textContent = userSession.selectedRoutines.length > 0
+            ? `총 ${userSession.selectedRoutines.length}개` : '';
+    }
+    if (routinesEl) {
+        if (miniRoutines.length === 0) {
+            routinesEl.innerHTML = '<p style="font-size:12px;color:#b0a898;text-align:center;padding:6px 0;">설정된 루틴이 없어요</p>';
+        } else {
+            routinesEl.innerHTML = miniRoutines.map(text => `
+                <div style="display:flex;align-items:flex-start;gap:10px;
+                            background:#f6f8f2;border-radius:12px;padding:10px 13px;
+                            border:1px solid #e8edd6;">
+                    <div style="width:7px;height:7px;border-radius:50%;background:#8BAD45;
+                                flex-shrink:0;margin-top:5px;"></div>
+                    <p style="font-size:13px;color:#3a4830;line-height:1.55;margin:0;flex:1;">${text}</p>
+                </div>`).join('');
+        }
+    }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
    Check-In (CI) — 주간 목표 점검 & 결과 요약
    ══════════════════════════════════════════════════════════════════════ */
 
@@ -6622,13 +6937,13 @@ window.CI = (() => {
     const SCORE_OPTS = [
         { score: 1, emoji: '😔', label: '아직 안됨',   color: '#9e9e9e', bg: '#f5f5f5' },
         { score: 2, emoji: '🌱', label: '조금 나아짐', color: '#C4956A', bg: '#fff8f0' },
-        { score: 3, emoji: '🌿', label: '꽤 달라짐',   color: '#5C7A2A', bg: '#f0f7e8' },
+        { score: 3, emoji: '🌿', label: '꽤 달라짐',   color: '#637746', bg: '#f0f7e8' },
         { score: 4, emoji: '🌳', label: '거의 달성',   color: '#3a5c1a', bg: '#e4f0d4' },
     ];
 
     const DOMAIN_META = {
         symptom:  { emoji: '💭', color: '#5D7F9A', label: '증상' },
-        function: { emoji: '⚡', color: '#5C7A2A', label: '기능' },
+        function: { emoji: '⚡', color: '#637746', label: '기능' },
         relation: { emoji: '💬', color: '#C4956A', label: '관계' },
         meaning:  { emoji: '🌱', color: '#7A6FA8', label: '의미' },
     };
@@ -6674,14 +6989,7 @@ window.CI = (() => {
                 }
             }
 
-            const card = document.getElementById('ci-card');
-            const cnt  = document.getElementById('ci-goal-count');
-            if (card) {
-                card.classList.toggle('hidden', _goals.length === 0);
-                if (cnt) cnt.textContent = _goals.length > 0
-                    ? `${_goals.length}개의 목표를 점검할 수 있어요`
-                    : '';
-            }
+            if (typeof renderGoalHub === 'function') renderGoalHub();
         } catch (e) {
             console.warn('체크인 초기화 실패:', e.message);
         }
@@ -6707,7 +7015,7 @@ window.CI = (() => {
 
     function _renderGoal() {
         const goal = _goals[_current];
-        const m    = DOMAIN_META[goal.domain] || { emoji: '🎯', color: '#5C7A2A', label: '' };
+        const m    = DOMAIN_META[goal.domain] || { emoji: '🎯', color: '#637746', label: '' };
         const pct  = Math.round((_current / _goals.length) * 100);
 
         document.getElementById('ci-progress-fill').style.width = pct + '%';
@@ -6723,8 +7031,8 @@ window.CI = (() => {
                 <span style="font-size:11px;font-weight:700;color:${m.color};letter-spacing:0.6px;text-transform:uppercase;">
                     ${m.emoji} ${m.label}
                 </span>
-                <p style="font-size:12px;color:#a09890;margin:7px 0 14px;">이번 주 동안...</p>
-                <h2 style="font-size:18px;font-weight:700;color:#2a2820;line-height:1.65;
+                <p style="font-size:12px;color:#84826E;margin:7px 0 14px;">이번 주 동안...</p>
+                <h2 style="font-size:18px;font-weight:700;color:#34372C;line-height:1.65;
                            margin-bottom:28px;padding:0 4px;">
                     ${_esc(goal.text)}
                 </h2>
@@ -6795,7 +7103,7 @@ window.CI = (() => {
             if (avg === null) return null;
             if (avg < 1.75) return { text: '아직 변화가 느껴지지 않는 것 같아요', color: '#9e9e9e' };
             if (avg < 2.5)  return { text: '조금씩 나아지고 있어요', color: '#C4956A' };
-            if (avg < 3.25) return { text: '꽤 많이 달라졌어요', color: '#5C7A2A' };
+            if (avg < 3.25) return { text: '꽤 많이 달라졌어요', color: '#637746' };
             return            { text: '거의 달성에 가까워졌어요! 🎉', color: '#3a5c1a' };
         };
 
@@ -6810,7 +7118,7 @@ window.CI = (() => {
         const mkSection = (q, avg) => {
             const info = scoreInfo(avg);
             if (!info) return '';
-            const barColor = avg >= 2.5 ? '#5C7A2A' : avg >= 1.75 ? '#C4956A' : '#9e9e9e';
+            const barColor = avg >= 2.5 ? '#637746' : avg >= 1.75 ? '#C4956A' : '#9e9e9e';
             return `
                 <div class="ci-result-section">
                     <p class="ci-section-q">${q}</p>
@@ -6834,10 +7142,10 @@ window.CI = (() => {
         content.innerHTML = `
             <div style="text-align:center;margin-bottom:26px;">
                 <div style="font-size:44px;margin-bottom:10px;">🌿</div>
-                <h2 style="font-size:21px;font-weight:700;color:#2a2820;margin-bottom:5px;">
+                <h2 style="font-size:21px;font-weight:700;color:#34372C;margin-bottom:5px;">
                     이번 주 나의 변화
                 </h2>
-                <p style="font-size:13px;color:#a09890;line-height:1.6;">
+                <p style="font-size:13px;color:#84826E;line-height:1.6;">
                     체크인을 완료했어요. 잘 하셨어요!
                 </p>
             </div>
@@ -6846,17 +7154,17 @@ window.CI = (() => {
             ${mkSection('더 잘 살아가고 있나요?', lifeAvg)}
 
             ${(!symptomAvg && !lifeAvg) ? `
-                <div style="text-align:center;color:#a09890;padding:16px 0 24px;">
+                <div style="text-align:center;color:#84826E;padding:16px 0 24px;">
                     모든 영역을 점검했어요. 계속 화이팅!
                 </div>` : ''}
 
             <button style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px;
-                           background:#5C7A2A;color:#fff;font-size:15px;font-weight:700;
+                           background:#637746;color:#fff;font-size:15px;font-weight:700;
                            border:none;border-radius:999px;padding:15px;cursor:pointer;
                            box-shadow:0 6px 24px rgba(92,122,42,0.3);margin-top:20px;
                            transition:background 0.2s;"
-                    onmouseover="this.style.background='#4a6220'"
-                    onmouseout="this.style.background='#5C7A2A'"
+                    onmouseover="this.style.background='#45582F'"
+                    onmouseout="this.style.background='#637746'"
                     onclick="CI.close()">
                 홈으로 돌아가기
                 <i class="fas fa-chevron-right" style="font-size:12px;"></i>
@@ -6884,8 +7192,9 @@ window.CI = (() => {
     return { init, open, close, _score };
 })();
 
-// 로그인 직후 홈 화면에서 CI 카드를 표시하기 위해 지연 초기화
+// 로그인 직후 홈 화면에서 목표 허브 & CI 초기화
 window.addEventListener('load', () => {
+    if (typeof renderGoalHub === 'function') renderGoalHub();
     setTimeout(() => { if (typeof CI !== 'undefined') CI.init(); }, 1500);
 });
 
